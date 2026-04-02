@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Onest } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
-const inter = Inter({
+const onest = Onest({
   subsets: ['latin', 'cyrillic'],
-  variable: '--font-inter',
+  variable: '--font-onest',
 });
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="kk">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${onest.variable} font-sans antialiased`}>
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />

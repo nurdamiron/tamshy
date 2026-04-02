@@ -19,6 +19,7 @@ interface ProjectCardProps {
     voteCount: number;
     createdAt: string;
   };
+  rank?: number;
 }
 
 const typeToBadge: Record<string, 'video' | 'research' | 'art' | 'invention' | 'app' | 'other'> = {
@@ -78,26 +79,60 @@ const typeIcons: Record<string, JSX.Element> = {
   ),
 };
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+const rankColors: Record<number, { bg: string; text: string; border: string }> = {
+  1: { bg: 'bg-gradient-to-br from-[#F59E0B] to-[#D97706]', text: 'text-white', border: 'border-[#F59E0B]' },
+  2: { bg: 'bg-gradient-to-br from-[#94A3B8] to-[#64748B]', text: 'text-white', border: 'border-[#94A3B8]' },
+  3: { bg: 'bg-gradient-to-br from-[#D97706] to-[#B45309]', text: 'text-white', border: 'border-[#D97706]' },
+};
+
+export default function ProjectCard({ project, rank }: ProjectCardProps) {
+  const isGlow = rank === 1;
+
   return (
     <Link href={`/projects/${project.id}`}>
       <motion.div
-        className="group bg-white rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] h-full flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.08),0_12px_32px_rgba(0,0,0,0.06)]"
-        whileHover={{ y: -4 }}
+        className={`group relative bg-white rounded-2xl overflow-hidden h-full flex flex-col cursor-pointer border border-[#E2E8F0]/60 transition-all duration-300 ${
+          isGlow
+            ? 'shadow-[0_0_40px_rgba(2,132,199,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
+            : 'shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)]'
+        }`}
+        whileHover={{
+          y: -6,
+          boxShadow: isGlow
+            ? '0 0 50px rgba(2,132,199,0.18), 0 20px 40px rgba(0,0,0,0.08)'
+            : '0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.04)',
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       >
         {/* Gradient thumbnail */}
-        <div className={`relative bg-gradient-to-br ${typeGradients[project.type] || typeGradients.OTHER} h-[120px] flex items-center justify-center overflow-hidden`}>
+        <div className={`relative bg-gradient-to-br ${typeGradients[project.type] || typeGradients.OTHER} h-[130px] flex items-center justify-center overflow-hidden`}>
           {/* Background pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-2 right-2 w-20 h-20 rounded-full border border-white/30" />
-            <div className="absolute bottom-2 left-2 w-14 h-14 rounded-full border border-white/20" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-white/10" />
+          <div className="absolute inset-0 opacity-[0.06]">
+            <div className="absolute top-2 right-2 w-20 h-20 rounded-full border border-white/40" />
+            <div className="absolute bottom-2 left-2 w-14 h-14 rounded-full border border-white/30" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-white/20" />
           </div>
 
           {/* Type icon */}
-          <div className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+          <motion.div
+            className="relative z-10 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
+            whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
+            transition={{ duration: 0.4 }}
+          >
             {typeIcons[project.type] || typeIcons.OTHER}
-          </div>
+          </motion.div>
+
+          {/* Rank badge */}
+          {rank && rank <= 3 && (
+            <motion.div
+              className={`absolute top-3 left-3 w-8 h-8 rounded-full ${rankColors[rank].bg} ${rankColors[rank].text} flex items-center justify-center text-[13px] font-bold shadow-lg`}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
+            >
+              {rank}
+            </motion.div>
+          )}
 
           {/* Winner badge */}
           {project.status === 'WINNER' && (
@@ -118,7 +153,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </Badge>
           </div>
 
-          <h3 className="text-[15px] font-semibold text-[#0F172A] mb-2 line-clamp-2 leading-snug group-hover:text-[#0284C7] transition-colors">
+          <h3 className="text-[15px] font-semibold text-[#0F172A] mb-2 line-clamp-2 leading-snug group-hover:text-[#0284C7] transition-colors duration-300">
             {project.title}
           </h3>
 
@@ -127,7 +162,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </p>
 
           {/* Meta */}
-          <div className="flex items-center justify-between text-[12px] text-[#64748B] pt-3 border-t border-[#E2E8F0]">
+          <div className="flex items-center justify-between text-[12px] text-[#64748B] pt-3 border-t border-[#E2E8F0]/60">
             <div className="flex items-center gap-2.5">
               <span className="flex items-center gap-1">
                 <div className="w-5 h-5 rounded-full bg-[#E0F2FE] flex items-center justify-center">
@@ -141,14 +176,24 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               <span className="text-[#E2E8F0]">|</span>
               <span>{regionLabels[project.region] || project.region}</span>
             </div>
-            <span className="flex items-center gap-1 font-semibold text-[#0284C7]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#0284C7" fillOpacity="0.2" stroke="#0284C7" strokeWidth="1.5">
+            <motion.span
+              className="flex items-center gap-1 font-semibold text-[#0284C7]"
+              whileHover={{ scale: 1.1 }}
+            >
+              <motion.svg
+                width="14" height="14" viewBox="0 0 24 24" fill="#0284C7" fillOpacity="0.2" stroke="#0284C7" strokeWidth="1.5"
+                whileHover={{ scale: 1.2, fill: '#0284C7', fillOpacity: 0.6 }}
+                transition={{ duration: 0.2 }}
+              >
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
+              </motion.svg>
               {project.voteCount}
-            </span>
+            </motion.span>
           </div>
         </div>
+
+        {/* Hover gradient border */}
+        <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-[#0284C7]/15 transition-colors duration-300 pointer-events-none" />
       </motion.div>
     </Link>
   );

@@ -66,21 +66,6 @@ interface ApiProject {
   _count: { votes: number };
 }
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.97 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: 'spring' as const, stiffness: 260, damping: 20 },
-  },
-};
-
 export default function FeaturedProjects() {
   const [projects, setProjects] = useState(fallbackProjects);
 
@@ -111,17 +96,18 @@ export default function FeaturedProjects() {
   }, []);
 
   return (
-    <section className="py-20 bg-[#F8FAFC]">
+    <section className="py-24 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-end justify-between mb-10"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-end justify-between mb-12"
         >
           <div>
             <span className="text-caption text-[#0284C7] tracking-widest">ИЗБРАННОЕ</span>
-            <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
+            <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
               Лучшие проекты
             </h2>
             <p className="text-[15px] text-[#64748B] mt-2">
@@ -135,19 +121,19 @@ export default function FeaturedProjects() {
           </Link>
         </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-80px' }}
-        >
-          {projects.map((project) => (
-            <motion.div key={project.id} variants={cardVariants}>
-              <ProjectCard project={project} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {projects.map((project, i) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ delay: i * 0.12, type: 'spring', stiffness: 260, damping: 20 }}
+            >
+              <ProjectCard project={project} rank={i + 1} />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         <motion.div
           className="mt-8 text-center sm:hidden"

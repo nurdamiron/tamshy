@@ -9,6 +9,7 @@ function Counter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   const [count, setCount] = useState(0);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     if (!isInView) return;
@@ -20,11 +21,24 @@ function Counter({ target, suffix = '' }: { target: number; suffix?: string }) {
       const eased = 1 - Math.pow(1 - progress, 4);
       setCount(Math.floor(eased * target));
       if (progress < 1) requestAnimationFrame(tick);
+      else setDone(true);
     };
     tick();
   }, [isInView, target]);
 
-  return <div ref={ref}>{count}{suffix}</div>;
+  return (
+    <div ref={ref} className="relative inline-block">
+      <span>{count}{suffix}</span>
+      {done && (
+        <motion.div
+          className="absolute -bottom-2 left-0 h-[3px] rounded-full bg-gradient-to-r from-[#0284C7] to-[#38BDF8]"
+          initial={{ width: 0 }}
+          animate={{ width: '60%' }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        />
+      )}
+    </div>
+  );
 }
 
 function formatNum(n: number): { value: number; suffix: string } {
@@ -34,10 +48,10 @@ function formatNum(n: number): { value: number; suffix: string } {
 }
 
 const statMeta = [
-  { key: 'totalSchools', label: 'Школ участвуют', icon: School01Icon, fallback: 55 },
-  { key: 'regions', label: 'Регионов', icon: Location01Icon, fallback: 14 },
-  { key: 'totalProjects', label: 'Проектов подано', icon: File01Icon, fallback: 0 },
-  { key: 'totalVotes', label: 'Голосов получено', icon: HeartCheckIcon, fallback: 0 },
+  { key: 'totalSchools', label: 'Школ участвуют', icon: School01Icon, fallback: 55, color: '#0284C7' },
+  { key: 'regions', label: 'Регионов', icon: Location01Icon, fallback: 14, color: '#3B82F6' },
+  { key: 'totalProjects', label: 'Проектов подано', icon: File01Icon, fallback: 0, color: '#8B5CF6' },
+  { key: 'totalVotes', label: 'Голосов получено', icon: HeartCheckIcon, fallback: 0, color: '#EC4899' },
 ];
 
 export default function StatsRow() {
@@ -60,13 +74,14 @@ export default function StatsRow() {
   }, []);
 
   return (
-    <section className="relative z-10 -mt-10 pb-10">
+    <section className="relative z-10 -mt-10 pb-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-[#E2E8F0]/60 p-2"
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+          className="bg-gradient-to-b from-white to-[#FAFCFF] rounded-2xl shadow-[0_4px_32px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] border border-[#E2E8F0]/40 p-2 backdrop-blur-sm"
         >
           <div className="grid grid-cols-2 md:grid-cols-4">
             {statMeta.map((stat, i) => {
@@ -75,20 +90,31 @@ export default function StatsRow() {
               const { value, suffix } = isRegions ? { value: raw, suffix: '' } : formatNum(raw);
 
               return (
-                <div
+                <motion.div
                   key={stat.key}
-                  className={`flex flex-col items-center py-6 px-4 ${
-                    i < statMeta.length - 1 ? 'md:border-r md:border-[#E2E8F0]' : ''
-                  } ${i < 2 ? 'border-b md:border-b-0 border-[#E2E8F0]' : ''}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, type: 'spring', stiffness: 300, damping: 25 }}
+                  className={`group relative flex flex-col items-center py-7 px-4 rounded-xl transition-colors duration-300 hover:bg-[#F8FAFC] cursor-default ${
+                    i < statMeta.length - 1 ? 'md:border-r md:border-[#E2E8F0]/50' : ''
+                  } ${i < 2 ? 'border-b md:border-b-0 border-[#E2E8F0]/50' : ''}`}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[#E0F2FE] flex items-center justify-center mb-3">
-                    <HugeiconsIcon icon={stat.icon} size={20} className="text-[#0284C7]" />
-                  </div>
-                  <div className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] leading-none">
+                  <motion.div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110"
+                    style={{ backgroundColor: stat.color + '12' }}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + i * 0.1, type: 'spring', stiffness: 400, damping: 15 }}
+                  >
+                    <HugeiconsIcon icon={stat.icon} size={20} style={{ color: stat.color }} />
+                  </motion.div>
+                  <div className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] leading-none transition-colors duration-300 group-hover:text-[#0284C7]">
                     <Counter target={value} suffix={suffix} />
                   </div>
-                  <div className="text-[13px] text-[#64748B] mt-1.5">{stat.label}</div>
-                </div>
+                  <div className="text-[13px] text-[#64748B] mt-2 font-medium">{stat.label}</div>
+                </motion.div>
               );
             })}
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, memo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ComposableMap,
   Geographies,
@@ -152,10 +152,11 @@ const MapContent = memo(function MapContent() {
                     onMouseLeave={handleMouseLeave}
                     style={{
                       default: {
-                        fill: '#DBEAFE',
+                        fill: isHovered ? '#60A5FA' : '#DBEAFE',
                         stroke: '#93C5FD',
                         strokeWidth: 0.6,
                         outline: 'none',
+                        transition: 'fill 0.3s ease',
                       },
                       hover: {
                         fill: '#60A5FA',
@@ -163,6 +164,7 @@ const MapContent = memo(function MapContent() {
                         strokeWidth: 0.8,
                         outline: 'none',
                         cursor: 'pointer',
+                        filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.3))',
                       },
                       pressed: {
                         fill: '#3B82F6',
@@ -171,7 +173,6 @@ const MapContent = memo(function MapContent() {
                         outline: 'none',
                       },
                     }}
-                    className={isHovered ? '' : ''}
                   />
                 </Link>
               );
@@ -179,30 +180,32 @@ const MapContent = memo(function MapContent() {
           }
         </Geographies>
 
-        {/* City markers */}
-        {CITY_MARKERS.map(({ name, coordinates, projects }) => (
+        {/* City markers with pulsing rings */}
+        {CITY_MARKERS.map(({ name, coordinates, projects }, i) => (
           <Marker key={name} coordinates={coordinates}>
+            {/* Pulsing ring */}
+            <circle r={12} fill="#0284C7" fillOpacity={0} stroke="#0284C7" strokeWidth={1.5} className="animate-pulse-ring" style={{ animationDelay: `${i * 0.4}s` }} />
+            <circle r={12} fill="#0284C7" fillOpacity={0.1} />
             <circle r={6} fill="#0284C7" stroke="#fff" strokeWidth={2} />
-            <circle r={12} fill="#0284C7" fillOpacity={0.15} />
             <text
               textAnchor="middle"
-              y={-16}
+              y={-18}
               style={{
                 fontSize: 11,
                 fontWeight: 600,
                 fill: '#1E3A5F',
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Onest, sans-serif',
               }}
             >
               {name}
             </text>
             <text
               textAnchor="middle"
-              y={-5}
+              y={-6}
               style={{
                 fontSize: 8,
                 fill: '#0284C7',
-                fontFamily: 'Inter, sans-serif',
+                fontFamily: 'Onest, sans-serif',
               }}
             >
               {projects} проектов
@@ -211,39 +214,49 @@ const MapContent = memo(function MapContent() {
         ))}
       </ComposableMap>
 
-      {/* Floating tooltip */}
-      {tooltip && (
-        <div
-          className="fixed z-50 pointer-events-none"
-          style={{ left: tooltip.x + 16, top: tooltip.y - 16 }}
-        >
-          <div className="bg-[#0F172A] text-white px-3.5 py-2 rounded-lg shadow-xl text-[13px] whitespace-nowrap">
-            <div className="font-semibold">{tooltip.name}</div>
-            {tooltip.issue && (
-              <div className="text-white/60 text-[11px] mt-0.5">{tooltip.issue}</div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Floating tooltip with animation */}
+      <AnimatePresence>
+        {tooltip && (
+          <motion.div
+            className="fixed z-50 pointer-events-none"
+            style={{ left: tooltip.x + 16, top: tooltip.y - 16 }}
+            initial={{ opacity: 0, y: 4, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+          >
+            <div className="bg-[#0F172A] text-white px-4 py-2.5 rounded-xl shadow-2xl text-[13px] whitespace-nowrap border border-white/10">
+              <div className="font-semibold">{tooltip.name}</div>
+              {tooltip.issue && (
+                <div className="text-white/60 text-[11px] mt-0.5 flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+                  {tooltip.issue}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 });
 
 export default function RegionMap() {
   return (
-    <section className="py-20 bg-[#F8FAFC]">
+    <section className="py-24 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10"
         >
           <span className="text-caption text-[#0284C7] tracking-widest">ГЕОГРАФИЯ</span>
-          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
+          <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
             Карта проектов
           </h2>
-          <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
+          <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
             Наведите на регион, чтобы увидеть водные проблемы. Нажмите для просмотра проектов.
           </p>
         </motion.div>
@@ -252,26 +265,37 @@ export default function RegionMap() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative bg-white rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-sm"
+          className="relative bg-white rounded-2xl border border-[#E2E8F0]/60 overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)]"
         >
+          {/* Radial gradient overlay for depth */}
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(248,250,252,0.6)_100%)] z-10" />
+
           <div className="p-4 sm:p-6">
             <MapContent />
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap items-center gap-5 px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC]/50">
+          <motion.div
+            className="flex flex-wrap items-center gap-5 px-6 py-4 border-t border-[#E2E8F0]/60 bg-[#F8FAFC]/50"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-3 rounded-sm bg-[#DBEAFE] border border-[#93C5FD]" />
               <span className="text-[12px] text-[#64748B]">Регион</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[#0284C7]" />
+              <div className="w-3 h-3 rounded-full bg-[#0284C7] relative">
+                <div className="absolute inset-0 rounded-full bg-[#0284C7] animate-ping opacity-30" />
+              </div>
               <span className="text-[12px] text-[#64748B]">Города респ. значения</span>
             </div>
-            <div className="text-[12px] text-[#64748B] ml-auto">
+            <div className="text-[12px] text-[#64748B] ml-auto font-medium">
               20 регионов
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
