@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  phone     String    @unique
+  name      String?
+  role      Role      @default(STUDENT)
+  createdAt DateTime  @default(now())
+  projects  Project[]
+  votes     Vote[]
+  otpCode   String?
+  otpExpiry DateTime?
+}
+
+model Project {
+  id           String        @id @default(cuid())
+  title        String
+  description  String        @db.Text
+  type         ProjectType
+  fileUrl      String?
+  videoUrl     String?
+  thumbnailUrl String?
+  status       ProjectStatus @default(PENDING)
+  authorId     String
+  author       User          @relation(fields: [authorId], references: [id])
+  schoolName   String
+  region       Region
+  teacherName  String
+  grade        Int
+  juryScore    Int?
+  juryComment  String?       @db.Text
+  createdAt    DateTime      @default(now())
+  votes        Vote[]
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, userId])
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  JURY
+  ADMIN
+}
+
+enum ProjectType {
+  VIDEO
+  RESEARCH
+  ART
+  INVENTION
+  APP
+  OTHER
+}
+
+enum ProjectStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  WINNER
+}
+
+enum Region {
+  ASTANA
+  ALMATY
+  SHYMKENT
+  AKTOBE
+  KARAGANDA
+  MANGYSTAU
+  TURKESTAN
+  ZHAMBYL
+  ALMATY_REGION
+  ATYRAU
+  AKTAU
+  PAVLODAR
+  SEMEY
+  TALDYKORGAN
+  KYZYLORDA
+  TARAZ
+  PETROPAVLOVSK
+  ORAL
+  KOSTANAY
+}

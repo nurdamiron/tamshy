@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "projects": "Projects",
+    "regions": "Regions",
+    "leaders": "Leaders",
+    "submit": "Submit Project"
+  },
+  "hero": {
+    "badge": "Submissions open",
+    "title": "Saving water together",
+    "subtitle": "National water project competition for students of Kazakhstan. 55+ schools, 14 regions.",
+    "submitBtn": "Submit Project",
+    "viewBtn": "View Projects"
+  },
+  "stats": {
+    "schools": "Schools",
+    "regions": "Regions",
+    "projects": "Projects",
+    "votes": "Votes"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "All water projects by students of Kazakhstan",
+    "search": "Search by title...",
+    "allTypes": "All types",
+    "allRegions": "All regions",
+    "new": "Newest",
+    "popular": "Popular",
+    "winners": "Winners",
+    "notFound": "No projects found",
+    "changeFilters": "Try changing your filters"
+  },
+  "submit": {
+    "step1": "Login",
+    "step2": "About you",
+    "step3": "About project",
+    "step4": "Upload",
+    "step5": "Done",
+    "phoneLabel": "Phone number",
+    "getCode": "Get code",
+    "smsCode": "SMS code",
+    "confirm": "Confirm",
+    "resend": "Resend code",
+    "name": "Full name",
+    "grade": "Grade",
+    "school": "School",
+    "region": "Region",
+    "teacher": "Teacher name",
+    "projectType": "Project type",
+    "projectTitle": "Project title",
+    "projectDesc": "Project description",
+    "minChars": "Minimum 100 characters",
+    "upload": "File upload",
+    "dragDrop": "Drag file here or",
+    "clickToSelect": "click to select",
+    "maxSize": "PDF, JPG, PNG, MP4, MOV — up to 100 MB",
+    "orLink": "OR",
+    "videoLink": "Video link",
+    "back": "← Back",
+    "next": "Next →",
+    "submitProject": "Submit project",
+    "success": "Project submitted!",
+    "successMsg": "Your project has been submitted for review. The jury will review it within 3 business days."
+  },
+  "common": {
+    "votes": "votes",
+    "vote": "Vote",
+    "voted": "You voted",
+    "author": "Author",
+    "class": "grade",
+    "allProjects": "All projects"
+  },
+  "types": {
+    "VIDEO": "Video",
+    "RESEARCH": "Research",
+    "ART": "Art",
+    "INVENTION": "Invention",
+    "APP": "App",
+    "OTHER": "Other"
+  },
+  "footer": {
+    "description": "National water project competition for students of Kazakhstan.",
+    "platform": "Platform",
+    "partners": "Partners",
+    "rights": "All rights reserved.",
+    "dev": "Developed by"
+  }
+}
