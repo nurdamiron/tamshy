@@ -50,6 +50,21 @@ const placeholderProjects = [
   },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 260, damping: 20 },
+  },
+};
+
 export default function FeaturedProjects() {
   return (
     <section className="py-20 bg-[#F8FAFC]">
@@ -76,27 +91,32 @@ export default function FeaturedProjects() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {placeholderProjects.map((project, i) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
+          {placeholderProjects.map((project) => (
+            <motion.div key={project.id} variants={cardVariants}>
               <ProjectCard project={project} />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mt-8 text-center sm:hidden">
+        <motion.div
+          className="mt-8 text-center sm:hidden"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
           <Link href="/projects">
             <Button variant="secondary" className="w-full">
               Смотреть все проекты
             </Button>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -13,6 +13,20 @@ const partners = [
   { short: 'alashed.kz', icon: CodeIcon },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 20 },
+  },
+};
+
 export default function Partners() {
   return (
     <section className="py-20 bg-[#F8FAFC]">
@@ -27,32 +41,36 @@ export default function Partners() {
           <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
             При поддержке
           </h2>
-          <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
-            Государственные и международные организации
-          </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {partners.map((partner, i) => (
-            <motion.div
-              key={partner.short}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
-              className="group"
-            >
-              <div className="bg-white rounded-xl border border-[#E2E8F0] p-5 h-full flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-[#0284C7]/30">
-                <div className="w-12 h-12 rounded-xl bg-[#E0F2FE] flex items-center justify-center mb-3 transition-colors group-hover:bg-[#0284C7]/15">
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {partners.map((partner) => (
+            <motion.div key={partner.short} variants={itemVariants} className="group">
+              <motion.div
+                className="bg-white rounded-xl border border-[#E2E8F0] p-5 h-full flex flex-col items-center text-center"
+                whileHover={{ y: -4, borderColor: '#93C5FD', boxShadow: '0 8px 24px rgba(2,132,199,0.08)' }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+              >
+                <motion.div
+                  className="w-12 h-12 rounded-xl bg-[#E0F2FE] flex items-center justify-center mb-3"
+                  whileHover={{ rotate: [0, -5, 5, 0], scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <HugeiconsIcon icon={partner.icon} size={24} className="text-[#0284C7]" />
-                </div>
+                </motion.div>
                 <p className="text-[13px] font-semibold text-[#0F172A] leading-tight">
                   {partner.short}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

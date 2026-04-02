@@ -227,33 +227,6 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Floating stats - right side on desktop */}
-        <motion.div
-          className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2"
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.9, duration: 0.6 }}
-        >
-          <div className="space-y-4">
-            {[
-              { value: '55+', label: 'школ', delay: 0 },
-              { value: '14', label: 'областей', delay: 0.1 },
-              { value: '500+', label: 'проектов', delay: 0.2 },
-            ].map((stat) => (
-              <motion.div
-                key={stat.label}
-                className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-6 py-4 w-[160px]"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 + stat.delay }}
-                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
-              >
-                <div className="text-[28px] font-bold text-white">{stat.value}</div>
-                <div className="text-[13px] text-white/50">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
 
       <WaveDecoration />

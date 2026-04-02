@@ -24,7 +24,7 @@ const testimonials = [
     role: 'Учитель биологии, школа No5 Кызылорда',
     text: 'Тамшы вдохновил моих учеников. Трое из них создали макет системы капельного полива для школьного сада. Проект работает!',
     region: 'Кызылорда',
-    avatarColor: '#F5A623',
+    avatarColor: '#F59E0B',
     initial: 'М',
   },
   {
@@ -36,6 +36,20 @@ const testimonials = [
     initial: 'А',
   },
 ];
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 24 },
+  },
+};
 
 export default function Testimonials() {
   return (
@@ -52,21 +66,24 @@ export default function Testimonials() {
             Что говорят участники
           </h2>
           <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
-            Реальные истории школьников и учителей из разных регионов
+            Реальные истории школьников и учителей
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <div className="bg-[#F8FAFC] rounded-2xl p-6 h-full border border-[#E2E8F0]/60">
-                {/* Quote */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+        >
+          {testimonials.map((t) => (
+            <motion.div key={t.name} variants={cardVariants}>
+              <motion.div
+                className="bg-[#F8FAFC] rounded-2xl p-6 h-full border border-[#E2E8F0]/60"
+                whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}
+                transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+              >
                 <div className="relative">
                   <svg className="absolute -top-1 -left-1 opacity-[0.07]" width="32" height="32" viewBox="0 0 24 24" fill="#0284C7">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -76,14 +93,14 @@ export default function Testimonials() {
                   </p>
                 </div>
 
-                {/* Author */}
                 <div className="flex items-center gap-3 mt-5 pt-5 border-t border-[#E2E8F0]/60">
-                  <div
+                  <motion.div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-white text-[14px] font-bold shrink-0"
                     style={{ backgroundColor: t.avatarColor }}
+                    whileHover={{ scale: 1.1 }}
                   >
                     {t.initial}
-                  </div>
+                  </motion.div>
                   <div className="min-w-0">
                     <div className="text-[14px] font-semibold text-[#0F172A]">{t.name}</div>
                     <div className="text-[12px] text-[#64748B] truncate">{t.role}</div>
@@ -94,10 +111,10 @@ export default function Testimonials() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

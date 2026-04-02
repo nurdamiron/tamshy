@@ -2,82 +2,68 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Video01Icon, File01Icon, Image01Icon, BulbIcon, SmartPhone01Icon } from '@hugeicons/core-free-icons';
 
 const categories = [
   {
     type: 'VIDEO',
     title: 'Видео',
-    desc: 'Документальные фильмы, ролики и репортажи о водных проблемах',
+    desc: 'Документальные фильмы и репортажи о водных проблемах',
     count: '120+',
     gradient: 'from-blue-500 to-blue-600',
-    lightBg: 'bg-blue-50',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-        <polygon points="23 7 16 12 23 17 23 7" />
-        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-      </svg>
-    ),
+    icon: Video01Icon,
   },
   {
     type: 'RESEARCH',
     title: 'Исследования',
-    desc: 'Научные работы, анализ качества воды и экологические исследования',
+    desc: 'Научные работы, анализ качества воды и экологии',
     count: '85+',
     gradient: 'from-purple-500 to-purple-600',
-    lightBg: 'bg-purple-50',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
+    icon: File01Icon,
   },
   {
     type: 'ART',
     title: 'Арт / Плакаты',
-    desc: 'Рисунки, плакаты и визуальные материалы на тему воды',
+    desc: 'Рисунки и визуальные материалы на тему воды',
     count: '150+',
     gradient: 'from-amber-500 to-orange-500',
-    lightBg: 'bg-amber-50',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-        <circle cx="13.5" cy="6.5" r="2.5" />
-        <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z" />
-        <path d="M21 15l-5-5L5 21" />
-      </svg>
-    ),
+    icon: Image01Icon,
   },
   {
     type: 'INVENTION',
     title: 'Изобретения',
-    desc: 'Макеты, устройства и технические решения для водосбережения',
+    desc: 'Устройства и технические решения водосбережения',
     count: '45+',
     gradient: 'from-orange-500 to-red-500',
-    lightBg: 'bg-orange-50',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-        <path d="M9 18h6M10 22h4M12 2v1M4.22 4.22l.7.7M1 12h1M4.22 19.78l.7-.7M20.78 19.78l-.7-.7M23 12h-1M19.78 4.22l-.7.7" />
-        <path d="M18 12a6 6 0 11-12 0 6 6 0 0112 0z" />
-      </svg>
-    ),
+    icon: BulbIcon,
   },
   {
     type: 'APP',
     title: 'Приложения',
-    desc: 'Мобильные приложения и веб-сайты для мониторинга и экономии воды',
+    desc: 'Мобильные приложения для мониторинга воды',
     count: '30+',
     gradient: 'from-teal-500 to-emerald-500',
-    lightBg: 'bg-teal-50',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-        <rect x="5" y="2" width="14" height="20" rx="2" />
-        <line x1="12" y1="18" x2="12" y2="18" strokeWidth="3" strokeLinecap="round" />
-      </svg>
-    ),
+    icon: SmartPhone01Icon,
   },
 ];
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 24 },
+  },
+};
 
 export default function ProjectCategories() {
   return (
@@ -94,31 +80,37 @@ export default function ProjectCategories() {
             Виды проектов
           </h2>
           <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
-            Выбери формат, который тебе ближе — от видео до изобретений
+            Выбери формат, который тебе ближе
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {categories.map((cat, i) => (
-            <motion.div
-              key={cat.type}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-            >
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+        >
+          {categories.map((cat) => (
+            <motion.div key={cat.type} variants={itemVariants}>
               <Link href={`/projects?type=${cat.type}`}>
-                <div className="group relative overflow-hidden rounded-2xl border border-[#E2E8F0] h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-transparent cursor-pointer">
-                  {/* Header with gradient */}
+                <motion.div
+                  className="group relative overflow-hidden rounded-2xl border border-[#E2E8F0] h-full cursor-pointer bg-white"
+                  whileHover={{ y: -6, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}
+                  transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
+                >
                   <div className={`bg-gradient-to-br ${cat.gradient} p-5 pb-8`}>
-                    <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
-                      {cat.icon}
-                    </div>
+                    <motion.div
+                      className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3"
+                      whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <HugeiconsIcon icon={cat.icon} size={24} className="text-white" />
+                    </motion.div>
                     <div className="text-[22px] font-bold text-white">{cat.count}</div>
                     <div className="text-[12px] text-white/60">проектов</div>
                   </div>
 
-                  {/* Content */}
                   <div className="bg-white p-5 -mt-3 rounded-t-2xl relative">
                     <h3 className="text-[16px] font-semibold text-[#0F172A] mb-1">
                       {cat.title}
@@ -126,18 +118,23 @@ export default function ProjectCategories() {
                     <p className="text-[13px] text-[#64748B] leading-relaxed">
                       {cat.desc}
                     </p>
-                    <div className="mt-3 flex items-center text-[13px] text-[#0284C7] font-medium group-hover:gap-2 transition-all">
+                    <div className="mt-3 flex items-center text-[13px] text-[#0284C7] font-medium">
                       Смотреть
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="ml-1 transition-transform group-hover:translate-x-1">
+                      <motion.svg
+                        width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                        className="ml-1"
+                        initial={{ x: 0 }}
+                        whileHover={{ x: 4 }}
+                      >
                         <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
+                      </motion.svg>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </Link>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
