@@ -38,28 +38,30 @@ export default function RegionMap() {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-20 bg-[#F8FAF9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          className="text-center mb-10"
         >
-          <h2 className="text-[24px] font-semibold text-[#111B17] mb-2">
-            География проектов
+          <span className="text-caption text-[#1D9E75] tracking-widest">ГЕОГРАФИЯ</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#111B17] mt-3">
+            Карта проектов
           </h2>
-          <p className="text-[14px] text-[#5A7A6E] mb-8">
-            Проекты из всех регионов Казахстана. Точки отображают ключевые водные проблемы регионов.
+          <p className="text-[15px] text-[#5A7A6E] mt-2 max-w-lg mx-auto">
+            Водные проблемы и проекты из всех регионов Казахстана
           </p>
         </motion.div>
 
-        <div className="relative w-full bg-[#F8FAF9] rounded-xl border border-[#E2EDE9] overflow-hidden p-4">
-          <svg
-            viewBox="0 0 600 320"
-            className="w-full h-auto"
-            fill="none"
-          >
-            {/* Realistic Kazakhstan border */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative w-full bg-white rounded-2xl border border-[#E2EDE9] overflow-hidden p-4 sm:p-6 shadow-sm"
+        >
+          <svg viewBox="0 0 600 320" className="w-full h-auto" fill="none">
             <path
               d="M45,180 L50,160 L55,140 L65,120 L80,100 L100,85 L120,75 L140,65 L165,58
                  L190,52 L210,48 L230,45 L255,42 L280,40 L305,38 L325,40 L345,38
@@ -74,26 +76,21 @@ export default function RegionMap() {
               fill="#E1F5EE"
               stroke="#1D9E75"
               strokeWidth="1.5"
-              strokeOpacity="0.4"
+              strokeOpacity="0.3"
             />
 
-            {/* Major rivers - simplified */}
-            <path d="M240,240 Q260,200 280,160 Q300,120 320,90" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.2" strokeDasharray="4 3" />
-            <path d="M460,80 Q470,120 480,160 Q490,190 500,218" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.2" strokeDasharray="4 3" />
-            <path d="M95,165 Q140,170 180,160 Q220,150 260,140" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.2" strokeDasharray="4 3" />
+            <path d="M240,240 Q260,200 280,160 Q300,120 320,90" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.15" strokeDasharray="4 3" />
+            <path d="M460,80 Q470,120 480,160 Q490,190 500,218" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.15" strokeDasharray="4 3" />
+            <path d="M95,165 Q140,170 180,160 Q220,150 260,140" stroke="#1D9E75" strokeWidth="0.8" strokeOpacity="0.15" strokeDasharray="4 3" />
 
-            {/* Aral Sea remnant */}
-            <ellipse cx="215" cy="255" rx="18" ry="12" fill="#1D9E75" fillOpacity="0.08" stroke="#1D9E75" strokeWidth="0.5" strokeOpacity="0.2" />
-            <text x="215" y="275" textAnchor="middle" className="text-[7px] fill-[#5A7A6E]/50">Арал</text>
+            <ellipse cx="215" cy="255" rx="18" ry="12" fill="#1D9E75" fillOpacity="0.06" stroke="#1D9E75" strokeWidth="0.5" strokeOpacity="0.15" />
+            <text x="215" y="275" textAnchor="middle" className="text-[7px] fill-[#5A7A6E]/40">Арал</text>
 
-            {/* Caspian Sea edge */}
-            <path d="M40,140 Q35,170 38,200 Q40,230 45,260" stroke="#1D9E75" strokeWidth="1" strokeOpacity="0.15" fill="none" />
+            <path d="M40,140 Q35,170 38,200 Q40,230 45,260" stroke="#1D9E75" strokeWidth="1" strokeOpacity="0.1" fill="none" />
 
-            {/* Balkhash */}
-            <ellipse cx="490" cy="180" rx="25" ry="8" fill="#1D9E75" fillOpacity="0.08" stroke="#1D9E75" strokeWidth="0.5" strokeOpacity="0.2" />
-            <text x="490" y="195" textAnchor="middle" className="text-[7px] fill-[#5A7A6E]/50">Балхаш</text>
+            <ellipse cx="490" cy="180" rx="25" ry="8" fill="#1D9E75" fillOpacity="0.06" stroke="#1D9E75" strokeWidth="0.5" strokeOpacity="0.15" />
+            <text x="490" y="195" textAnchor="middle" className="text-[7px] fill-[#5A7A6E]/40">Балхаш</text>
 
-            {/* Region dots */}
             {regionPoints.map((point) => {
               const isHovered = hovered === point.region;
               return (
@@ -103,16 +100,14 @@ export default function RegionMap() {
                     onMouseEnter={() => setHovered(point.region)}
                     onMouseLeave={() => setHovered(null)}
                   >
-                    {/* Pulse ring */}
                     <circle
                       cx={point.x}
                       cy={point.y}
                       r={isHovered ? 14 : 10}
                       fill="#1D9E75"
-                      fillOpacity={isHovered ? 0.12 : 0.08}
+                      fillOpacity={isHovered ? 0.12 : 0.06}
                       className="transition-all duration-300"
                     />
-                    {/* Dot */}
                     <circle
                       cx={point.x}
                       cy={point.y}
@@ -120,7 +115,6 @@ export default function RegionMap() {
                       fill={isHovered ? '#0F6E56' : '#1D9E75'}
                       className="transition-all duration-300"
                     />
-                    {/* City name */}
                     <text
                       x={point.x}
                       y={point.y + (isHovered ? 22 : 16)}
@@ -134,7 +128,6 @@ export default function RegionMap() {
                       {regionLabels[point.region]}
                     </text>
 
-                    {/* Issue tooltip on hover */}
                     {isHovered && point.issue && (
                       <>
                         <rect
@@ -142,11 +135,11 @@ export default function RegionMap() {
                           y={point.y - 32}
                           width={130}
                           height={20}
-                          rx={4}
+                          rx={6}
                           fill="white"
                           stroke="#E2EDE9"
                           strokeWidth="0.5"
-                          filter="url(#shadow)"
+                          filter="url(#tooltipShadow)"
                         />
                         <text
                           x={point.x}
@@ -163,30 +156,28 @@ export default function RegionMap() {
               );
             })}
 
-            {/* Shadow filter for tooltips */}
             <defs>
-              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.1" />
+              <filter id="tooltipShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="1" stdDeviation="2" floodOpacity="0.08" />
               </filter>
             </defs>
           </svg>
 
-          {/* Legend */}
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[#E2EDE9]">
+          <div className="flex flex-wrap items-center gap-5 mt-4 pt-4 border-t border-[#E2EDE9]">
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[#1D9E75]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#1D9E75]" />
               <span className="text-[12px] text-[#5A7A6E]">Регион с проектами</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-6 h-[2px] bg-[#1D9E75]/20" style={{ borderTop: '2px dashed rgba(29,158,117,0.2)' }} />
-              <span className="text-[12px] text-[#5A7A6E]">Основные реки</span>
+              <div className="w-5 border-t border-dashed border-[#1D9E75]/30" />
+              <span className="text-[12px] text-[#5A7A6E]">Реки</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[#1D9E75]/10 border border-[#1D9E75]/20" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#1D9E75]/10 border border-[#1D9E75]/20" />
               <span className="text-[12px] text-[#5A7A6E]">Водоёмы</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
