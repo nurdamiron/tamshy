@@ -81,7 +81,7 @@ const categories = [
 
 export default function ProjectCategories() {
   return (
-    <section className="py-20 bg-[#F8FAF9]">
+    <section className="py-20 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -89,11 +89,11 @@ export default function ProjectCategories() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <span className="text-caption text-[#1D9E75] tracking-widest">КАТЕГОРИИ</span>
-          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#111B17] mt-3">
+          <span className="text-caption text-[#0284C7] tracking-widest">КАТЕГОРИИ</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
             Виды проектов
           </h2>
-          <p className="text-[15px] text-[#5A7A6E] mt-2 max-w-lg mx-auto">
+          <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
             Выбери формат, который тебе ближе — от видео до изобретений
           </p>
         </motion.div>
@@ -108,7 +108,7 @@ export default function ProjectCategories() {
               transition={{ delay: i * 0.08 }}
             >
               <Link href={`/projects?type=${cat.type}`}>
-                <div className="group relative overflow-hidden rounded-2xl border border-[#E2EDE9] h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-transparent cursor-pointer">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#E2E8F0] h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-transparent cursor-pointer">
                   {/* Header with gradient */}
                   <div className={`bg-gradient-to-br ${cat.gradient} p-5 pb-8`}>
                     <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
@@ -120,13 +120,13 @@ export default function ProjectCategories() {
 
                   {/* Content */}
                   <div className="bg-white p-5 -mt-3 rounded-t-2xl relative">
-                    <h3 className="text-[16px] font-semibold text-[#111B17] mb-1">
+                    <h3 className="text-[16px] font-semibold text-[#0F172A] mb-1">
                       {cat.title}
                     </h3>
-                    <p className="text-[13px] text-[#5A7A6E] leading-relaxed">
+                    <p className="text-[13px] text-[#64748B] leading-relaxed">
                       {cat.desc}
                     </p>
-                    <div className="mt-3 flex items-center text-[13px] text-[#1D9E75] font-medium group-hover:gap-2 transition-all">
+                    <div className="mt-3 flex items-center text-[13px] text-[#0284C7] font-medium group-hover:gap-2 transition-all">
                       Смотреть
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="ml-1 transition-transform group-hover:translate-x-1">
                         <path d="M5 12h14M12 5l7 7-7 7" />

@@ -53,10 +53,10 @@ export default function LeaderboardPage() {
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="card p-4 animate-pulse flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#E2EDE9]" />
+              <div className="w-10 h-10 rounded-full bg-[#E2E8F0]" />
               <div className="flex-1">
-                <div className="h-4 w-3/4 bg-[#E2EDE9] rounded mb-2" />
-                <div className="h-3 w-1/3 bg-[#E2EDE9] rounded" />
+                <div className="h-4 w-3/4 bg-[#E2E8F0] rounded mb-2" />
+                <div className="h-3 w-1/3 bg-[#E2E8F0] rounded" />
               </div>
             </div>
           ))}
@@ -78,16 +78,16 @@ export default function LeaderboardPage() {
                       ${i === 0 ? 'bg-amber-100 text-amber-700' :
                         i === 1 ? 'bg-gray-100 text-gray-600' :
                         i === 2 ? 'bg-orange-100 text-orange-700' :
-                        'bg-[#F8FAF9] text-[#5A7A6E]'}`}>
+                        'bg-[#F8FAFC] text-[#64748B]'}`}>
                       {i + 1}
                     </div>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[15px] font-semibold text-[#111B17] truncate">
+                      <h3 className="text-[15px] font-semibold text-[#0F172A] truncate">
                         {project.title}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1 text-[12px] text-[#5A7A6E]">
+                      <div className="flex items-center gap-2 mt-1 text-[12px] text-[#64748B]">
                         <span>{project.author?.name || 'Автор'}</span>
                         <span>·</span>
                         <span>{regionLabels[project.region]}</span>
@@ -104,10 +104,10 @@ export default function LeaderboardPage() {
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-[18px] font-bold text-[#1D9E75]">
+                      <div className="text-[18px] font-bold text-[#0284C7]">
                         {project._count.votes}
                       </div>
-                      <div className="text-[11px] text-[#5A7A6E]">голосов</div>
+                      <div className="text-[11px] text-[#64748B]">голосов</div>
                     </div>
                   </div>
                 </Card>
@@ -117,7 +117,7 @@ export default function LeaderboardPage() {
 
           {projects.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-[16px] text-[#5A7A6E]">Пока нет проектов</p>
+              <p className="text-[16px] text-[#64748B]">Пока нет проектов</p>
             </div>
           )}
         </div>

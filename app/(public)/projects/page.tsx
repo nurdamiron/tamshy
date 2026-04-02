@@ -142,7 +142,7 @@ export default function ProjectsPage() {
       />
 
       {/* Filters */}
-      <div className="sticky top-16 z-30 bg-[#F8FAF9]/80 backdrop-blur-md py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 mb-6">
+      <div className="sticky top-16 z-30 bg-[#F8FAFC]/80 backdrop-blur-md py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 mb-6">
         <div className="flex flex-wrap gap-3">
           <div className="w-full sm:w-auto sm:flex-1 sm:max-w-xs">
             <Input
@@ -191,12 +191,12 @@ export default function ProjectsPage() {
         </div>
       ) : !loading ? (
         <div className="text-center py-20">
-          <svg className="mx-auto mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E2EDE9" strokeWidth="1.5">
+          <svg className="mx-auto mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E2E8F0" strokeWidth="1.5">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
-          <p className="text-[16px] text-[#5A7A6E]">Проекты не найдены</p>
-          <p className="text-[13px] text-[#5A7A6E]/60 mt-1">Попробуйте изменить фильтры</p>
+          <p className="text-[16px] text-[#64748B]">Проекты не найдены</p>
+          <p className="text-[13px] text-[#64748B]/60 mt-1">Попробуйте изменить фильтры</p>
         </div>
       ) : null}
 
@@ -205,14 +205,14 @@ export default function ProjectsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="card p-5 animate-pulse">
-              <div className="h-5 w-20 bg-[#E2EDE9] rounded-full mb-3" />
-              <div className="h-5 w-3/4 bg-[#E2EDE9] rounded mb-2" />
-              <div className="h-4 w-full bg-[#E2EDE9] rounded mb-1" />
-              <div className="h-4 w-2/3 bg-[#E2EDE9] rounded mb-4" />
-              <div className="h-px bg-[#E2EDE9] mb-3" />
+              <div className="h-5 w-20 bg-[#E2E8F0] rounded-full mb-3" />
+              <div className="h-5 w-3/4 bg-[#E2E8F0] rounded mb-2" />
+              <div className="h-4 w-full bg-[#E2E8F0] rounded mb-1" />
+              <div className="h-4 w-2/3 bg-[#E2E8F0] rounded mb-4" />
+              <div className="h-px bg-[#E2E8F0] mb-3" />
               <div className="flex justify-between">
-                <div className="h-4 w-24 bg-[#E2EDE9] rounded" />
-                <div className="h-4 w-12 bg-[#E2EDE9] rounded" />
+                <div className="h-4 w-24 bg-[#E2E8F0] rounded" />
+                <div className="h-4 w-12 bg-[#E2E8F0] rounded" />
               </div>
             </div>
           ))}

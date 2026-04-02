@@ -2,14 +2,14 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#111B17] text-white">
+    <footer className="bg-[#0F172A] text-white">
       {/* Top section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-[#1D9E75] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-[#0284C7] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="white" />
                 </svg>
@@ -135,7 +135,7 @@ export default function Footer() {
               href="https://alashed.kz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#1D9E75] hover:text-[#2BBFA0] transition-colors"
+              className="text-[#0284C7] hover:text-[#38BDF8] transition-colors"
             >
               alashed.kz
             </a>

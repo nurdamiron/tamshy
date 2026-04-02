@@ -169,7 +169,7 @@ export default function JuryPage() {
         ].map((stat) => (
           <Card key={stat.label} hover={false} padding="md">
             <div className={`text-[28px] font-bold ${stat.color}`}>{stat.value}</div>
-            <div className="text-[13px] text-[#5A7A6E] mt-1">{stat.label}</div>
+            <div className="text-[13px] text-[#64748B] mt-1">{stat.label}</div>
           </Card>
         ))}
       </div>
@@ -192,14 +192,14 @@ export default function JuryPage() {
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="card p-4 animate-pulse">
-              <div className="h-5 w-3/4 bg-[#E2EDE9] rounded mb-2" />
-              <div className="h-4 w-1/2 bg-[#E2EDE9] rounded" />
+              <div className="h-5 w-3/4 bg-[#E2E8F0] rounded mb-2" />
+              <div className="h-4 w-1/2 bg-[#E2E8F0] rounded" />
             </div>
           ))}
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-[16px] text-[#5A7A6E]">Нет проектов для отображения</p>
+          <p className="text-[16px] text-[#64748B]">Нет проектов для отображения</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -221,10 +221,10 @@ export default function JuryPage() {
                         {getStatusLabel(project.status)}
                       </Badge>
                     </div>
-                    <h3 className="text-[15px] font-semibold text-[#111B17] truncate">
+                    <h3 className="text-[15px] font-semibold text-[#0F172A] truncate">
                       {project.title}
                     </h3>
-                    <div className="text-[12px] text-[#5A7A6E] mt-1">
+                    <div className="text-[12px] text-[#64748B] mt-1">
                       {project.author?.name || 'Автор'} · {regionLabels[project.region]} · {project.schoolName} · {project.grade} класс
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export default function JuryPage() {
                     {project.juryScore && (
                       <span className="text-[14px] font-bold text-[#F5A623]">{project.juryScore}/10</span>
                     )}
-                    <span className="text-[13px] text-[#5A7A6E]">{project._count.votes} голосов</span>
+                    <span className="text-[13px] text-[#64748B]">{project._count.votes} голосов</span>
                     <Button size="sm" variant="secondary" onClick={() => openScoreModal(project)}>
                       Оценить
                     </Button>
@@ -250,21 +250,21 @@ export default function JuryPage() {
         {selectedProject && (
           <div className="space-y-4">
             <div>
-              <h4 className="text-[14px] font-medium text-[#111B17] mb-1">{selectedProject.title}</h4>
-              <p className="text-[13px] text-[#5A7A6E] line-clamp-3">{selectedProject.description}</p>
+              <h4 className="text-[14px] font-medium text-[#0F172A] mb-1">{selectedProject.title}</h4>
+              <p className="text-[13px] text-[#64748B] line-clamp-3">{selectedProject.description}</p>
             </div>
 
             {(selectedProject.fileUrl || selectedProject.videoUrl) && (
               <div className="flex gap-2">
                 {selectedProject.fileUrl && (
                   <a href={selectedProject.fileUrl} target="_blank" rel="noopener noreferrer"
-                    className="text-[13px] text-[#1D9E75] hover:underline">
+                    className="text-[13px] text-[#0284C7] hover:underline">
                     Открыть файл
                   </a>
                 )}
                 {selectedProject.videoUrl && (
                   <a href={selectedProject.videoUrl} target="_blank" rel="noopener noreferrer"
-                    className="text-[13px] text-[#1D9E75] hover:underline">
+                    className="text-[13px] text-[#0284C7] hover:underline">
                     Смотреть видео
                   </a>
                 )}
@@ -272,7 +272,7 @@ export default function JuryPage() {
             )}
 
             <div>
-              <label className="text-[13px] font-medium text-[#111B17] block mb-1.5">
+              <label className="text-[13px] font-medium text-[#0F172A] block mb-1.5">
                 Оценка (1-10)
               </label>
               <input
@@ -281,7 +281,7 @@ export default function JuryPage() {
                 max="10"
                 value={score}
                 onChange={(e) => setScore(e.target.value)}
-                className="h-[44px] w-full px-3 rounded-lg border border-[#E2EDE9] text-[24px] font-bold text-center text-[#1D9E75] focus:outline-none focus:ring-2 focus:ring-[#1D9E75]/20 focus:border-[#1D9E75]"
+                className="h-[44px] w-full px-3 rounded-lg border border-[#E2E8F0] text-[24px] font-bold text-center text-[#0284C7] focus:outline-none focus:ring-2 focus:ring-[#0284C7]/20 focus:border-[#0284C7]"
               />
             </div>
 

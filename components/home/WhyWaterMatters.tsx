@@ -69,7 +69,7 @@ export default function WhyWaterMatters() {
               {[1, 2, 3, 4].map((ring) => (
                 <motion.div
                   key={ring}
-                  className="absolute rounded-full border border-[#1D9E75]"
+                  className="absolute rounded-full border border-[#0284C7]"
                   style={{
                     inset: `${ring * 12}%`,
                     opacity: 0.06 + ring * 0.04,
@@ -90,7 +90,7 @@ export default function WhyWaterMatters() {
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <div className="w-full h-full bg-gradient-to-b from-[#1D9E75]/20 to-[#2BBFA0]/10 rounded-full flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-b from-[#0284C7]/20 to-[#38BDF8]/10 rounded-full flex items-center justify-center">
                   <svg width="64" height="90" viewBox="0 0 20 28" fill="none">
                     <path
                       d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z"
@@ -98,8 +98,8 @@ export default function WhyWaterMatters() {
                     />
                     <defs>
                       <linearGradient id="dropGrad" x1="10" y1="0" x2="10" y2="28">
-                        <stop offset="0%" stopColor="#2BBFA0" />
-                        <stop offset="100%" stopColor="#0F6E56" />
+                        <stop offset="0%" stopColor="#38BDF8" />
+                        <stop offset="100%" stopColor="#0369A1" />
                       </linearGradient>
                     </defs>
                   </svg>
@@ -141,13 +141,13 @@ export default function WhyWaterMatters() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <span className="text-caption text-[#1D9E75] tracking-widest">ПОЧЕМУ ЭТО ВАЖНО</span>
-            <h2 className="text-[28px] sm:text-[36px] font-bold text-[#111B17] mt-3 leading-tight">
+            <span className="text-caption text-[#0284C7] tracking-widest">ПОЧЕМУ ЭТО ВАЖНО</span>
+            <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3 leading-tight">
               Казахстан -- одна из самых{' '}
-              <span className="text-[#1D9E75]">водоуязвимых</span>{' '}
+              <span className="text-[#0284C7]">водоуязвимых</span>{' '}
               стран мира
             </h2>
-            <p className="text-[15px] text-[#5A7A6E] mt-4 leading-relaxed">
+            <p className="text-[15px] text-[#64748B] mt-4 leading-relaxed">
               Наша страна занимает последнее место в Центральной Азии по обеспеченности
               водными ресурсами на душу населения. Каждый проект школьника -- это шаг к
               решению этой проблемы.
@@ -166,7 +166,7 @@ export default function WhyWaterMatters() {
                   <div className="shrink-0 w-[80px] text-[28px] font-bold leading-none pt-0.5" style={{ color: fact.dotColor }}>
                     <AnimatedNumber target={fact.value} suffix={fact.suffix} />
                   </div>
-                  <p className="text-[14px] text-[#5A7A6E] leading-relaxed">
+                  <p className="text-[14px] text-[#64748B] leading-relaxed">
                     {fact.label}
                   </p>
                 </motion.div>

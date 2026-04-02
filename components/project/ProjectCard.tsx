@@ -118,31 +118,31 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </Badge>
           </div>
 
-          <h3 className="text-[15px] font-semibold text-[#111B17] mb-2 line-clamp-2 leading-snug group-hover:text-[#1D9E75] transition-colors">
+          <h3 className="text-[15px] font-semibold text-[#0F172A] mb-2 line-clamp-2 leading-snug group-hover:text-[#0284C7] transition-colors">
             {project.title}
           </h3>
 
-          <p className="text-[13px] text-[#5A7A6E] line-clamp-2 mb-4 flex-1 leading-relaxed">
+          <p className="text-[13px] text-[#64748B] line-clamp-2 mb-4 flex-1 leading-relaxed">
             {project.description}
           </p>
 
           {/* Meta */}
-          <div className="flex items-center justify-between text-[12px] text-[#5A7A6E] pt-3 border-t border-[#E2EDE9]">
+          <div className="flex items-center justify-between text-[12px] text-[#64748B] pt-3 border-t border-[#E2E8F0]">
             <div className="flex items-center gap-2.5">
               <span className="flex items-center gap-1">
-                <div className="w-5 h-5 rounded-full bg-[#E1F5EE] flex items-center justify-center">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2.5">
+                <div className="w-5 h-5 rounded-full bg-[#E0F2FE] flex items-center justify-center">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5">
                     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
                 {project.authorName || 'Автор'}
               </span>
-              <span className="text-[#E2EDE9]">|</span>
+              <span className="text-[#E2E8F0]">|</span>
               <span>{regionLabels[project.region] || project.region}</span>
             </div>
-            <span className="flex items-center gap-1 font-semibold text-[#1D9E75]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1D9E75" fillOpacity="0.2" stroke="#1D9E75" strokeWidth="1.5">
+            <span className="flex items-center gap-1 font-semibold text-[#0284C7]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#0284C7" fillOpacity="0.2" stroke="#0284C7" strokeWidth="1.5">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
               {project.voteCount}

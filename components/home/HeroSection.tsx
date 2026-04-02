@@ -26,7 +26,7 @@ function WaterDrop({ delay, x, size }: { delay: number; x: string; size: number 
       <svg width={size} height={size * 1.4} viewBox="0 0 20 28" fill="none">
         <path
           d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z"
-          fill="#1D9E75"
+          fill="#0284C7"
           fillOpacity="0.07"
         />
       </svg>
@@ -47,7 +47,7 @@ function WaveDecoration() {
       >
         <motion.path
           d="M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z"
-          fill="#F8FAF9"
+          fill="#F8FAFC"
           animate={{
             d: [
               'M0,60 C240,100 480,20 720,60 C960,100 1200,20 1440,60 L1440,120 L0,120 Z',
@@ -59,7 +59,7 @@ function WaveDecoration() {
         />
         <motion.path
           d="M0,80 C360,110 720,50 1080,80 C1260,95 1380,70 1440,80 L1440,120 L0,120 Z"
-          fill="#F8FAF9"
+          fill="#F8FAFC"
           fillOpacity="0.6"
           animate={{
             d: [
@@ -79,7 +79,7 @@ export default function HeroSection() {
   return (
     <section className="relative overflow-hidden min-h-[600px] sm:min-h-[700px] flex items-center"
       style={{
-        background: 'linear-gradient(135deg, #0F6E56 0%, #1D9E75 30%, #2BBFA0 60%, #E1F5EE 100%)',
+        background: 'linear-gradient(135deg, #0369A1 0%, #0284C7 30%, #38BDF8 60%, #E0F2FE 100%)',
       }}
     >
       {/* Animated falling water drops */}
@@ -189,7 +189,7 @@ export default function HeroSection() {
               transition={{ delay: 0.6 }}
             >
               <Link href="/submit">
-                <button className="h-[52px] px-8 rounded-xl bg-white text-[#0F6E56] font-semibold text-[16px] hover:bg-white/90 transition-all shadow-lg shadow-black/10 flex items-center gap-2 cursor-pointer">
+                <button className="h-[52px] px-8 rounded-xl bg-white text-[#0369A1] font-semibold text-[16px] hover:bg-white/90 transition-all shadow-lg shadow-black/10 flex items-center gap-2 cursor-pointer">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M12 5v14M5 12h14" />
                   </svg>

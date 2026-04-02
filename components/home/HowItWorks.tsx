@@ -10,7 +10,7 @@ const steps = [
     title: 'Зарегистрируйся',
     desc: 'Введи номер телефона и получи код по SMS. Регистрация занимает 30 секунд.',
     icon: SmartPhone01Icon,
-    color: '#1D9E75',
+    color: '#0284C7',
   },
   {
     num: '02',
@@ -45,18 +45,18 @@ export default function HowItWorks() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <span className="text-caption text-[#1D9E75] tracking-widest">КАК ЭТО РАБОТАЕТ</span>
-          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#111B17] mt-3">
+          <span className="text-caption text-[#0284C7] tracking-widest">КАК ЭТО РАБОТАЕТ</span>
+          <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
             Четыре шага к победе
           </h2>
-          <p className="text-[15px] text-[#5A7A6E] mt-2 max-w-lg mx-auto">
+          <p className="text-[15px] text-[#64748B] mt-2 max-w-lg mx-auto">
             От идеи до награды -- простой путь для каждого школьника
           </p>
         </motion.div>
 
         <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
           {/* Connector line -- desktop only */}
-          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-[2px] bg-[#E2EDE9]" />
+          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-[2px] bg-[#E2E8F0]" />
 
           {steps.map((step, i) => (
             <motion.div
@@ -76,17 +76,17 @@ export default function HowItWorks() {
                   <HugeiconsIcon icon={step.icon} size={28} style={{ color: step.color }} />
                 </div>
                 <div
-                  className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-sm border border-[#E2EDE9] flex items-center justify-center text-[11px] font-bold"
+                  className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white shadow-sm border border-[#E2E8F0] flex items-center justify-center text-[11px] font-bold"
                   style={{ color: step.color }}
                 >
                   {step.num}
                 </div>
               </div>
 
-              <h3 className="text-[17px] font-semibold text-[#111B17] mb-2">
+              <h3 className="text-[17px] font-semibold text-[#0F172A] mb-2">
                 {step.title}
               </h3>
-              <p className="text-[14px] text-[#5A7A6E] leading-relaxed max-w-[240px] mx-auto">
+              <p className="text-[14px] text-[#64748B] leading-relaxed max-w-[240px] mx-auto">
                 {step.desc}
               </p>
             </motion.div>

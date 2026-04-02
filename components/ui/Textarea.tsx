@@ -18,7 +18,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={textareaId} className="text-[13px] font-medium text-[#111B17]">
+          <label htmlFor={textareaId} className="text-[13px] font-medium text-[#0F172A]">
             {label}
           </label>
         )}
@@ -29,19 +29,19 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           maxLength={maxLength}
           className={`
             min-h-[120px] px-3 py-3 rounded-lg border text-[15px]
-            bg-white placeholder:text-[#5A7A6E]/50 resize-y
+            bg-white placeholder:text-[#64748B]/50 resize-y
             transition-colors duration-200
-            focus:outline-none focus:ring-2 focus:ring-[#1D9E75]/20 focus:border-[#1D9E75]
-            ${error ? 'border-red-400' : 'border-[#E2EDE9]'}
+            focus:outline-none focus:ring-2 focus:ring-[#0284C7]/20 focus:border-[#0284C7]
+            ${error ? 'border-red-400' : 'border-[#E2E8F0]'}
             ${className}
           `}
           {...props}
         />
         <div className="flex justify-between">
           {error && <p className="text-[12px] text-red-500">{error}</p>}
-          {hint && !error && <p className="text-[12px] text-[#5A7A6E]">{hint}</p>}
+          {hint && !error && <p className="text-[12px] text-[#64748B]">{hint}</p>}
           {showCount && maxLength && (
-            <p className={`text-[12px] ml-auto ${currentLength >= maxLength ? 'text-red-500' : 'text-[#5A7A6E]'}`}>
+            <p className={`text-[12px] ml-auto ${currentLength >= maxLength ? 'text-red-500' : 'text-[#64748B]'}`}>
               {currentLength}/{maxLength}
             </p>
           )}

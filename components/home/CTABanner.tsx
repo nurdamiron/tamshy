@@ -15,7 +15,7 @@ export default function CTABanner() {
           viewport={{ once: true }}
           className="relative overflow-hidden rounded-3xl"
           style={{
-            background: 'linear-gradient(135deg, #0F6E56, #1D9E75 50%, #2BBFA0)',
+            background: 'linear-gradient(135deg, #0369A1, #0284C7 50%, #38BDF8)',
           }}
         >
           {/* Background decorations */}
@@ -51,7 +51,7 @@ export default function CTABanner() {
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/submit">
-                <button className="h-[52px] px-10 rounded-xl bg-white text-[#0F6E56] font-bold text-[16px] hover:bg-white/90 transition-all shadow-lg shadow-black/10 cursor-pointer">
+                <button className="h-[52px] px-10 rounded-xl bg-white text-[#0369A1] font-bold text-[16px] hover:bg-white/90 transition-all shadow-lg shadow-black/10 cursor-pointer">
                   Отправить проект
                 </button>
               </Link>

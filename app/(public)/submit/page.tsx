@@ -158,9 +158,9 @@ export default function SubmitPage() {
             <div className="flex flex-col items-center">
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-semibold transition-colors
-                  ${step > s.num ? 'bg-[#1D9E75] text-white' :
-                    step === s.num ? 'bg-[#1D9E75] text-white' :
-                    'bg-[#E2EDE9] text-[#5A7A6E]'}`}
+                  ${step > s.num ? 'bg-[#0284C7] text-white' :
+                    step === s.num ? 'bg-[#0284C7] text-white' :
+                    'bg-[#E2E8F0] text-[#64748B]'}`}
               >
                 {step > s.num ? (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -168,10 +168,10 @@ export default function SubmitPage() {
                   </svg>
                 ) : s.num}
               </div>
-              <span className="text-[11px] text-[#5A7A6E] mt-1.5 hidden sm:block">{s.title}</span>
+              <span className="text-[11px] text-[#64748B] mt-1.5 hidden sm:block">{s.title}</span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`w-8 sm:w-16 h-[2px] mx-1 sm:mx-2 ${step > s.num ? 'bg-[#1D9E75]' : 'bg-[#E2EDE9]'}`} />
+              <div className={`w-8 sm:w-16 h-[2px] mx-1 sm:mx-2 ${step > s.num ? 'bg-[#0284C7]' : 'bg-[#E2E8F0]'}`} />
             )}
           </div>
         ))}
@@ -189,7 +189,7 @@ export default function SubmitPage() {
           {step === 1 && (
             <Card hover={false} padding="lg">
               <h2 className="text-[20px] font-semibold mb-1">Вход на платформу</h2>
-              <p className="text-[14px] text-[#5A7A6E] mb-6">
+              <p className="text-[14px] text-[#64748B] mb-6">
                 Введите номер телефона для получения кода подтверждения
               </p>
 
@@ -222,7 +222,7 @@ export default function SubmitPage() {
                     </Button>
                     <button
                       onClick={() => { setOtpSent(false); setOtp(''); }}
-                      className="w-full text-[13px] text-[#5A7A6E] hover:text-[#1D9E75] transition-colors"
+                      className="w-full text-[13px] text-[#64748B] hover:text-[#0284C7] transition-colors"
                     >
                       Отправить код повторно
                     </button>
@@ -240,7 +240,7 @@ export default function SubmitPage() {
           {step === 2 && (
             <Card hover={false} padding="lg">
               <h2 className="text-[20px] font-semibold mb-1">О себе</h2>
-              <p className="text-[14px] text-[#5A7A6E] mb-6">
+              <p className="text-[14px] text-[#64748B] mb-6">
                 Расскажите немного о себе и вашей школе
               </p>
 
@@ -285,14 +285,14 @@ export default function SubmitPage() {
           {step === 3 && (
             <Card hover={false} padding="lg">
               <h2 className="text-[20px] font-semibold mb-1">О проекте</h2>
-              <p className="text-[14px] text-[#5A7A6E] mb-6">
+              <p className="text-[14px] text-[#64748B] mb-6">
                 Опишите ваш проект по водосбережению
               </p>
 
               <div className="space-y-5">
                 {/* Project type cards */}
                 <div>
-                  <label className="text-[13px] font-medium text-[#111B17] block mb-2">
+                  <label className="text-[13px] font-medium text-[#0F172A] block mb-2">
                     Тип проекта
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -303,10 +303,10 @@ export default function SubmitPage() {
                         onClick={() => setProjectType(type.value)}
                         className={`p-4 rounded-xl border-2 text-left transition-all
                           ${projectType === type.value
-                            ? 'border-[#1D9E75] bg-[#E1F5EE]'
-                            : 'border-[#E2EDE9] hover:border-[#1D9E75]/30'}`}
+                            ? 'border-[#0284C7] bg-[#E0F2FE]'
+                            : 'border-[#E2E8F0] hover:border-[#0284C7]/30'}`}
                       >
-                        <div className="text-[14px] font-medium text-[#111B17]">{type.label}</div>
+                        <div className="text-[14px] font-medium text-[#0F172A]">{type.label}</div>
                       </button>
                     ))}
                   </div>
@@ -336,7 +336,7 @@ export default function SubmitPage() {
           {step === 4 && (
             <Card hover={false} padding="lg">
               <h2 className="text-[20px] font-semibold mb-1">Загрузка файлов</h2>
-              <p className="text-[14px] text-[#5A7A6E] mb-6">
+              <p className="text-[14px] text-[#64748B] mb-6">
                 Загрузите файл проекта или укажите ссылку на видео
               </p>
 
@@ -344,7 +344,7 @@ export default function SubmitPage() {
                 {/* Drop zone */}
                 <div
                   className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer
-                    ${file ? 'border-[#1D9E75] bg-[#E1F5EE]' : 'border-[#E2EDE9] hover:border-[#1D9E75]/40'}`}
+                    ${file ? 'border-[#0284C7] bg-[#E0F2FE]' : 'border-[#E2E8F0] hover:border-[#0284C7]/40'}`}
                   onClick={() => document.getElementById('file-input')?.click()}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -365,12 +365,12 @@ export default function SubmitPage() {
                   />
                   {file ? (
                     <div>
-                      <svg className="mx-auto mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2">
+                      <svg className="mx-auto mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2">
                         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                       </svg>
-                      <p className="text-[14px] font-medium text-[#111B17]">{file.name}</p>
-                      <p className="text-[12px] text-[#5A7A6E] mt-1">
+                      <p className="text-[14px] font-medium text-[#0F172A]">{file.name}</p>
+                      <p className="text-[12px] text-[#64748B] mt-1">
                         {(file.size / (1024 * 1024)).toFixed(1)} МБ
                       </p>
                       <button
@@ -382,15 +382,15 @@ export default function SubmitPage() {
                     </div>
                   ) : (
                     <div>
-                      <svg className="mx-auto mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5A7A6E" strokeWidth="2">
+                      <svg className="mx-auto mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
                       </svg>
-                      <p className="text-[14px] text-[#5A7A6E]">
-                        Перетащите файл сюда или <span className="text-[#1D9E75] font-medium">нажмите для выбора</span>
+                      <p className="text-[14px] text-[#64748B]">
+                        Перетащите файл сюда или <span className="text-[#0284C7] font-medium">нажмите для выбора</span>
                       </p>
-                      <p className="text-[12px] text-[#5A7A6E] mt-1">
+                      <p className="text-[12px] text-[#64748B] mt-1">
                         PDF, JPG, PNG, MP4, MOV — до 100 МБ
                       </p>
                     </div>
@@ -398,18 +398,18 @@ export default function SubmitPage() {
                 </div>
 
                 {uploadProgress > 0 && uploadProgress < 100 && (
-                  <div className="w-full bg-[#E2EDE9] rounded-full h-2">
+                  <div className="w-full bg-[#E2E8F0] rounded-full h-2">
                     <div
-                      className="bg-[#1D9E75] h-2 rounded-full transition-all duration-300"
+                      className="bg-[#0284C7] h-2 rounded-full transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
                 )}
 
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-[#E2EDE9]" />
-                  <span className="text-[12px] text-[#5A7A6E]">ИЛИ</span>
-                  <div className="flex-1 h-px bg-[#E2EDE9]" />
+                  <div className="flex-1 h-px bg-[#E2E8F0]" />
+                  <span className="text-[12px] text-[#64748B]">ИЛИ</span>
+                  <div className="flex-1 h-px bg-[#E2E8F0]" />
                 </div>
 
                 <Input
@@ -427,15 +427,15 @@ export default function SubmitPage() {
           {step === 5 && (
             <Card hover={false} padding="lg">
               <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-full bg-[#E1F5EE] flex items-center justify-center mx-auto mb-4">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2.5">
+                <div className="w-16 h-16 rounded-full bg-[#E0F2FE] flex items-center justify-center mx-auto mb-4">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0284C7" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                <h2 className="text-[24px] font-bold text-[#111B17] mb-2">
+                <h2 className="text-[24px] font-bold text-[#0F172A] mb-2">
                   Проект отправлен!
                 </h2>
-                <p className="text-[15px] text-[#5A7A6E] max-w-md mx-auto">
+                <p className="text-[15px] text-[#64748B] max-w-md mx-auto">
                   Ваш проект &quot;{title}&quot; отправлен на модерацию.
                   Жюри рассмотрит его в течение 3 рабочих дней.
                 </p>

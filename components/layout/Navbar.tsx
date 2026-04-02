@@ -25,14 +25,14 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] border-b border-[#E2EDE9]/50'
+          ? 'bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] border-b border-[#E2E8F0]/50'
           : 'bg-transparent'
       }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-[#1D9E75] flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+          <div className="w-9 h-9 rounded-xl bg-[#0284C7] flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z"
@@ -41,10 +41,10 @@ export default function Navbar() {
             </svg>
           </div>
           <div>
-            <span className={`text-[17px] font-bold tracking-tight transition-colors ${scrolled ? 'text-[#111B17]' : 'text-white'}`}>
+            <span className={`text-[17px] font-bold tracking-tight transition-colors ${scrolled ? 'text-[#0F172A]' : 'text-white'}`}>
               Тамшы
             </span>
-            <span className={`hidden sm:block text-[10px] font-medium -mt-0.5 transition-colors ${scrolled ? 'text-[#5A7A6E]' : 'text-white/50'}`}>
+            <span className={`hidden sm:block text-[10px] font-medium -mt-0.5 transition-colors ${scrolled ? 'text-[#64748B]' : 'text-white/50'}`}>
               Водные проекты
             </span>
           </div>
@@ -58,7 +58,7 @@ export default function Navbar() {
               href={link.href}
               className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all ${
                 scrolled
-                  ? 'text-[#5A7A6E] hover:text-[#111B17] hover:bg-[#F8FAF9]'
+                  ? 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
                   : 'text-white/70 hover:text-white hover:bg-white/10'
               }`}
             >
@@ -72,7 +72,7 @@ export default function Navbar() {
           <Link href="/login">
             <button className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all cursor-pointer ${
               scrolled
-                ? 'text-[#5A7A6E] hover:text-[#111B17] hover:bg-[#F8FAF9]'
+                ? 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
                 : 'text-white/70 hover:text-white hover:bg-white/10'
             }`}>
               Войти
@@ -90,7 +90,7 @@ export default function Navbar() {
 
         {/* Mobile burger */}
         <button
-          className={`md:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-[#5A7A6E] hover:bg-[#F8FAF9]' : 'text-white/80 hover:bg-white/10'}`}
+          className={`md:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-[#64748B] hover:bg-[#F8FAFC]' : 'text-white/80 hover:bg-white/10'}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Меню"
         >
@@ -113,22 +113,22 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-[#E2EDE9] overflow-hidden"
+            className="md:hidden bg-white border-t border-[#E2E8F0] overflow-hidden"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#111B17] hover:bg-[#F8FAF9] transition-colors"
+                  className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#0F172A] hover:bg-[#F8FAFC] transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
-              <hr className="border-[#E2EDE9] my-2" />
+              <hr className="border-[#E2E8F0] my-2" />
               <Link href="/login" onClick={() => setMobileOpen(false)}>
-                <div className="px-4 py-3 rounded-xl text-[15px] font-medium text-[#5A7A6E] hover:bg-[#F8FAF9] transition-colors">
+                <div className="px-4 py-3 rounded-xl text-[15px] font-medium text-[#64748B] hover:bg-[#F8FAFC] transition-colors">
                   Войти
                 </div>
               </Link>

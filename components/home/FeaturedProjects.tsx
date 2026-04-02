@@ -52,7 +52,7 @@ const placeholderProjects = [
 
 export default function FeaturedProjects() {
   return (
-    <section className="py-20 bg-[#F8FAF9]">
+    <section className="py-20 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,11 +61,11 @@ export default function FeaturedProjects() {
           className="flex items-end justify-between mb-10"
         >
           <div>
-            <span className="text-caption text-[#1D9E75] tracking-widest">ИЗБРАННОЕ</span>
-            <h2 className="text-[28px] sm:text-[32px] font-bold text-[#111B17] mt-3">
+            <span className="text-caption text-[#0284C7] tracking-widest">ИЗБРАННОЕ</span>
+            <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] mt-3">
               Лучшие проекты
             </h2>
-            <p className="text-[15px] text-[#5A7A6E] mt-2">
+            <p className="text-[15px] text-[#64748B] mt-2">
               Проекты с наибольшим количеством голосов
             </p>
           </div>

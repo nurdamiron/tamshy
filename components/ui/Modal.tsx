@@ -45,11 +45,11 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
               onClick={(e) => e.stopPropagation()}
             >
               {title && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2EDE9]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E8F0]">
                   <h3 className="text-lg font-semibold">{title}</h3>
                   <button
                     onClick={onClose}
-                    className="text-[#5A7A6E] hover:text-[#111B17] transition-colors p-1"
+                    className="text-[#64748B] hover:text-[#0F172A] transition-colors p-1"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M18 6L6 18M6 6l12 12" />

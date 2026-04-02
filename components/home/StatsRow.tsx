@@ -42,23 +42,23 @@ export default function StatsRow() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-[#E2EDE9]/60 p-2"
+          className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-[#E2E8F0]/60 p-2"
         >
           <div className="grid grid-cols-2 md:grid-cols-4">
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
                 className={`flex flex-col items-center py-6 px-4 ${
-                  i < stats.length - 1 ? 'md:border-r md:border-[#E2EDE9]' : ''
-                } ${i < 2 ? 'border-b md:border-b-0 border-[#E2EDE9]' : ''}`}
+                  i < stats.length - 1 ? 'md:border-r md:border-[#E2E8F0]' : ''
+                } ${i < 2 ? 'border-b md:border-b-0 border-[#E2E8F0]' : ''}`}
               >
-                <div className="w-10 h-10 rounded-xl bg-[#E1F5EE] flex items-center justify-center mb-3">
-                  <HugeiconsIcon icon={stat.icon} size={20} className="text-[#1D9E75]" />
+                <div className="w-10 h-10 rounded-xl bg-[#E0F2FE] flex items-center justify-center mb-3">
+                  <HugeiconsIcon icon={stat.icon} size={20} className="text-[#0284C7]" />
                 </div>
-                <div className="text-[28px] sm:text-[32px] font-bold text-[#111B17] leading-none">
+                <div className="text-[28px] sm:text-[32px] font-bold text-[#0F172A] leading-none">
                   <Counter target={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-[13px] text-[#5A7A6E] mt-1.5">{stat.label}</div>
+                <div className="text-[13px] text-[#64748B] mt-1.5">{stat.label}</div>
               </div>
             ))}
           </div>
