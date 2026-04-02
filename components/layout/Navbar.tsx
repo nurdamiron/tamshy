@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
 
 const navLinks = [
@@ -12,13 +13,26 @@ const navLinks = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-[#E2EDE9]">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] border-b border-[#E2EDE9]/50'
+          : 'bg-transparent'
+      }`}
+    >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#1D9E75] flex items-center justify-center">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-xl bg-[#1D9E75] flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z"
@@ -26,18 +40,27 @@ export default function Navbar() {
               />
             </svg>
           </div>
-          <span className="text-lg font-bold text-[#111B17] tracking-tight">
-            Тамшы
-          </span>
+          <div>
+            <span className={`text-[17px] font-bold tracking-tight transition-colors ${scrolled ? 'text-[#111B17]' : 'text-white'}`}>
+              Тамшы
+            </span>
+            <span className={`hidden sm:block text-[10px] font-medium -mt-0.5 transition-colors ${scrolled ? 'text-[#5A7A6E]' : 'text-white/50'}`}>
+              Водные проекты
+            </span>
+          </div>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-[14px] font-medium text-[#5A7A6E] hover:text-[#111B17] transition-colors"
+              className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all ${
+                scrolled
+                  ? 'text-[#5A7A6E] hover:text-[#111B17] hover:bg-[#F8FAF9]'
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
+              }`}
             >
               {link.label}
             </Link>
@@ -46,14 +69,28 @@ export default function Navbar() {
 
         {/* Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <Link href="/login">
+            <button className={`px-4 py-2 rounded-lg text-[14px] font-medium transition-all cursor-pointer ${
+              scrolled
+                ? 'text-[#5A7A6E] hover:text-[#111B17] hover:bg-[#F8FAF9]'
+                : 'text-white/70 hover:text-white hover:bg-white/10'
+            }`}>
+              Войти
+            </button>
+          </Link>
           <Link href="/submit">
-            <Button size="md">Отправить проект</Button>
+            <Button size="md">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Отправить проект
+            </Button>
           </Link>
         </div>
 
         {/* Mobile burger */}
         <button
-          className="md:hidden p-2 text-[#5A7A6E]"
+          className={`md:hidden p-2 rounded-lg transition-colors ${scrolled ? 'text-[#5A7A6E] hover:bg-[#F8FAF9]' : 'text-white/80 hover:bg-white/10'}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Меню"
         >
@@ -70,23 +107,38 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="md:hidden border-t border-[#E2EDE9] bg-white px-4 py-4 space-y-3">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="block text-[15px] font-medium text-[#5A7A6E] hover:text-[#111B17] py-2"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link href="/submit" onClick={() => setMobileOpen(false)}>
-            <Button className="w-full mt-2">Отправить проект</Button>
-          </Link>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-t border-[#E2EDE9] overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block px-4 py-3 rounded-xl text-[15px] font-medium text-[#111B17] hover:bg-[#F8FAF9] transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <hr className="border-[#E2EDE9] my-2" />
+              <Link href="/login" onClick={() => setMobileOpen(false)}>
+                <div className="px-4 py-3 rounded-xl text-[15px] font-medium text-[#5A7A6E] hover:bg-[#F8FAF9] transition-colors">
+                  Войти
+                </div>
+              </Link>
+              <Link href="/submit" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full mt-2">Отправить проект</Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

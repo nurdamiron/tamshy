@@ -2,68 +2,140 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-[#E2EDE9] mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-[#111B17] text-white">
+      {/* Top section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#1D9E75] flex items-center justify-center">
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-[#1D9E75] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="white" />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-[#111B17]">Тамшы</span>
+              <div>
+                <span className="text-[17px] font-bold">Тамшы</span>
+                <span className="block text-[10px] text-white/40 -mt-0.5">Водные проекты</span>
+              </div>
             </div>
-            <p className="text-[14px] text-[#5A7A6E] max-w-md leading-relaxed">
+            <p className="text-[14px] text-white/50 leading-relaxed max-w-xs">
               Республиканский конкурс водных проектов школьников Казахстана.
-              Инициатива Министерства водных ресурсов и ирригации РК в рамках
-              программы &quot;Адал азамат&quot;.
+              Инициатива Министерства водных ресурсов и ирригации РК.
             </p>
+
+            {/* Social-like icons */}
+            <div className="flex gap-2 mt-6">
+              {['telegram', 'instagram', 'youtube'].map((social) => (
+                <a
+                  key={social}
+                  href="#"
+                  className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                >
+                  {social === 'telegram' && (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" fillOpacity="0.5">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                    </svg>
+                  )}
+                  {social === 'instagram' && (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeOpacity="0.5" strokeWidth="2">
+                      <rect x="2" y="2" width="20" height="20" rx="5" />
+                      <circle cx="12" cy="12" r="5" />
+                      <circle cx="17.5" cy="6.5" r="1.5" fill="white" fillOpacity="0.5" stroke="none" />
+                    </svg>
+                  )}
+                  {social === 'youtube' && (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" fillOpacity="0.5">
+                      <path d="M23 9.71a8.5 8.5 0 00-.91-4.13 2.92 2.92 0 00-1.72-1A78.4 78.4 0 0012 4.27a78.5 78.5 0 00-8.34.3 2.87 2.87 0 00-1.46.74c-.9.83-1 2.25-1.1 3.45a48.3 48.3 0 000 6.48 9.9 9.9 0 00.54 2.59 2.71 2.71 0 001.3 1.4 6.4 6.4 0 002.73.45c2.54.06 10.43.13 14.3-.06a3 3 0 001.48-.64c.86-.78 1-2.2 1.12-3.46a42.6 42.6 0 00.03-5.81zM9.68 15.67V8.33l6.23 3.67-6.23 3.67z" />
+                    </svg>
+                  )}
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* Links */}
+          {/* Platform links */}
           <div>
-            <h4 className="text-caption text-[#5A7A6E] mb-3">Платформа</h4>
-            <div className="space-y-2">
-              <Link href="/projects" className="block text-[14px] text-[#111B17] hover:text-[#1D9E75] transition-colors">
-                Проекты
-              </Link>
-              <Link href="/regions" className="block text-[14px] text-[#111B17] hover:text-[#1D9E75] transition-colors">
-                Регионы
-              </Link>
-              <Link href="/leaderboard" className="block text-[14px] text-[#111B17] hover:text-[#1D9E75] transition-colors">
-                Лидеры
-              </Link>
-              <Link href="/submit" className="block text-[14px] text-[#111B17] hover:text-[#1D9E75] transition-colors">
-                Отправить проект
-              </Link>
+            <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
+              Платформа
+            </h4>
+            <div className="space-y-3">
+              {[
+                { href: '/projects', label: 'Все проекты' },
+                { href: '/submit', label: 'Отправить проект' },
+                { href: '/regions', label: 'Регионы' },
+                { href: '/leaderboard', label: 'Таблица лидеров' },
+                { href: '/login', label: 'Вход' },
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block text-[14px] text-white/50 hover:text-white transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Partners */}
           <div>
-            <h4 className="text-caption text-[#5A7A6E] mb-3">Партнёры</h4>
-            <div className="space-y-2 text-[14px] text-[#5A7A6E]">
+            <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
+              Партнёры
+            </h4>
+            <div className="space-y-3 text-[14px] text-white/50">
               <p>Министерство водных ресурсов РК</p>
               <p>НАО ИАЦ водных ресурсов</p>
               <p>ЮНИСЕФ Казахстан</p>
               <p>Французское агентство развития</p>
+              <p>Программа «Адал азамат»</p>
+            </div>
+          </div>
+
+          {/* Contact / info */}
+          <div>
+            <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
+              Контакты
+            </h4>
+            <div className="space-y-3 text-[14px] text-white/50">
+              <div className="flex items-start gap-2.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                info@tamshy.kz
+              </div>
+              <div className="flex items-start gap-2.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                Астана, Казахстан
+              </div>
+              <div className="flex items-start gap-2.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 mt-0.5">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                </svg>
+                +7 (717) 272-00-00
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-10 pt-6 border-t border-[#E2EDE9] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-[#5A7A6E]">
+      {/* Bottom bar */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-[13px] text-white/30">
             &copy; 2026 Тамшы. Все права защищены.
           </p>
-          <p className="text-[13px] text-[#5A7A6E]">
+          <p className="text-[13px] text-white/30">
             Разработка:{' '}
             <a
               href="https://alashed.kz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#1D9E75] hover:underline"
+              className="text-[#1D9E75] hover:text-[#2BBFA0] transition-colors"
             >
               alashed.kz
             </a>
