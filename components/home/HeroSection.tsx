@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Building01Icon, Globe02Icon, StarIcon } from '@hugeicons/core-free-icons';
 
 
 function WaterDrop({ delay, x, size }: { delay: number; x: string; size: number }) {
@@ -212,12 +214,12 @@ export default function HeroSection() {
               transition={{ delay: 0.8 }}
             >
               {[
-                { label: 'Минводресурсов РК', icon: '🏛' },
-                { label: 'ЮНИСЕФ', icon: '🌍' },
-                { label: 'Программа «Адал азамат»', icon: '🇰🇿' },
+                { label: 'Минводресурсов РК', icon: Building01Icon },
+                { label: 'ЮНИСЕФ', icon: Globe02Icon },
+                { label: 'Программа «Адал азамат»', icon: StarIcon },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
-                  <span className="text-[16px]">{item.icon}</span>
+                  <HugeiconsIcon icon={item.icon} size={16} className="text-white/50" />
                   <span className="text-[13px] text-white/50 font-medium">{item.label}</span>
                 </div>
               ))}
