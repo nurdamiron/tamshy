@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokenPayload } from '@/lib/auth';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { uploadToS3 } from '@/lib/s3';
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES } from '@/lib/constants';
 
 export async function POST(req: NextRequest) {
@@ -26,27 +26,12 @@ export async function POST(req: NextRequest) {
     }
 
     const ext = file.name.split('.').pop();
-    const fileName = `${payload.userId}/${Date.now()}.${ext}`;
-
+    const key = `projects/${payload.userId}/${Date.now()}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error } = await getSupabaseAdmin().storage
-      .from('projects')
-      .upload(fileName, buffer, {
-        contentType: file.type,
-        upsert: false,
-      });
+    const url = await uploadToS3(buffer, key, file.type);
 
-    if (error) {
-      console.error('Upload error:', error);
-      return NextResponse.json({ error: 'Ошибка загрузки файла' }, { status: 500 });
-    }
-
-    const { data: urlData } = getSupabaseAdmin().storage
-      .from('projects')
-      .getPublicUrl(fileName);
-
-    return NextResponse.json({ url: urlData.publicUrl });
+    return NextResponse.json({ url });
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Ошибка загрузки' }, { status: 500 });

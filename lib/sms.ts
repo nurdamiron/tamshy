@@ -2,6 +2,7 @@ import { prisma } from './prisma';
 
 const OTP_EXPIRY_MINUTES = 10;
 const OTP_LENGTH = 6;
+const DEV_OTP = '000000';
 
 function generateOTP(length: number): string {
   let code = '';
@@ -12,7 +13,8 @@ function generateOTP(length: number): string {
 }
 
 export async function sendOTP(phone: string): Promise<void> {
-  const code = generateOTP(OTP_LENGTH);
+  const isDev = process.env.NODE_ENV === 'development' || !process.env.MOBIZON_API_KEY;
+  const code = isDev ? DEV_OTP : generateOTP(OTP_LENGTH);
   const expiry = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
 
   await prisma.user.upsert({
@@ -20,6 +22,11 @@ export async function sendOTP(phone: string): Promise<void> {
     update: { otpCode: code, otpExpiry: expiry },
     create: { phone, otpCode: code, otpExpiry: expiry },
   });
+
+  if (isDev) {
+    console.log(`[DEV] OTP for ${phone}: ${code}`);
+    return;
+  }
 
   await fetch('https://api.mobizon.kz/service/Message/SendSmsMessage', {
     method: 'POST',
