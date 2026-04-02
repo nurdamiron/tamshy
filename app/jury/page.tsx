@@ -85,7 +85,7 @@ export default function JuryPage() {
       });
       const res = await fetch(`/api/projects?${params}`);
       const data = await res.json();
-      setProjects(data.projects);
+      setProjects(data.projects || []);
     } catch {
       // handle error
     }

@@ -33,7 +33,7 @@ export default function LeaderboardPage() {
       try {
         const res = await fetch('/api/projects?sort=popular&page=1');
         const data = await res.json();
-        setProjects(data.projects);
+        setProjects(data.projects || []);
       } catch {
         // handle error
       }
