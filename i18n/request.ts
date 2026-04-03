@@ -1,9 +1,9 @@
 import { getRequestConfig } from 'next-intl/server';
 import { cookies, headers } from 'next/headers';
 
-export const locales = ['ru', 'kk', 'en'] as const;
+export const locales = ['kk', 'ru', 'en'] as const;
 export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = 'ru';
+export const defaultLocale: Locale = 'kk';
 
 export default getRequestConfig(async () => {
   // 1. Check cookie
