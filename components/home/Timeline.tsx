@@ -2,45 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-
-const milestones = [
-  {
-    date: 'Январь 2026',
-    title: 'Старт конкурса',
-    desc: 'Открытие регистрации и приёма проектов',
-    status: 'past' as const,
-  },
-  {
-    date: 'Февраль 2026',
-    title: 'Региональные этапы',
-    desc: 'Отбор лучших проектов в каждом регионе',
-    status: 'past' as const,
-  },
-  {
-    date: 'Март 2026',
-    title: 'Голосование',
-    desc: 'Общенародное голосование за лучшие проекты',
-    status: 'past' as const,
-  },
-  {
-    date: 'Апрель 2026',
-    title: 'Экспертная оценка',
-    desc: 'Жюри ИАЦ водных ресурсов оценивает финалистов',
-    status: 'current' as const,
-  },
-  {
-    date: 'Июнь 2026',
-    title: 'Финал',
-    desc: 'Торжественное объявление победителей в Астане',
-    status: 'future' as const,
-  },
-  {
-    date: 'Август 2026',
-    title: 'Реализация',
-    desc: 'Гранты на реализацию лучших проектов',
-    status: 'future' as const,
-  },
-];
+import { useTranslations } from 'next-intl';
 
 const statusColors = {
   past: { dot: 'bg-[#0284C7]', text: 'text-[#0284C7]', line: 'bg-[#0284C7]', bg: 'bg-[#E0F2FE]' },
@@ -49,6 +11,47 @@ const statusColors = {
 };
 
 export default function Timeline() {
+  const t = useTranslations('timeline');
+
+  const milestones = [
+    {
+      date: t('jan'),
+      title: t('janTitle'),
+      desc: t('janDesc'),
+      status: 'past' as const,
+    },
+    {
+      date: t('feb'),
+      title: t('febTitle'),
+      desc: t('febDesc'),
+      status: 'past' as const,
+    },
+    {
+      date: t('mar'),
+      title: t('marTitle'),
+      desc: t('marDesc'),
+      status: 'past' as const,
+    },
+    {
+      date: t('apr'),
+      title: t('aprTitle'),
+      desc: t('aprDesc'),
+      status: 'current' as const,
+    },
+    {
+      date: t('jun'),
+      title: t('junTitle'),
+      desc: t('junDesc'),
+      status: 'future' as const,
+    },
+    {
+      date: t('aug'),
+      title: t('augTitle'),
+      desc: t('augDesc'),
+      status: 'future' as const,
+    },
+  ];
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -66,12 +69,12 @@ export default function Timeline() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-16"
         >
-          <span className="text-caption text-[#0284C7] tracking-widest">ЭТАПЫ</span>
+          <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-            Календарь конкурса
+            {t('title')}
           </h2>
           <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
-            Ключевые даты и события конкурса Тамшы
+            {t('subtitle')}
           </p>
         </motion.div>
 

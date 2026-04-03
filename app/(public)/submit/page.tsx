@@ -9,18 +9,20 @@ import Textarea from '@/components/ui/Textarea';
 import Card from '@/components/ui/Card';
 import { regionLabels } from '@/lib/validators';
 import { PROJECT_TYPES, GRADES } from '@/lib/constants';
+import { useTranslations } from 'next-intl';
 
-const steps = [
-  { num: 1, title: 'Вход' },
-  { num: 2, title: 'О себе' },
-  { num: 3, title: 'О проекте' },
-  { num: 4, title: 'Загрузка' },
-  { num: 5, title: 'Готово' },
+const STEP_KEYS = [
+  { num: 1, titleKey: 'stepLogin' },
+  { num: 2, titleKey: 'stepAbout' },
+  { num: 3, titleKey: 'stepProject' },
+  { num: 4, titleKey: 'stepUpload' },
+  { num: 5, titleKey: 'stepDone' },
 ];
 
 const regionOptions = Object.entries(regionLabels).map(([value, label]) => ({ value, label }));
 
 export default function SubmitPage() {
+  const t = useTranslations('submit');
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -55,7 +57,7 @@ export default function SubmitPage() {
       if (!res.ok) throw new Error(data.error);
       setOtpSent(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка отправки SMS');
+      setError(e instanceof Error ? e.message : t('errorSendingSms'));
     }
     setLoading(false);
   };
@@ -74,7 +76,7 @@ export default function SubmitPage() {
       setAuthenticated(true);
       setStep(2);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка верификации');
+      setError(e instanceof Error ? e.message : t('errorVerification'));
     }
     setLoading(false);
   };
@@ -96,10 +98,10 @@ export default function SubmitPage() {
           const data = JSON.parse(xhr.responseText);
           resolve(data.url);
         } else {
-          reject(new Error('Ошибка загрузки'));
+          reject(new Error(t('errorUpload')));
         }
       });
-      xhr.addEventListener('error', () => reject(new Error('Ошибка сети')));
+      xhr.addEventListener('error', () => reject(new Error(t('errorNetwork'))));
       xhr.open('POST', '/api/upload');
       xhr.send(formData);
     });
@@ -134,7 +136,7 @@ export default function SubmitPage() {
       if (!res.ok) throw new Error(data.error);
       setStep(5);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка отправки');
+      setError(e instanceof Error ? e.message : t('errorSubmitting'));
     }
     setLoading(false);
   };
@@ -153,7 +155,7 @@ export default function SubmitPage() {
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
       {/* Progress */}
       <div className="flex items-center justify-between mb-10">
-        {steps.map((s, i) => (
+        {STEP_KEYS.map((s, i) => (
           <div key={s.num} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
@@ -168,9 +170,9 @@ export default function SubmitPage() {
                   </svg>
                 ) : s.num}
               </div>
-              <span className="text-[11px] text-[#64748B] mt-1.5 hidden sm:block">{s.title}</span>
+              <span className="text-[11px] text-[#64748B] mt-1.5 hidden sm:block">{t(s.titleKey)}</span>
             </div>
-            {i < steps.length - 1 && (
+            {i < STEP_KEYS.length - 1 && (
               <div className={`w-8 sm:w-16 h-[2px] mx-1 sm:mx-2 ${step > s.num ? 'bg-[#0284C7]' : 'bg-[#E2E8F0]'}`} />
             )}
           </div>
@@ -188,14 +190,14 @@ export default function SubmitPage() {
           {/* Step 1: Auth */}
           {step === 1 && (
             <Card hover={false} padding="lg">
-              <h2 className="text-[20px] font-semibold mb-1">Вход на платформу</h2>
+              <h2 className="text-[20px] font-semibold mb-1">{t('loginTitle')}</h2>
               <p className="text-[14px] text-[#64748B] mb-6">
-                Введите номер телефона для получения кода подтверждения
+                {t('loginDesc')}
               </p>
 
               <div className="space-y-4">
                 <Input
-                  label="Номер телефона"
+                  label={t('phoneLabel')}
                   type="tel"
                   placeholder="+7 (___) ___-__-__"
                   value={phone}
@@ -205,12 +207,12 @@ export default function SubmitPage() {
 
                 {!otpSent ? (
                   <Button onClick={sendOtp} loading={loading} className="w-full">
-                    Получить код
+                    {t('getCode')}
                   </Button>
                 ) : (
                   <>
                     <Input
-                      label="Код из SMS"
+                      label={t('smsCode')}
                       placeholder="______"
                       maxLength={6}
                       value={otp}
@@ -218,13 +220,13 @@ export default function SubmitPage() {
                       className="text-center text-[20px] tracking-[8px]"
                     />
                     <Button onClick={verifyOtp} loading={loading} className="w-full">
-                      Подтвердить
+                      {t('confirm')}
                     </Button>
                     <button
                       onClick={() => { setOtpSent(false); setOtp(''); }}
                       className="w-full text-[13px] text-[#64748B] hover:text-[#0284C7] transition-colors"
                     >
-                      Отправить код повторно
+                      {t('resendCode')}
                     </button>
                   </>
                 )}
@@ -239,9 +241,9 @@ export default function SubmitPage() {
           {/* Step 2: About yourself */}
           {step === 2 && (
             <Card hover={false} padding="lg">
-              <h2 className="text-[20px] font-semibold mb-1">О себе</h2>
+              <h2 className="text-[20px] font-semibold mb-1">{t('aboutTitle')}</h2>
               <p className="text-[14px] text-[#64748B] mb-6">
-                Расскажите немного о себе и вашей школе
+                {t('aboutDesc')}
               </p>
 
               <div className="space-y-4">

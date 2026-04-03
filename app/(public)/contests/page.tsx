@@ -16,6 +16,7 @@ import {
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
+import { useTranslations } from 'next-intl';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -55,30 +56,29 @@ interface FormFieldDef {
 /*  Static data                                                        */
 /* ------------------------------------------------------------------ */
 
-const regionOptions = [
-  { value: '', label: 'Выберите регион...' },
-  { value: 'almaty', label: 'Алматы' },
-  { value: 'astana', label: 'Астана' },
-  { value: 'shymkent', label: 'Шымкент' },
-  { value: 'kyzylorda', label: 'Кызылординская обл.' },
-  { value: 'turkestan', label: 'Туркестанская обл.' },
-  { value: 'mangystau', label: 'Мангистауская обл.' },
-  { value: 'aktobe', label: 'Актюбинская обл.' },
-  { value: 'karaganda', label: 'Карагандинская обл.' },
-  { value: 'pavlodar', label: 'Павлодарская обл.' },
-  { value: 'other', label: 'Другой' },
+const REGION_OPTION_KEYS = [
+  { value: '', labelKey: 'selectRegion' },
+  { value: 'almaty', labelKey: 'regionAlmaty' },
+  { value: 'astana', labelKey: 'regionAstana' },
+  { value: 'shymkent', labelKey: 'regionShymkent' },
+  { value: 'kyzylorda', labelKey: 'regionKyzylorda' },
+  { value: 'turkestan', labelKey: 'regionTurkestan' },
+  { value: 'mangystau', labelKey: 'regionMangystau' },
+  { value: 'aktobe', labelKey: 'regionAktobe' },
+  { value: 'karaganda', labelKey: 'regionKaraganda' },
+  { value: 'pavlodar', labelKey: 'regionPavlodar' },
+  { value: 'other', labelKey: 'regionOther' },
 ];
 
-const sharedFields: FormFieldDef[] = [
-  { name: 'fullName', label: 'ФИО Участника', type: 'text', placeholder: 'Иванов Иван Иванович', required: true },
-  { name: 'birthDate', label: 'Дата рождения', type: 'date', required: true },
-  { name: 'email', label: 'Email для связи', type: 'email', placeholder: 'example@mail.kz', required: true },
-  { name: 'phone', label: 'Номер телефона', type: 'tel', placeholder: '+7 (7XX) XXX-XX-XX', required: true },
+const SHARED_FIELD_KEYS = [
+  { name: 'fullName', labelKey: 'fullName', type: 'text' as const, placeholderKey: 'fullNamePlaceholder', required: true },
+  { name: 'birthDate', labelKey: 'birthDate', type: 'date' as const, required: true },
+  { name: 'email', labelKey: 'emailField', type: 'email' as const, placeholderKey: 'emailPlaceholder', required: true },
+  { name: 'phone', labelKey: 'phoneField', type: 'tel' as const, placeholderKey: 'phonePlaceholder', required: true },
   {
     name: 'institution',
-    label: 'Учебное заведение / Город',
-    type: 'select',
-    options: regionOptions,
+    labelKey: 'institution',
+    type: 'select' as const,
     required: true,
   },
 ];
@@ -170,6 +170,22 @@ const panelSlide = {
 /* ------------------------------------------------------------------ */
 
 export default function ContestsPage() {
+  const t = useTranslations('contests');
+
+  const regionOptions = REGION_OPTION_KEYS.map((r) => ({
+    value: r.value,
+    label: t(r.labelKey),
+  }));
+
+  const sharedFields: FormFieldDef[] = SHARED_FIELD_KEYS.map((f) => ({
+    name: f.name,
+    label: t(f.labelKey),
+    type: f.type,
+    placeholder: f.placeholderKey ? t(f.placeholderKey) : undefined,
+    options: f.name === 'institution' ? regionOptions : undefined,
+    required: f.required,
+  }));
+
   const [tab, setTab] = useState<'active' | 'archive'>('active');
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string>('');
@@ -267,12 +283,12 @@ export default function ContestsPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'Ошибка при отправке заявки');
+        throw new Error(errData.message || t('errorSubmitting'));
       }
 
       setSubmitted(true);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      const message = err instanceof Error ? err.message : t('errorGeneric');
       setSubmitError(message);
     } finally {
       setSubmitting(false);
@@ -296,7 +312,7 @@ export default function ContestsPage() {
             tab === 'active' ? 'text-[#0284C7]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          Активные ({activeContests.length})
+          {t('activeTab')} ({activeContests.length})
           {tab === 'active' && (
             <motion.div
               layoutId="tab-underline"
@@ -310,7 +326,7 @@ export default function ContestsPage() {
             tab === 'archive' ? 'text-[#0284C7]' : 'text-[#64748B] hover:text-[#0F172A]'
           }`}
         >
-          Архив ({archivedContests.length})
+          {t('archiveTab')} ({archivedContests.length})
           {tab === 'archive' && (
             <motion.div
               layoutId="tab-underline"
@@ -331,7 +347,7 @@ export default function ContestsPage() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Найти конкурс..."
+            placeholder={t('searchPlaceholder')}
             className="w-full h-[40px] pl-10 pr-3 rounded-lg border border-[#E2E8F0] text-[14px] bg-white placeholder:text-[#64748B]/50 focus:outline-none focus:ring-2 focus:ring-[#0284C7]/20 focus:border-[#0284C7] transition-colors"
           />
         </div>
@@ -367,7 +383,7 @@ export default function ContestsPage() {
                         : 'bg-gray-100 text-gray-500'
                     }`}
                   >
-                    {c.status === 'ACTIVE' ? 'Прием заявок' : 'Завершен'}
+                    {c.status === 'ACTIVE' ? t('accepting') : t('completed')}
                   </span>
                   <span className="text-[11px] text-[#64748B] ml-auto flex items-center gap-1">
                     <HugeiconsIcon icon={Calendar01Icon} size={12} />
@@ -387,7 +403,7 @@ export default function ContestsPage() {
 
         {!isLoading && filtered.length === 0 && (
           <div className="text-center py-10 text-[#64748B] text-[14px]">
-            Ничего не найдено
+            {t('noResults')}
           </div>
         )}
       </div>
@@ -399,7 +415,7 @@ export default function ContestsPage() {
     if (!selected) {
       return (
         <div className="h-full flex items-center justify-center text-[#64748B] text-[14px]">
-          Выберите конкурс из списка
+          {t('selectContest')}
         </div>
       );
     }
@@ -422,7 +438,7 @@ export default function ContestsPage() {
             className="lg:hidden flex items-center gap-1.5 text-[#0284C7] text-[14px] font-medium mb-4 hover:underline"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
-            Назад к списку
+            {t('backToList')}
           </button>
 
           {/* Header badges */}
@@ -448,7 +464,7 @@ export default function ContestsPage() {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-1 h-5 rounded-full bg-[#0284C7]" />
-              <h2 className="text-[16px] font-semibold text-[#0F172A]">Описание и условия</h2>
+              <h2 className="text-[16px] font-semibold text-[#0F172A]">{t('descriptionTitle')}</h2>
             </div>
             <p className="text-[14px] text-[#334155] leading-relaxed pl-3">
               {selected.rules || selected.description}
@@ -490,7 +506,7 @@ export default function ContestsPage() {
                 <div className="w-9 h-9 rounded-lg bg-[#E0F2FE] flex items-center justify-center">
                   <HugeiconsIcon icon={AirplaneTakeOff01Icon} size={18} className="text-[#0284C7]" />
                 </div>
-                <h2 className="text-[16px] font-semibold text-[#0F172A]">Подача заявки</h2>
+                <h2 className="text-[16px] font-semibold text-[#0F172A]">{t('submitTitle')}</h2>
               </div>
 
               {submitError && (
@@ -526,7 +542,7 @@ export default function ContestsPage() {
                 {/* File upload */}
                 <div>
                   <label className="text-[13px] font-medium text-[#0F172A] block mb-1.5">
-                    Конкурсная работа*
+                    {t('uploadTitle')}*
                   </label>
                   <div
                     onClick={() => fileInputRef.current?.click()}
@@ -547,10 +563,10 @@ export default function ContestsPage() {
                     ) : (
                       <>
                         <p className="text-[14px] text-[#0F172A] font-medium">
-                          Нажмите, чтобы загрузить конкурсную работу
+                          {t('uploadDesc')}
                         </p>
                         <p className="text-[12px] text-[#64748B] mt-1">
-                          Макс. размер: 50 МБ. Форматы: MP4, AVI, MOV
+                          {t('uploadFormats')}
                         </p>
                       </>
                     )}
@@ -566,7 +582,7 @@ export default function ContestsPage() {
                     className="mt-0.5 w-4 h-4 rounded border-[#E2E8F0] text-[#0284C7] focus:ring-[#0284C7]/30 accent-[#0284C7]"
                   />
                   <span className="text-[13px] text-[#64748B] leading-snug">
-                    Я даю согласие на обработку персональных данных в соответствии с политикой конфиденциальности
+                    {t('consentText')}
                   </span>
                 </label>
 
@@ -577,7 +593,7 @@ export default function ContestsPage() {
                   disabled={!consent}
                   className="w-full sm:w-auto"
                 >
-                  Отправить заявку
+                  {t('submitApplication')}
                 </Button>
               </form>
             </>
@@ -593,9 +609,9 @@ export default function ContestsPage() {
               <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                 <HugeiconsIcon icon={CheckmarkCircle01Icon} size={28} className="text-emerald-600" />
               </div>
-              <h3 className="text-[18px] font-semibold text-[#0F172A] mb-2">Заявка отправлена!</h3>
+              <h3 className="text-[18px] font-semibold text-[#0F172A] mb-2">{t('successTitle')}</h3>
               <p className="text-[14px] text-[#64748B] max-w-md mx-auto">
-                Спасибо за участие! Мы свяжемся с вами по указанному email в течение 5 рабочих дней.
+                {t('successDesc')}
               </p>
             </motion.div>
           )}
@@ -604,7 +620,7 @@ export default function ContestsPage() {
           {selected.status === 'COMPLETED' && (
             <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-6 text-center">
               <p className="text-[14px] text-[#64748B]">
-                Этот конкурс завершён. Приём заявок закрыт.
+                {t('contestCompleted')}
               </p>
             </div>
           )}
@@ -624,10 +640,10 @@ export default function ContestsPage() {
         className="mb-6"
       >
         <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight text-[#0F172A]">
-          Конкурсы
+          {t('pageTitle')}
         </h1>
         <p className="mt-1.5 text-[15px] text-[#64748B]">
-          Участвуй в конкурсах по водосбережению и выиграй ценные призы
+          {t('pageSubtitle')}
         </p>
       </motion.div>
 

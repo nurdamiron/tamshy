@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 const testimonials = [
   {
@@ -55,6 +56,7 @@ function StarRating({ count }: { count: number }) {
 }
 
 export default function Testimonials() {
+  const t = useTranslations('testimonials');
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const dragX = useMotionValue(0);
@@ -88,12 +90,12 @@ export default function Testimonials() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-14"
         >
-          <span className="text-caption text-[#0284C7] tracking-widest">ОТЗЫВЫ</span>
+          <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-            Что говорят участники
+            {t('title')}
           </h2>
           <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
-            Реальные истории школьников и учителей
+            {t('subtitle')}
           </p>
         </motion.div>
 

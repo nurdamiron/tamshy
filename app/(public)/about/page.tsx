@@ -13,6 +13,7 @@ import {
   HelpCircleIcon,
 } from '@hugeicons/core-free-icons';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 /* ---------- animation helpers ---------- */
 
@@ -50,51 +51,51 @@ function AnimatedSection({
 
 /* ---------- data ---------- */
 
-const NAV_ITEMS = [
-  { id: 'goals', label: 'Цели и задачи' },
-  { id: 'description', label: 'Описание инициативы' },
-  { id: 'documents', label: 'Документы проекта' },
+const NAV_ITEM_KEYS = [
+  { id: 'goals', key: 'navGoals' },
+  { id: 'description', key: 'navDescription' },
+  { id: 'documents', key: 'navDocuments' },
 ] as const;
 
-const FEATURES = [
+const FEATURE_DEFS = [
   {
     icon: Megaphone01Icon,
-    title: 'Информирование',
-    text: 'Повышение осведомлённости школьников и учителей о проблемах водных ресурсов Казахстана.',
+    titleKey: 'feature1Title',
+    textKey: 'feature1Desc',
     color: '#0284C7',
     bg: '#E0F2FE',
   },
   {
     icon: File01Icon,
-    title: 'Публикация',
-    text: 'Платформа для размещения видеороликов, исследований, арт-проектов и изобретений.',
+    titleKey: 'feature2Title',
+    textKey: 'feature2Desc',
     color: '#3B82F6',
     bg: '#DBEAFE',
   },
   {
     icon: Medal01Icon,
-    title: 'Конкурсы',
-    text: 'Организация республиканских конкурсов водных проектов среди школьников.',
+    titleKey: 'feature3Title',
+    textKey: 'feature3Desc',
     color: '#F59E0B',
     bg: '#FEF3C7',
   },
   {
     icon: Settings01Icon,
-    title: 'Администрирование',
-    text: 'Удобные инструменты для управления проектами, оценки и голосования.',
+    titleKey: 'feature4Title',
+    textKey: 'feature4Desc',
     color: '#64748B',
     bg: '#F1F5F9',
   },
 ];
 
-const DOCUMENTS = [
+const DOCUMENT_KEYS = [
   {
-    title: 'Положение о проекте',
+    titleKey: 'doc1Title',
     size: '2.4 MB',
     type: 'PDF',
   },
   {
-    title: 'Презентация инициативы',
+    titleKey: 'doc2Title',
     size: '5.1 MB',
     type: 'PDF',
   },
@@ -103,12 +104,13 @@ const DOCUMENTS = [
 /* ---------- component ---------- */
 
 export default function AboutPage() {
+  const t = useTranslations('about');
   const [activeSection, setActiveSection] = useState<string>('goals');
 
   /* track which section is in viewport */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-    NAV_ITEMS.forEach(({ id }) => {
+    NAV_ITEM_KEYS.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (!el) return;
       const observer = new IntersectionObserver(
@@ -135,9 +137,9 @@ export default function AboutPage() {
           <div className="sticky top-24 space-y-8">
             {/* navigation */}
             <div>
-              <p className="text-caption text-[#64748B] mb-3">НАВИГАЦИЯ</p>
+              <p className="text-caption text-[#64748B] mb-3">{t('navigation')}</p>
               <nav className="flex flex-col gap-1">
-                {NAV_ITEMS.map(({ id, label }) => (
+                {NAV_ITEM_KEYS.map(({ id, key }) => (
                   <button
                     key={id}
                     onClick={() => scrollTo(id)}
@@ -150,7 +152,7 @@ export default function AboutPage() {
                       }
                     `}
                   >
-                    {label}
+                    {t(key)}
                   </button>
                 ))}
               </nav>
@@ -161,15 +163,15 @@ export default function AboutPage() {
               <div className="w-10 h-10 rounded-xl bg-[#E0F2FE] flex items-center justify-center mb-3">
                 <HugeiconsIcon icon={HelpCircleIcon} size={20} className="text-[#0284C7]" />
               </div>
-              <p className="text-[15px] font-semibold text-[#0F172A] mb-1">Есть вопросы?</p>
+              <p className="text-[15px] font-semibold text-[#0F172A] mb-1">{t('questionsTitle')}</p>
               <p className="text-[13px] text-[#64748B] mb-4">
-                Свяжитесь с нами, и мы ответим на все ваши вопросы о проекте.
+                {t('questionsDesc')}
               </p>
               <Link
                 href="/contacts"
                 className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#0284C7] hover:text-[#0369A1] transition-colors"
               >
-                Связаться
+                {t('writeMessage')}
                 <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
               </Link>
             </div>
@@ -181,9 +183,9 @@ export default function AboutPage() {
           {/* page header */}
           <AnimatedSection>
             <div className="mb-10">
-              <h1 className="text-[32px] font-bold tracking-tight text-[#0F172A]">О проекте</h1>
+              <h1 className="text-[32px] font-bold tracking-tight text-[#0F172A]">{t('title')}</h1>
               <p className="mt-2 text-[15px] text-[#64748B] max-w-2xl">
-                Информация о платформе Тамшы, её целях, задачах и основных документах проекта.
+                {t('subtitle')}
               </p>
             </div>
           </AnimatedSection>
@@ -194,21 +196,18 @@ export default function AboutPage() {
               <div className="flex items-stretch gap-4 mb-6">
                 <div className="w-1 rounded-full bg-gradient-to-b from-[#0284C7] to-[#38BDF8] shrink-0" />
                 <div>
-                  <h2 className="text-[24px] font-semibold text-[#0F172A]">Цели и задачи</h2>
+                  <h2 className="text-[24px] font-semibold text-[#0F172A]">{t('goalsTitle')}</h2>
                   <p className="mt-2 text-[15px] text-[#64748B] leading-relaxed max-w-2xl">
-                    Платформа Тамшы.kz создана для популяризации бережного отношения к водным
-                    ресурсам среди школьников Казахстана. Проект объединяет образовательные и
-                    конкурсные инициативы, направленные на вовлечение молодёжи в решение
-                    экологических проблем, связанных с водой.
+                    {t('goalsDesc')}
                   </p>
                 </div>
               </div>
             </AnimatedSection>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              {FEATURES.map((feat, i) => (
+              {FEATURE_DEFS.map((feat, i) => (
                 <motion.div
-                  key={feat.title}
+                  key={feat.titleKey}
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="visible"
@@ -222,8 +221,8 @@ export default function AboutPage() {
                     >
                       <HugeiconsIcon icon={feat.icon} size={22} style={{ color: feat.color }} />
                     </div>
-                    <h3 className="text-[16px] font-semibold text-[#0F172A] mb-1">{feat.title}</h3>
-                    <p className="text-[13px] text-[#64748B] leading-relaxed">{feat.text}</p>
+                    <h3 className="text-[16px] font-semibold text-[#0F172A] mb-1">{t(feat.titleKey)}</h3>
+                    <p className="text-[13px] text-[#64748B] leading-relaxed">{t(feat.textKey)}</p>
                   </div>
                 </motion.div>
               ))}
@@ -235,7 +234,7 @@ export default function AboutPage() {
             <AnimatedSection>
               <div className="flex items-stretch gap-4 mb-6">
                 <div className="w-1 rounded-full bg-gradient-to-b from-[#0284C7] to-[#38BDF8] shrink-0" />
-                <h2 className="text-[24px] font-semibold text-[#0F172A]">Описание инициативы</h2>
+                <h2 className="text-[24px] font-semibold text-[#0F172A]">{t('descTitle')}</h2>
               </div>
             </AnimatedSection>
 
@@ -243,16 +242,10 @@ export default function AboutPage() {
               <AnimatedSection className="flex-1">
                 <div className="space-y-4">
                   <p className="text-[15px] text-[#0F172A]/80 leading-relaxed">
-                    Инициатива Тамшы реализуется при поддержке Министерства водных ресурсов и
-                    ирригации Республики Казахстан и направлена на экологическое просвещение
-                    молодёжи в контексте проблем бассейна Аральского моря.
+                    {t('descP1')}
                   </p>
                   <p className="text-[15px] text-[#0F172A]/80 leading-relaxed">
-                    Программа охватывает все регионы страны и предлагает школьникам возможность
-                    представить собственные проекты по водосбережению в формате видеороликов,
-                    научных исследований, художественных работ и технических изобретений.
-                    Лучшие работы оцениваются экспертным жюри ИАЦ водных ресурсов, а победители
-                    получают дипломы и ценные призы.
+                    {t('descP2')}
                   </p>
                 </div>
               </AnimatedSection>
@@ -263,7 +256,7 @@ export default function AboutPage() {
                   <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/10" />
                   <div className="absolute bottom-6 left-6 w-12 h-12 rounded-full bg-white/10" />
                   <p className="text-white/90 text-[14px] font-medium text-center px-6 leading-relaxed">
-                    Район бассейна<br />Аральского моря
+                    {t('descImageAlt')}
                   </p>
                 </div>
               </AnimatedSection>
@@ -275,14 +268,14 @@ export default function AboutPage() {
             <AnimatedSection>
               <div className="flex items-stretch gap-4 mb-6">
                 <div className="w-1 rounded-full bg-gradient-to-b from-[#0284C7] to-[#38BDF8] shrink-0" />
-                <h2 className="text-[24px] font-semibold text-[#0F172A]">Документы проекта</h2>
+                <h2 className="text-[24px] font-semibold text-[#0F172A]">{t('docsTitle')}</h2>
               </div>
             </AnimatedSection>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {DOCUMENTS.map((doc, i) => (
+              {DOCUMENT_KEYS.map((doc, i) => (
                 <motion.div
-                  key={doc.title}
+                  key={doc.titleKey}
                   variants={fadeUp}
                   initial="hidden"
                   whileInView="visible"
@@ -329,7 +322,7 @@ export default function AboutPage() {
                         </div>
                         <div>
                           <h3 className="text-[15px] font-semibold text-[#0F172A] mb-0.5">
-                            {doc.title}
+                            {t(doc.titleKey)}
                           </h3>
                           <p className="text-[12px] text-[#64748B]">
                             {doc.type} &middot; {doc.size}

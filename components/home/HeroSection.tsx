@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Building01Icon, Globe02Icon, StarIcon } from '@hugeicons/core-free-icons';
 
@@ -120,6 +121,7 @@ const trustBadgeVariants = {
 };
 
 export default function HeroSection() {
+  const t = useTranslations('hero');
   return (
     <section
       className="relative overflow-hidden min-h-[620px] sm:min-h-[720px] flex items-center"
@@ -187,7 +189,7 @@ export default function HeroSection() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#F5A623]" />
               </span>
               <span className="text-[13px] font-medium text-white/90">
-                Экологическая инициатива · Казахстан
+                {t('badge')}
               </span>
             </motion.div>
 
@@ -198,23 +200,23 @@ export default function HeroSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Экологическая инициатива
+              {t('badge')}
             </motion.p>
 
             {/* Main heading with staggered words */}
             <h1 className="text-[40px] sm:text-[52px] lg:text-[64px] font-bold text-white leading-[1.05] tracking-tight">
-              {['Экономь', 'воду', '–', 'сохраняй', 'будущее!'].map((word, i) => (
+              {t('title').split(' ').map((word, i) => (
                 <motion.span
-                  key={word}
+                  key={`${word}-${i}`}
                   custom={i}
                   variants={wordVariants}
                   initial="hidden"
                   animate="visible"
                   className="inline-block mr-[0.3em]"
                 >
-                  {word === '–' ? (
+                  {word === '–' || word === '--' ? (
                     <>{word}{' '}<br className="hidden sm:block" /></>
-                  ) : word === 'воду' ? (
+                  ) : i === 1 ? (
                     <span className="relative">
                       {word}
                       <motion.svg
@@ -249,8 +251,7 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.6 }}
             >
-              Информационный веб-сайт проекта по формированию культуры
-              рационального потребления водных ресурсов в Казахстане.
+              {t('subtitle')}
             </motion.p>
 
             {/* CTA buttons */}
@@ -267,7 +268,7 @@ export default function HeroSection() {
                   whileTap={{ scale: 0.98 }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0284C7]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  <span className="relative z-10">Узнать больше</span>
+                  <span className="relative z-10">{t('learnMore')}</span>
                 </motion.button>
               </Link>
               <Link href="/contests">
@@ -276,7 +277,7 @@ export default function HeroSection() {
                   whileHover={{ backgroundColor: 'rgba(255,255,255,0.2)', scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Принять участие
+                  {t('participate')}
                   <motion.svg
                     width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                     animate={{ x: [0, 4, 0] }}
@@ -291,9 +292,9 @@ export default function HeroSection() {
             {/* Trust badges */}
             <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3">
               {[
-                { label: 'Минводресурсов РК', icon: Building01Icon },
-                { label: 'ЮНИСЕФ', icon: Globe02Icon },
-                { label: 'Программа «Адал азамат»', icon: StarIcon },
+                { label: t('partner1'), icon: Building01Icon },
+                { label: t('partner2'), icon: Globe02Icon },
+                { label: t('partner3'), icon: StarIcon },
               ].map((item, i) => (
                 <motion.div
                   key={item.label}

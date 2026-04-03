@@ -2,6 +2,7 @@
 
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -25,38 +26,39 @@ function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: stri
   return <span ref={ref}>{current}{suffix}</span>;
 }
 
-const facts = [
-  {
-    value: 70,
-    suffix: '%',
-    label: 'водных ресурсов Казахстана формируется за пределами страны',
-    dotColor: '#3B82F6',
-    bg: 'bg-blue-50',
-  },
-  {
-    value: 45,
-    suffix: '%',
-    label: 'воды теряется из-за устаревшей ирригационной инфраструктуры',
-    dotColor: '#F59E0B',
-    bg: 'bg-amber-50',
-  },
-  {
-    value: 90,
-    suffix: '%',
-    label: 'Аральского моря высохло за последние 60 лет',
-    dotColor: '#EF4444',
-    bg: 'bg-red-50',
-  },
-  {
-    value: 4,
-    suffix: ' млн',
-    label: 'человек в Казахстане не имеют доступа к чистой питьевой воде',
-    dotColor: '#8B5CF6',
-    bg: 'bg-purple-50',
-  },
-];
-
 export default function WhyWaterMatters() {
+  const t = useTranslations('whyWater');
+
+  const facts = [
+    {
+      value: 70,
+      suffix: '%',
+      label: t('fact1'),
+      dotColor: '#3B82F6',
+      bg: 'bg-blue-50',
+    },
+    {
+      value: 45,
+      suffix: '%',
+      label: t('fact2'),
+      dotColor: '#F59E0B',
+      bg: 'bg-amber-50',
+    },
+    {
+      value: 90,
+      suffix: '%',
+      label: t('fact3'),
+      dotColor: '#EF4444',
+      bg: 'bg-red-50',
+    },
+    {
+      value: 4,
+      suffix: ' млн',
+      label: t('fact4'),
+      dotColor: '#8B5CF6',
+      bg: 'bg-purple-50',
+    },
+  ];
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -176,11 +178,11 @@ export default function WhyWaterMatters() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <span className="text-caption text-[#0284C7] tracking-widest">ПОЧЕМУ ЭТО ВАЖНО</span>
+            <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
             <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3 leading-tight">
-              Казахстан -- одна из самых{' '}
+              {t('title')}{' '}
               <span className="text-[#0284C7] relative">
-                водоуязвимых
+                {t('titleHighlight')}
                 <motion.div
                   className="absolute -bottom-1 left-0 right-0 h-[3px] bg-gradient-to-r from-[#0284C7] to-[#38BDF8] rounded-full"
                   initial={{ scaleX: 0 }}
@@ -190,12 +192,10 @@ export default function WhyWaterMatters() {
                   style={{ transformOrigin: 'left' }}
                 />
               </span>{' '}
-              стран мира
+              {t('titleEnd')}
             </h2>
             <p className="text-[15px] text-[#64748B] mt-4 leading-relaxed">
-              Наша страна занимает последнее место в Центральной Азии по обеспеченности
-              водными ресурсами на душу населения. Каждый проект школьника -- это шаг к
-              решению этой проблемы.
+              {t('description')}
             </p>
 
             <div className="mt-8 space-y-4">

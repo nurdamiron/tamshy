@@ -3,11 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useTranslations } from 'next-intl';
 import {
-  News01Icon,
-  File01Icon,
-  Image01Icon,
-  Video01Icon,
   Search01Icon,
   Mail01Icon,
   MailSend01Icon,
@@ -19,7 +16,6 @@ import {
   Camera01Icon,
   CheckmarkBadge01Icon,
   DropletIcon,
-  GridViewIcon,
 } from '@hugeicons/core-free-icons';
 
 /* ------------------------------------------------------------------ */
@@ -51,41 +47,6 @@ interface NewsResponse {
 /*  Static data                                                        */
 /* ------------------------------------------------------------------ */
 
-const TABS: { key: Category; label: string; icon: typeof News01Icon }[] = [
-  { key: 'all', label: 'Все материалы', icon: GridViewIcon },
-  { key: 'news', label: 'Новости', icon: News01Icon },
-  { key: 'reports', label: 'Отчёты', icon: File01Icon },
-  { key: 'photos', label: 'Фото', icon: Image01Icon },
-  { key: 'videos', label: 'Видео', icon: Video01Icon },
-];
-
-const TIMELINE = [
-  {
-    period: 'Январь 2026',
-    title: 'Запуск проекта',
-    status: 'done' as const,
-    label: 'Выполнено',
-  },
-  {
-    period: 'Февраль-Март 2026',
-    title: 'Разработка материалов',
-    status: 'done' as const,
-    label: 'Выполнено',
-  },
-  {
-    period: 'Апрель-Май 2026',
-    title: 'Образовательная кампания',
-    status: 'active' as const,
-    label: 'В процессе',
-  },
-  {
-    period: 'Июнь 2026',
-    title: 'Подведение итогов',
-    status: 'upcoming' as const,
-    label: '',
-  },
-];
-
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
@@ -116,15 +77,12 @@ function mapCategory(cat: string): Category {
   return 'news';
 }
 
-function getCategoryBadge(cat: string): string {
-  const map: Record<string, string> = {
-    news: 'Новости',
-    reports: 'Отчёт',
-    photos: 'Фото',
-    videos: 'Видео',
-  };
-  return map[cat.toLowerCase()] ?? 'Новости';
-}
+const CATEGORY_BADGE_KEYS: Record<string, string> = {
+  news: 'badgeNews',
+  reports: 'badgeReports',
+  photos: 'badgePhotos',
+  videos: 'badgeVideos',
+};
 
 /* ------------------------------------------------------------------ */
 /*  Animation variants                                                 */
@@ -235,7 +193,7 @@ function Badge({
 
 /* ---- Cards ----- */
 
-function LargeNewsCard({ item }: { item: NewsItem }) {
+function LargeNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
   return (
     <motion.article variants={itemVariants} className="col-span-full">
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60">
@@ -254,7 +212,7 @@ function LargeNewsCard({ item }: { item: NewsItem }) {
         )}
         <div className="p-5 sm:p-6">
           <div className="flex items-center gap-3 mb-3">
-            <Badge>{getCategoryBadge(item.category)}</Badge>
+            <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
             <span className="text-[13px] text-[#64748B]">{formatDateLong(item.createdAt)}</span>
           </div>
           <h3 className="text-[18px] font-semibold text-[#0F172A] leading-snug mb-2">
@@ -264,7 +222,7 @@ function LargeNewsCard({ item }: { item: NewsItem }) {
             {item.content}
           </p>
           <button className="text-[14px] font-medium text-[#3B82F6] hover:text-[#2563EB] transition-colors cursor-pointer">
-            Читать далее &rarr;
+            {t('readMore')} &rarr;
           </button>
         </div>
       </div>
@@ -272,7 +230,7 @@ function LargeNewsCard({ item }: { item: NewsItem }) {
   );
 }
 
-function ReportCard({ item }: { item: NewsItem }) {
+function ReportCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
@@ -294,7 +252,7 @@ function ReportCard({ item }: { item: NewsItem }) {
             className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2 transition-colors cursor-pointer w-fit"
           >
             <HugeiconsIcon icon={Download01Icon} size={15} />
-            Скачать (PDF)
+            {t('downloadPdf')}
           </a>
         )}
       </div>
@@ -302,7 +260,7 @@ function ReportCard({ item }: { item: NewsItem }) {
   );
 }
 
-function VideoCard({ item }: { item: NewsItem }) {
+function VideoCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
@@ -314,7 +272,7 @@ function VideoCard({ item }: { item: NewsItem }) {
           </div>
         </GradientPlaceholder>
         <div className="p-5 flex-1 flex flex-col">
-          <Badge>{getCategoryBadge(item.category)}</Badge>
+          <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
           <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mt-3">
             {item.title}
           </h3>
@@ -324,7 +282,7 @@ function VideoCard({ item }: { item: NewsItem }) {
   );
 }
 
-function PhotoCard({ item }: { item: NewsItem }) {
+function PhotoCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
@@ -334,7 +292,7 @@ function PhotoCard({ item }: { item: NewsItem }) {
             <div className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
               <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
               <span className="text-[12px] font-medium text-white/90">
-                {item.photoCount ?? 0} фото
+                {item.photoCount ?? 0} {t('photos')}
               </span>
             </div>
           </div>
@@ -343,7 +301,7 @@ function PhotoCard({ item }: { item: NewsItem }) {
             <div className="relative z-10 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
               <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
               <span className="text-[12px] font-medium text-white/90">
-                {item.photoCount ?? 0} фото
+                {item.photoCount ?? 0} {t('photos')}
               </span>
             </div>
           </GradientPlaceholder>
@@ -359,12 +317,12 @@ function PhotoCard({ item }: { item: NewsItem }) {
   );
 }
 
-function SmallNewsCard({ item }: { item: NewsItem }) {
+function SmallNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
         <div className="flex items-center gap-3 mb-3">
-          <Badge>{getCategoryBadge(item.category)}</Badge>
+          <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
           <span className="text-[12px] text-[#64748B]">{formatDate(item.createdAt)}</span>
         </div>
         <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mb-2">
@@ -373,19 +331,19 @@ function SmallNewsCard({ item }: { item: NewsItem }) {
         <p className="text-[13px] text-[#64748B] leading-relaxed mb-4 flex-1 line-clamp-2">
           {item.content}
         </p>
-        <span className="text-[12px] text-[#94A3B8]">{item.viewCount} просмотра</span>
+        <span className="text-[12px] text-[#94A3B8]">{item.viewCount} {t('viewsCount')}</span>
       </div>
     </motion.article>
   );
 }
 
-function NewsCard({ item, isFirst }: { item: NewsItem; isFirst: boolean }) {
+function NewsCard({ item, isFirst, t }: { item: NewsItem; isFirst: boolean; t: (key: string) => string }) {
   const category = mapCategory(item.category);
-  if (isFirst && category === 'news') return <LargeNewsCard item={item} />;
-  if (category === 'reports') return <ReportCard item={item} />;
-  if (category === 'videos') return <VideoCard item={item} />;
-  if (category === 'photos') return <PhotoCard item={item} />;
-  return <SmallNewsCard item={item} />;
+  if (isFirst && category === 'news') return <LargeNewsCard item={item} t={t} />;
+  if (category === 'reports') return <ReportCard item={item} t={t} />;
+  if (category === 'videos') return <VideoCard item={item} t={t} />;
+  if (category === 'photos') return <PhotoCard item={item} t={t} />;
+  return <SmallNewsCard item={item} t={t} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -393,6 +351,7 @@ function NewsCard({ item, isFirst }: { item: NewsItem; isFirst: boolean }) {
 /* ------------------------------------------------------------------ */
 
 export default function ProgressPage() {
+  const t = useTranslations('progress');
   const [activeTab, setActiveTab] = useState<Category>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -450,14 +409,14 @@ export default function ProgressPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'Ошибка при подписке');
+        throw new Error(errData.message || t('subscribeError'));
       }
 
       setNewsletterSuccess(true);
       setEmail('');
       setTimeout(() => setNewsletterSuccess(false), 5000);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      const message = err instanceof Error ? err.message : t('errorGeneric');
       setNewsletterError(message);
     } finally {
       setNewsletterLoading(false);
@@ -477,10 +436,10 @@ export default function ProgressPage() {
           >
             <div>
               <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight text-[#0F172A]">
-                Ход реализации
+                {t('title')}
               </h1>
               <p className="mt-2 text-[15px] text-[#64748B] max-w-xl">
-                Последние события, отчёты и медиаматериалы проекта.
+                {t('subtitle')}
               </p>
             </div>
 
@@ -493,7 +452,7 @@ export default function ProgressPage() {
               />
               <input
                 type="text"
-                placeholder="Поиск по материалам..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -511,7 +470,7 @@ export default function ProgressPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
-            {TABS.map((tab) => {
+            {TAB_KEYS.map((tab) => {
               const isActive = activeTab === tab.key;
               return (
                 <button
@@ -528,7 +487,7 @@ export default function ProgressPage() {
                     }`}
                 >
                   <HugeiconsIcon icon={tab.icon} size={16} />
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               );
             })}
@@ -560,7 +519,7 @@ export default function ProgressPage() {
                 >
                   {newsItems.length > 0 ? (
                     newsItems.map((item, index) => (
-                      <NewsCard key={item.id} item={item} isFirst={index === 0} />
+                      <NewsCard key={item.id} item={item} isFirst={index === 0} t={t} />
                     ))
                   ) : (
                     <motion.div
@@ -568,7 +527,7 @@ export default function ProgressPage() {
                       className="col-span-full text-center py-16"
                     >
                       <p className="text-[16px] text-[#64748B]">
-                        Материалы не найдены
+                        {t('noResults')}
                       </p>
                     </motion.div>
                   )}
@@ -628,14 +587,14 @@ export default function ProgressPage() {
             {/* Project timeline */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5">
               <h3 className="text-[16px] font-semibold text-[#0F172A] mb-5">
-                Этапы проекта
+                {t('timelineTitle')}
               </h3>
               <div className="relative">
                 {/* Vertical line */}
                 <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-[#E2E8F0]" />
 
                 <div className="space-y-5">
-                  {TIMELINE.map((step, i) => (
+                  {TIMELINE_KEYS.map((step, i) => (
                     <motion.div
                       key={i}
                       className="relative flex gap-4"
@@ -658,12 +617,12 @@ export default function ProgressPage() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <p className="text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wide">
-                          {step.period}
+                          {t(step.periodKey)}
                         </p>
                         <p className="text-[14px] font-medium text-[#0F172A] mt-0.5">
-                          {step.title}
+                          {t(step.titleKey)}
                         </p>
-                        {step.label && (
+                        {step.labelKey && (
                           <span className="mt-1.5 inline-block">
                             <Badge
                               variant={
@@ -681,7 +640,7 @@ export default function ProgressPage() {
                                   className="mr-1"
                                 />
                               )}
-                              {step.label}
+                              {t(step.labelKey)}
                             </Badge>
                           </span>
                         )}
@@ -695,15 +654,15 @@ export default function ProgressPage() {
             {/* Newsletter subscribe */}
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5">
               <h3 className="text-[16px] font-semibold text-[#0F172A] mb-1.5">
-                Подписка на новости
+                {t('subscribeTitle')}
               </h3>
               <p className="text-[13px] text-[#64748B] mb-4">
-                Получайте уведомления о новых материалах проекта.
+                {t('subscribeDesc')}
               </p>
 
               {newsletterSuccess && (
                 <div className="mb-3 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-[13px] text-emerald-700">
-                  Вы успешно подписались!
+                  {t('subscribeSuccess')}
                 </div>
               )}
               {newsletterError && (
@@ -721,7 +680,7 @@ export default function ProgressPage() {
                   />
                   <input
                     type="email"
-                    placeholder="Email"
+                    placeholder={t('subscribePlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full h-10 pl-9 pr-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/30 focus:border-[#3B82F6] transition-all"

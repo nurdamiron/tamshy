@@ -3,58 +3,23 @@
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useRef, MouseEvent } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Video01Icon, File01Icon, Image01Icon, BulbIcon, SmartPhone01Icon } from '@hugeicons/core-free-icons';
 
-const categories = [
-  {
-    type: 'VIDEO',
-    title: 'Видео',
-    desc: 'Документальные фильмы и репортажи о водных проблемах',
-    count: '120+',
-    gradient: 'from-blue-500 to-blue-600',
-    icon: Video01Icon,
-    span: 'sm:col-span-1 lg:col-span-3',
-  },
-  {
-    type: 'RESEARCH',
-    title: 'Исследования',
-    desc: 'Научные работы, анализ качества воды и экологии',
-    count: '85+',
-    gradient: 'from-purple-500 to-purple-600',
-    icon: File01Icon,
-    span: 'sm:col-span-1 lg:col-span-3',
-  },
-  {
-    type: 'ART',
-    title: 'Арт / Плакаты',
-    desc: 'Рисунки и визуальные материалы на тему воды',
-    count: '150+',
-    gradient: 'from-amber-500 to-orange-500',
-    icon: Image01Icon,
-    span: 'sm:col-span-1 lg:col-span-2',
-  },
-  {
-    type: 'INVENTION',
-    title: 'Изобретения',
-    desc: 'Устройства и технические решения водосбережения',
-    count: '45+',
-    gradient: 'from-orange-500 to-red-500',
-    icon: BulbIcon,
-    span: 'sm:col-span-1 lg:col-span-2',
-  },
-  {
-    type: 'APP',
-    title: 'Приложения',
-    desc: 'Мобильные приложения для мониторинга воды',
-    count: '30+',
-    gradient: 'from-teal-500 to-emerald-500',
-    icon: SmartPhone01Icon,
-    span: 'sm:col-span-2 lg:col-span-2',
-  },
-];
+interface CategoryItem {
+  type: string;
+  title: string;
+  desc: string;
+  count: string;
+  gradient: string;
+  icon: typeof Video01Icon;
+  span: string;
+  projectsLabel: string;
+  viewLabel: string;
+}
 
-function TiltCard({ category }: { category: typeof categories[0] }) {
+function TiltCard({ category }: { category: CategoryItem }) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -110,7 +75,7 @@ function TiltCard({ category }: { category: typeof categories[0] }) {
               <HugeiconsIcon icon={category.icon} size={24} className="text-white" />
             </motion.div>
             <div className="text-[24px] font-bold text-white">{category.count}</div>
-            <div className="text-[12px] text-white/60 font-medium">проектов</div>
+            <div className="text-[12px] text-white/60 font-medium">{category.projectsLabel}</div>
           </div>
 
           <div className="bg-white p-5 -mt-3 rounded-t-2xl relative">
@@ -121,7 +86,7 @@ function TiltCard({ category }: { category: typeof categories[0] }) {
               {category.desc}
             </p>
             <div className="mt-3 flex items-center text-[13px] text-[#0284C7] font-medium">
-              Смотреть
+              {category.viewLabel}
               <motion.svg
                 width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                 className="ml-1"
@@ -141,6 +106,66 @@ function TiltCard({ category }: { category: typeof categories[0] }) {
 }
 
 export default function ProjectCategories() {
+  const t = useTranslations('categories');
+
+  const categories: CategoryItem[] = [
+    {
+      type: 'VIDEO',
+      title: t('video'),
+      desc: t('videoDesc'),
+      count: '120+',
+      gradient: 'from-blue-500 to-blue-600',
+      icon: Video01Icon,
+      span: 'sm:col-span-1 lg:col-span-3',
+      projectsLabel: t('projects'),
+      viewLabel: t('view'),
+    },
+    {
+      type: 'RESEARCH',
+      title: t('research'),
+      desc: t('researchDesc'),
+      count: '85+',
+      gradient: 'from-purple-500 to-purple-600',
+      icon: File01Icon,
+      span: 'sm:col-span-1 lg:col-span-3',
+      projectsLabel: t('projects'),
+      viewLabel: t('view'),
+    },
+    {
+      type: 'ART',
+      title: t('art'),
+      desc: t('artDesc'),
+      count: '150+',
+      gradient: 'from-amber-500 to-orange-500',
+      icon: Image01Icon,
+      span: 'sm:col-span-1 lg:col-span-2',
+      projectsLabel: t('projects'),
+      viewLabel: t('view'),
+    },
+    {
+      type: 'INVENTION',
+      title: t('invention'),
+      desc: t('inventionDesc'),
+      count: '45+',
+      gradient: 'from-orange-500 to-red-500',
+      icon: BulbIcon,
+      span: 'sm:col-span-1 lg:col-span-2',
+      projectsLabel: t('projects'),
+      viewLabel: t('view'),
+    },
+    {
+      type: 'APP',
+      title: t('app'),
+      desc: t('appDesc'),
+      count: '30+',
+      gradient: 'from-teal-500 to-emerald-500',
+      icon: SmartPhone01Icon,
+      span: 'sm:col-span-2 lg:col-span-2',
+      projectsLabel: t('projects'),
+      viewLabel: t('view'),
+    },
+  ];
+
   return (
     <section className="py-24 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -151,12 +176,12 @@ export default function ProjectCategories() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-14"
         >
-          <span className="text-caption text-[#0284C7] tracking-widest">КАТЕГОРИИ</span>
+          <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-            Виды проектов
+            {t('title')}
           </h2>
           <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
-            Выбери формат, который тебе ближе
+            {t('subtitle')}
           </p>
         </motion.div>
 

@@ -8,22 +8,9 @@ import Input from '@/components/ui/Input';
 import PageHeader from '@/components/layout/PageHeader';
 import { regionLabels } from '@/lib/validators';
 import { PROJECT_TYPES } from '@/lib/constants';
+import { useTranslations } from 'next-intl';
 
-const regionOptions = [
-  { value: 'all', label: 'Все регионы' },
-  ...Object.entries(regionLabels).map(([value, label]) => ({ value, label })),
-];
-
-const typeOptions = [
-  { value: 'all', label: 'Все типы' },
-  ...PROJECT_TYPES.map((t) => ({ value: t.value, label: t.label })),
-];
-
-const sortOptions = [
-  { value: 'new', label: 'Новые' },
-  { value: 'popular', label: 'Популярные' },
-  { value: 'winner', label: 'Победители' },
-];
+/* options are built inside the component with translations */
 
 interface ProjectDataRaw {
   id: string;
@@ -56,6 +43,26 @@ interface ProjectItem {
 }
 
 export default function ProjectsPage() {
+  const t = useTranslations('projects');
+  const tRegions = useTranslations('regions');
+  const tTypes = useTranslations('types');
+
+  const regionOptions = [
+    { value: 'all', label: t('allRegions') },
+    ...Object.entries(regionLabels).map(([value, label]) => ({ value, label: tRegions(value) || label })),
+  ];
+
+  const typeOptions = [
+    { value: 'all', label: t('allTypes') },
+    ...PROJECT_TYPES.map((pt) => ({ value: pt.value, label: tTypes(pt.value) || pt.label })),
+  ];
+
+  const sortOptions = [
+    { value: 'new', label: t('sortNew') },
+    { value: 'popular', label: t('sortPopular') },
+    { value: 'winner', label: t('sortWinner') },
+  ];
+
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -137,8 +144,8 @@ export default function ProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <PageHeader
-        title="Проекты"
-        subtitle="Все водные проекты школьников Казахстана"
+        title={t('title')}
+        subtitle={t('subtitle')}
       />
 
       {/* Filters */}
@@ -146,7 +153,7 @@ export default function ProjectsPage() {
         <div className="flex flex-wrap gap-3">
           <div className="w-full sm:w-auto sm:flex-1 sm:max-w-xs">
             <Input
-              placeholder="Поиск по названию..."
+              placeholder={t('searchPlaceholder')}
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
             />
@@ -195,8 +202,8 @@ export default function ProjectsPage() {
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
-          <p className="text-[16px] text-[#64748B]">Проекты не найдены</p>
-          <p className="text-[13px] text-[#64748B]/60 mt-1">Попробуйте изменить фильтры</p>
+          <p className="text-[16px] text-[#64748B]">{t('noResults')}</p>
+          <p className="text-[13px] text-[#64748B]/60 mt-1">{t('noResultsHint')}</p>
         </div>
       ) : null}
 

@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card';
 import PageHeader from '@/components/layout/PageHeader';
 import { regionLabels } from '@/lib/validators';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 interface LeaderProject {
   id: string;
@@ -25,6 +26,7 @@ const typeToBadge: Record<string, 'video' | 'research' | 'art' | 'invention' | '
 };
 
 export default function LeaderboardPage() {
+  const t = useTranslations('leaderboard');
   const [projects, setProjects] = useState<LeaderProject[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,8 +47,8 @@ export default function LeaderboardPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <PageHeader
-        title="Таблица лидеров"
-        subtitle="Проекты с наибольшим количеством голосов"
+        title={t('title')}
+        subtitle={t('subtitle')}
       />
 
       {loading ? (
@@ -107,7 +109,7 @@ export default function LeaderboardPage() {
                       <div className="text-[18px] font-bold text-[#0284C7]">
                         {project._count.votes}
                       </div>
-                      <div className="text-[11px] text-[#64748B]">голосов</div>
+                      <div className="text-[11px] text-[#64748B]">{t('votes')}</div>
                     </div>
                   </div>
                 </Card>
@@ -117,7 +119,7 @@ export default function LeaderboardPage() {
 
           {projects.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-[16px] text-[#64748B]">Пока нет проектов</p>
+              <p className="text-[16px] text-[#64748B]">{t('noProjects')}</p>
             </div>
           )}
         </div>

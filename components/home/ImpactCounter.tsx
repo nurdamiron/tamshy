@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 function AnimatedCounter({ target, suffix = '', duration = 2500 }: { target: number; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -28,56 +29,6 @@ function AnimatedCounter({ target, suffix = '', duration = 2500 }: { target: num
   );
 }
 
-const impacts = [
-  {
-    value: 1250000,
-    suffix: '+',
-    label: 'Литров воды сохранено',
-    description: 'Благодаря проектам участников',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="#38BDF8" fillOpacity="0.8" />
-      </svg>
-    ),
-  },
-  {
-    value: 45,
-    suffix: '+',
-    label: 'Тонн CO2 снижено',
-    description: 'Экологический эффект',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.5">
-        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-      </svg>
-    ),
-  },
-  {
-    value: 55,
-    suffix: '+',
-    label: 'Школ участвуют',
-    description: 'По всему Казахстану',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="1.5">
-        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-        <path d="M6 12v5c0 1.657 2.686 3 6 3s6-1.343 6-3v-5" />
-      </svg>
-    ),
-  },
-  {
-    value: 14,
-    suffix: '',
-    label: 'Регионов охвачено',
-    description: 'Все области Казахстана',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="1.5">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    ),
-  },
-];
-
 function StarParticle({ delay, x, y }: { delay: number; x: string; y: string }) {
   return (
     <motion.div
@@ -98,6 +49,58 @@ function StarParticle({ delay, x, y }: { delay: number; x: string; y: string }) 
 }
 
 export default function ImpactCounter() {
+  const t = useTranslations('impact');
+
+  const impacts = [
+    {
+      value: 1250000,
+      suffix: '+',
+      label: t('liters'),
+      description: t('litersDesc'),
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="#38BDF8" fillOpacity="0.8" />
+        </svg>
+      ),
+    },
+    {
+      value: 45,
+      suffix: '+',
+      label: t('co2'),
+      description: t('co2Desc'),
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="1.5">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+          <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+        </svg>
+      ),
+    },
+    {
+      value: 55,
+      suffix: '+',
+      label: t('schoolsLabel'),
+      description: t('schoolsDesc'),
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="1.5">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c0 1.657 2.686 3 6 3s6-1.343 6-3v-5" />
+        </svg>
+      ),
+    },
+    {
+      value: 14,
+      suffix: '',
+      label: t('regionsLabel'),
+      description: t('regionsDesc'),
+      icon: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="1.5">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <section className="relative py-24 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)' }}>
       {/* Star particles */}
@@ -134,12 +137,12 @@ export default function ImpactCounter() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-caption text-[#38BDF8] tracking-widest">НАШ ВКЛАД</span>
+          <span className="text-caption text-[#38BDF8] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-white mt-3">
-            Коллективный результат
+            {t('title')}
           </h2>
           <p className="text-[15px] text-white/40 mt-3 max-w-lg mx-auto">
-            Каждый проект -- это реальный вклад в будущее водных ресурсов
+            {t('subtitle')}
           </p>
         </motion.div>
 

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import Button from '@/components/ui/Button';
 import ProjectCard from '@/components/project/ProjectCard';
 
@@ -67,6 +68,7 @@ interface ApiProject {
 }
 
 export default function FeaturedProjects() {
+  const t = useTranslations('featured');
   const [projects, setProjects] = useState(fallbackProjects);
 
   useEffect(() => {
@@ -106,17 +108,17 @@ export default function FeaturedProjects() {
           className="flex items-end justify-between mb-12"
         >
           <div>
-            <span className="text-caption text-[#0284C7] tracking-widest">ИЗБРАННОЕ</span>
+            <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
             <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-              Лучшие проекты
+              {t('title')}
             </h2>
             <p className="text-[15px] text-[#64748B] mt-2">
-              Проекты с наибольшим количеством голосов
+              {t('subtitle')}
             </p>
           </div>
           <Link href="/projects" className="hidden sm:block">
             <Button variant="secondary" size="sm">
-              Смотреть все
+              {t('viewAll')}
             </Button>
           </Link>
         </motion.div>
@@ -143,7 +145,7 @@ export default function FeaturedProjects() {
         >
           <Link href="/projects">
             <Button variant="secondary" className="w-full">
-              Смотреть все проекты
+              {t('viewAllProjects')}
             </Button>
           </Link>
         </motion.div>

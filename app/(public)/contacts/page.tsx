@@ -8,6 +8,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
+import { useTranslations } from 'next-intl';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -18,14 +19,15 @@ const fadeUp = {
   }),
 };
 
-const topicOptions = [
-  { value: 'general', label: 'Общий вопрос' },
-  { value: 'cooperation', label: 'Сотрудничество' },
-  { value: 'support', label: 'Техническая поддержка' },
-  { value: 'suggestion', label: 'Предложение' },
-];
-
 export default function ContactsPage() {
+  const t = useTranslations('contacts');
+
+  const topicOptions = [
+    { value: 'general', label: t('topicGeneral') },
+    { value: 'cooperation', label: t('topicCooperation') },
+    { value: 'support', label: t('topicSupport') },
+    { value: 'suggestion', label: t('topicSuggestion') },
+  ];
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [topic, setTopic] = useState('');
@@ -59,7 +61,7 @@ export default function ContactsPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'Ошибка при отправке сообщения');
+        throw new Error(errData.message || t('errorSending'));
       }
 
       setSubmitted(true);
@@ -72,7 +74,7 @@ export default function ContactsPage() {
       // Reset success message after 5 seconds
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      const message = err instanceof Error ? err.message : t('errorGeneric');
       setErrorMsg(message);
     } finally {
       setLoading(false);
@@ -90,13 +92,13 @@ export default function ContactsPage() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="text-[12px] font-semibold text-[#3B82F6] tracking-widest uppercase">
-              Свяжитесь с нами
+              {t('subtitle')}
             </span>
             <h1 className="text-[32px] sm:text-[40px] font-bold text-[#0F172A] mt-2">
-              Контакты
+              {t('title')}
             </h1>
             <p className="text-[15px] sm:text-[16px] text-[#64748B] mt-3 max-w-xl">
-              Мы всегда рады помочь. Свяжитесь с нами любым удобным способом или заполните форму обратной связи.
+              {t('heroDesc')}
             </p>
           </motion.div>
         </div>
@@ -121,11 +123,11 @@ export default function ContactsPage() {
               </div>
               <div>
                 <p className="text-[11px] font-semibold text-[#64748B] tracking-widest uppercase mb-1">
-                  Адрес офиса
+                  {t('addressLabel')}
                 </p>
                 <p className="text-[15px] text-[#0F172A] leading-relaxed">
-                  ул. Айтеке би, 12, офис 305,<br />
-                  г. Кызылорда, Казахстан, 120000
+                  {t('address')}<br />
+                  {t('city')}
                 </p>
               </div>
             </motion.div>
@@ -144,15 +146,15 @@ export default function ContactsPage() {
               </div>
               <div>
                 <p className="text-[11px] font-semibold text-[#64748B] tracking-widest uppercase mb-1">
-                  Телефон
+                  {t('phoneLabel')}
                 </p>
                 <a
                   href="tel:+77242555555"
                   className="text-[15px] text-[#0F172A] hover:text-[#3B82F6] transition-colors"
                 >
-                  +7 (7242) 55-55-55
+                  {t('phone')}
                 </a>
-                <p className="text-[13px] text-[#64748B] mt-0.5">Пн-Пт, 09:00 - 18:00</p>
+                <p className="text-[13px] text-[#64748B] mt-0.5">{t('workHours')}</p>
               </div>
             </motion.div>
 
@@ -174,15 +176,15 @@ export default function ContactsPage() {
               </div>
               <div>
                 <p className="text-[11px] font-semibold text-[#64748B] tracking-widest uppercase mb-1">
-                  Электронная почта
+                  {t('emailLabel')}
                 </p>
                 <a
                   href="mailto:info@tamshy.kz"
                   className="text-[15px] text-[#0F172A] hover:text-[#3B82F6] transition-colors"
                 >
-                  info@tamshy.kz
+                  {t('email')}
                 </a>
-                <p className="text-[13px] text-[#64748B] mt-0.5">Для общих вопросов</p>
+                <p className="text-[13px] text-[#64748B] mt-0.5">{t('emailDesc')}</p>
               </div>
             </motion.div>
 
@@ -198,7 +200,7 @@ export default function ContactsPage() {
               viewport={{ once: true }}
             >
               <p className="text-[11px] font-semibold text-[#64748B] tracking-widest uppercase mb-3">
-                Мы в социальных сетях
+                {t('socialTitle')}
               </p>
               <div className="flex gap-2.5">
                 {[
@@ -284,10 +286,10 @@ export default function ContactsPage() {
               className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-6 sm:p-8"
             >
               <h2 className="text-[22px] sm:text-[26px] font-bold text-[#0F172A]">
-                Напишите нам
+                {t('formTitle')}
               </h2>
               <p className="text-[14px] sm:text-[15px] text-[#64748B] mt-2 mb-8">
-                Заполните форму ниже и мы свяжемся с вами в течение одного рабочего дня. Все поля, отмеченные звёздочкой, обязательны.
+                {t('formDesc')}
               </p>
 
               {/* Success message */}
@@ -301,9 +303,9 @@ export default function ContactsPage() {
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   <div>
-                    <p className="text-[14px] font-semibold text-green-800">Сообщение отправлено!</p>
+                    <p className="text-[14px] font-semibold text-green-800">{t('successTitle')}</p>
                     <p className="text-[13px] text-green-700 mt-0.5">
-                      Спасибо за обращение. Мы ответим вам в ближайшее время.
+                      {t('successDesc')}
                     </p>
                   </div>
                 </motion.div>
@@ -322,7 +324,7 @@ export default function ContactsPage() {
                     <line x1="9" y1="9" x2="15" y2="15" />
                   </svg>
                   <div>
-                    <p className="text-[14px] font-semibold text-red-800">Ошибка отправки</p>
+                    <p className="text-[14px] font-semibold text-red-800">{t('errorTitle')}</p>
                     <p className="text-[13px] text-red-700 mt-0.5">{errorMsg}</p>
                   </div>
                 </motion.div>
@@ -332,16 +334,16 @@ export default function ContactsPage() {
                 {/* Name + Email row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <Input
-                    label="ВАШЕ ИМЯ *"
-                    placeholder="Алмас Серикулы"
+                    label={t('nameLabel')}
+                    placeholder={t('namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
                   />
                   <Input
-                    label="EMAIL АДРЕС *"
+                    label={t('emailInputLabel')}
                     type="email"
-                    placeholder="example@email.com"
+                    placeholder={t('emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -350,17 +352,17 @@ export default function ContactsPage() {
 
                 {/* Topic select */}
                 <Select
-                  label="ТЕМА СООБЩЕНИЯ"
+                  label={t('topicLabel')}
                   value={topic}
                   onChange={(e) => setTopic(e.target.value)}
                   options={topicOptions}
-                  placeholder="Выберите тему"
+                  placeholder={t('topicPlaceholder')}
                 />
 
                 {/* Message textarea */}
                 <Textarea
-                  label="СООБЩЕНИЕ *"
-                  placeholder="Опишите ваш вопрос или предложение..."
+                  label={t('messageLabel')}
+                  placeholder={t('messagePlaceholder')}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   showCount
@@ -371,7 +373,7 @@ export default function ContactsPage() {
                 {/* File upload */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[13px] font-medium text-[#0F172A]">
-                    ПРИКРЕПИТЬ ФАЙЛ
+                    {t('attachFile')}
                   </label>
                   <div
                     className={`
@@ -385,7 +387,7 @@ export default function ContactsPage() {
                   >
                     <HugeiconsIcon icon={File01Icon} size={18} color={file ? '#3B82F6' : '#64748B'} />
                     <span className={`text-[14px] truncate ${file ? 'text-[#0F172A]' : 'text-[#64748B]/50'}`}>
-                      {file ? file.name : 'Выберите файл'}
+                      {file ? file.name : t('chooseFile')}
                     </span>
                     {file && (
                       <button
@@ -397,7 +399,7 @@ export default function ContactsPage() {
                         }}
                         className="ml-auto text-[12px] text-red-500 hover:underline shrink-0"
                       >
-                        Удалить
+                        {t('remove')}
                       </button>
                     )}
                     <input
@@ -409,7 +411,7 @@ export default function ContactsPage() {
                         const selected = e.target.files?.[0];
                         if (selected) {
                           if (selected.size > 10 * 1024 * 1024) {
-                            alert('Файл слишком большой. Максимальный размер — 10 МБ.');
+                            alert(t('fileTooLarge'));
                             return;
                           }
                           setFile(selected);
@@ -418,7 +420,7 @@ export default function ContactsPage() {
                     />
                   </div>
                   <p className="text-[12px] text-[#64748B]">
-                    Макс. 10 МБ (PDF, DOCX, JPG)
+                    {t('attachDesc')}
                   </p>
                 </div>
 
@@ -435,8 +437,8 @@ export default function ContactsPage() {
                     "
                   />
                   <span className="text-[13px] text-[#64748B] leading-relaxed group-hover:text-[#0F172A] transition-colors">
-                    Я даю согласие на обработку персональных данных в соответствии с{' '}
-                    <span className="text-[#3B82F6] hover:underline">политикой конфиденциальности</span>
+                    {t('consent')}{' '}
+                    <span className="text-[#3B82F6] hover:underline">{t('privacyPolicy')}</span>
                   </span>
                 </label>
 
@@ -453,7 +455,7 @@ export default function ContactsPage() {
                       <line x1="22" y1="2" x2="11" y2="13" />
                       <polygon points="22 2 15 22 11 13 2 9 22 2" />
                     </svg>
-                    Отправить сообщение
+                    {t('send')}
                   </Button>
                 </div>
               </form>

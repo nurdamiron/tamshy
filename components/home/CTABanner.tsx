@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
 
@@ -67,7 +68,8 @@ const wordVariants = {
 };
 
 export default function CTABanner() {
-  const headingWords = 'Готов показать свой проект всей стране?'.split(' ');
+  const t = useTranslations('cta');
+  const headingWords = t('title').split(' ');
 
   return (
     <section className="py-24 bg-white">
@@ -155,7 +157,7 @@ export default function CTABanner() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
             >
-              Присоединяйся к сотням школьников, которые уже меняют будущее водных ресурсов Казахстана.
+              {t('subtitle')}
             </motion.p>
 
             <motion.div
@@ -171,7 +173,7 @@ export default function CTABanner() {
                   whileHover={{ scale: 1.03, boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Отправить проект
+                  {t('submitProject')}
                 </motion.button>
               </Link>
               <Link href="/projects">
@@ -180,7 +182,7 @@ export default function CTABanner() {
                   whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.2)' }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Посмотреть примеры
+                  {t('viewExamples')}
                 </motion.button>
               </Link>
             </motion.div>
@@ -192,7 +194,7 @@ export default function CTABanner() {
               viewport={{ once: true }}
               transition={{ delay: 0.7 }}
             >
-              {['Бесплатно', '1-11 классы', 'Призы и грамоты'].map((item) => (
+              {[t('free'), t('grades'), t('prizes')].map((item) => (
                 <span key={item} className="flex items-center gap-1.5">
                   <HugeiconsIcon icon={CheckmarkCircle01Icon} size={14} className="text-white/50" />
                   {item}

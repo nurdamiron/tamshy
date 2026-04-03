@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -39,30 +40,30 @@ const FORMAT_META: Record<string, { color: string; bg: string; label: string }> 
   XLS:  { color: '#22C55E', bg: '#F0FDF4', label: 'XLS' },
 };
 
-const MATERIAL_TYPES = [
-  { value: 'methodical', label: 'Методические пособия' },
-  { value: 'booklets', label: 'Информационные буклеты' },
-  { value: 'presentations', label: 'Презентации' },
-  { value: 'video', label: 'Видеоуроки' },
+const MATERIAL_TYPE_KEYS = [
+  { value: 'methodical', key: 'typeMethodical' },
+  { value: 'booklets', key: 'typeBooklet' },
+  { value: 'presentations', key: 'typePresentation' },
+  { value: 'video', key: 'typeVideo' },
 ];
 
-const AUDIENCES = [
-  { value: 'schoolchildren', label: 'Для школьников' },
-  { value: 'students', label: 'Для студентов' },
-  { value: 'teachers', label: 'Для педагогов' },
+const AUDIENCE_KEYS = [
+  { value: 'schoolchildren', key: 'audienceSchool' },
+  { value: 'students', key: 'audienceStudent' },
+  { value: 'teachers', key: 'audienceTeacher' },
 ];
 
 const YEARS = [
-  { value: 'all', label: 'Все годы' },
+  { value: 'all', key: 'allYears' },
   { value: '2024', label: '2024' },
   { value: '2023', label: '2023' },
   { value: '2022', label: '2022' },
 ];
 
-const SORT_OPTIONS = [
-  { value: 'new', label: 'Сначала новые' },
-  { value: 'popular', label: 'По популярности' },
-  { value: 'alpha', label: 'По алфавиту' },
+const SORT_OPTION_KEYS = [
+  { value: 'new', key: 'sortNew' },
+  { value: 'popular', key: 'sortPopular' },
+  { value: 'alpha', key: 'sortAlpha' },
 ];
 
 const ITEMS_PER_PAGE = 6;
@@ -246,7 +247,7 @@ function MaterialCardSkeleton({ index }: { index: number }) {
 /*  Material card                                                      */
 /* ------------------------------------------------------------------ */
 
-function MaterialCard({ material, index, onDownload }: { material: Material; index: number; onDownload: (m: Material) => void }) {
+function MaterialCard({ material, index, onDownload, t }: { material: Material; index: number; onDownload: (m: Material) => void; t: (key: string) => string }) {
   const isVideo = material.format.toUpperCase() === 'MP4';
 
   return (
@@ -280,12 +281,12 @@ function MaterialCard({ material, index, onDownload }: { material: Material; ind
             {isVideo ? (
               <>
                 <EyeIcon className="text-[#94A3B8]" />
-                <span>{material.views ?? 0} просмотров</span>
+                <span>{material.views ?? 0} {t('views')}</span>
               </>
             ) : (
               <>
                 <DownloadIcon className="text-[#94A3B8]" />
-                <span>{material.downloads} скачиваний</span>
+                <span>{material.downloads} {t('downloads')}</span>
               </>
             )}
           </div>
@@ -303,12 +304,12 @@ function MaterialCard({ material, index, onDownload }: { material: Material; ind
             {isVideo ? (
               <>
                 <PlayIcon />
-                Смотреть
+                {t('watch')}
               </>
             ) : (
               <>
                 <DownloadIcon />
-                Скачать
+                {t('download')}
               </>
             )}
           </button>
@@ -323,6 +324,12 @@ function MaterialCard({ material, index, onDownload }: { material: Material; ind
 /* ------------------------------------------------------------------ */
 
 export default function MaterialsPage() {
+  const t = useTranslations('materials');
+
+  const MATERIAL_TYPES = MATERIAL_TYPE_KEYS.map((m) => ({ value: m.value, label: t(m.key) }));
+  const AUDIENCES = AUDIENCE_KEYS.map((a) => ({ value: a.value, label: t(a.key) }));
+  const SORT_OPTIONS = SORT_OPTION_KEYS.map((s) => ({ value: s.value, label: t(s.key) }));
+
   const [search, setSearch] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
@@ -410,14 +417,14 @@ export default function MaterialsPage() {
     <>
       {/* Search */}
       <div className="mb-6">
-        <h3 className="text-[14px] font-semibold text-[#0F172A] mb-3">Поиск материалов</h3>
+        <h3 className="text-[14px] font-semibold text-[#0F172A] mb-3">{t('searchTitle')}</h3>
         <div className="relative">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="text"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
-            placeholder="Название или ключевые слова"
+            placeholder={t('searchPlaceholder')}
             className="w-full h-[42px] pl-10 pr-3 rounded-lg border border-[#E2E8F0] text-[14px] bg-white placeholder:text-[#94A3B8] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20 focus:border-[#3B82F6]"
           />
         </div>
@@ -426,15 +433,15 @@ export default function MaterialsPage() {
       {/* Type */}
       <div className="mb-6">
         <h4 className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2.5">
-          Тип материала
+          {t('typeTitle')}
         </h4>
         <div className="space-y-0.5">
-          {MATERIAL_TYPES.map((t) => (
+          {MATERIAL_TYPES.map((mt) => (
             <Checkbox
-              key={t.value}
-              checked={selectedTypes.includes(t.value)}
-              onChange={() => toggleType(t.value)}
-              label={t.label}
+              key={mt.value}
+              checked={selectedTypes.includes(mt.value)}
+              onChange={() => toggleType(mt.value)}
+              label={mt.label}
             />
           ))}
         </div>
@@ -443,7 +450,7 @@ export default function MaterialsPage() {
       {/* Audience */}
       <div className="mb-6">
         <h4 className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2.5">
-          Целевая аудитория
+          {t('audienceTitle')}
         </h4>
         <div className="space-y-0.5">
           {AUDIENCES.map((a) => (
@@ -460,7 +467,7 @@ export default function MaterialsPage() {
       {/* Year */}
       <div>
         <h4 className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-2.5">
-          Год публикации
+          {t('yearTitle')}
         </h4>
         <select
           value={selectedYear}
@@ -468,7 +475,7 @@ export default function MaterialsPage() {
           className="w-full h-[42px] px-3 rounded-lg border border-[#E2E8F0] text-[14px] bg-white transition-colors duration-200 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_12px_center] bg-no-repeat focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20 focus:border-[#3B82F6]"
         >
           {YEARS.map((y) => (
-            <option key={y.value} value={y.value}>{y.label}</option>
+            <option key={y.value} value={y.value}>{'key' in y ? t(y.key) : y.label}</option>
           ))}
         </select>
       </div>
@@ -485,7 +492,7 @@ export default function MaterialsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-[32px] font-bold tracking-tight text-[#0F172A]"
           >
-            Библиотека знаний
+            {t('title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: -6 }}
@@ -509,7 +516,7 @@ export default function MaterialsPage() {
             className="lg:hidden inline-flex items-center gap-2 h-[42px] px-4 rounded-lg border border-[#E2E8F0] text-[14px] font-medium text-[#334155] bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer"
           >
             <FilterIcon />
-            Фильтры
+            {t('filters')}
             {activeFilterCount > 0 && (
               <span className="w-5 h-5 rounded-full bg-[#3B82F6] text-white text-[11px] font-bold flex items-center justify-center">
                 {activeFilterCount}
@@ -577,7 +584,7 @@ export default function MaterialsPage() {
             <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="flex-1">
                 <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-[12px] font-semibold mb-3">
-                  Рекомендуем
+                  {t('recommended')}
                 </span>
                 <h2 className="text-[20px] sm:text-[22px] font-bold text-white leading-snug mb-2">
                   {featuredMaterial ? featuredMaterial.title : 'Методическое пособие «Водный след»'}
@@ -594,7 +601,7 @@ export default function MaterialsPage() {
                   className="inline-flex items-center gap-2 h-[42px] px-5 rounded-xl bg-white text-[#059669] text-[14px] font-semibold hover:bg-white/90 transition-colors cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
                 >
                   <DownloadIcon />
-                  Скачать бесплатно ({featuredMaterial ? featuredMaterial.format.toUpperCase() : 'PDF'})
+                  {t('downloadFree')} ({featuredMaterial ? featuredMaterial.format.toUpperCase() : 'PDF'})
                 </button>
               </div>
               <div className="hidden sm:flex items-center justify-center w-[100px] shrink-0 opacity-80">
@@ -613,14 +620,14 @@ export default function MaterialsPage() {
           ) : materials.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {materials.map((material, i) => (
-                <MaterialCard key={material.id} material={material} index={i} onDownload={handleDownload} />
+                <MaterialCard key={material.id} material={material} index={i} onDownload={handleDownload} t={t} />
               ))}
             </div>
           ) : (
             <div className="text-center py-20">
               <SearchIcon className="mx-auto mb-4 text-[#E2E8F0]" />
-              <p className="text-[16px] text-[#64748B]">Материалы не найдены</p>
-              <p className="text-[13px] text-[#64748B]/60 mt-1">Попробуйте изменить фильтры или поисковый запрос</p>
+              <p className="text-[16px] text-[#64748B]">{t('noResults')}</p>
+              <p className="text-[13px] text-[#64748B]/60 mt-1">{t('noResultsHint')}</p>
             </div>
           )}
 
@@ -665,7 +672,7 @@ export default function MaterialsPage() {
               </button>
 
               <span className="ml-3 text-[13px] text-[#94A3B8]">
-                Стр. {currentPage} из {totalPages}
+                {t('page')} {currentPage} / {totalPages}
               </span>
             </motion.div>
           )}

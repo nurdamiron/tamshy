@@ -7,15 +7,18 @@ import PageHeader from '@/components/layout/PageHeader';
 import { regionLabels } from '@/lib/validators';
 import { REGIONS } from '@/lib/constants';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function RegionsPage() {
+  const tRegions = useTranslations('regions');
+  const tPage = useTranslations('regionsPage');
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <PageHeader
-        title="Регионы"
-        subtitle="Статистика проектов по регионам Казахстана"
+        title={tPage('title')}
+        subtitle={tPage('subtitle')}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -43,9 +46,9 @@ export default function RegionsPage() {
                     </div>
                     <div>
                       <h3 className="text-[15px] font-semibold text-[#0F172A]">
-                        {regionLabels[region]}
+                        {tRegions(region) || regionLabels[region]}
                       </h3>
-                      <p className="text-[12px] text-[#64748B]">Смотреть проекты</p>
+                      <p className="text-[12px] text-[#64748B]">{tPage('viewProjects')}</p>
                     </div>
                   </div>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">

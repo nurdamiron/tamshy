@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { School01Icon, Location01Icon, File01Icon, HeartCheckIcon } from '@hugeicons/core-free-icons';
 
@@ -47,14 +48,15 @@ function formatNum(n: number): { value: number; suffix: string } {
   return { value: n, suffix: '' };
 }
 
-const statMeta = [
-  { key: 'totalSchools', label: 'Школ участвуют', icon: School01Icon, fallback: 55, color: '#0284C7' },
-  { key: 'regions', label: 'Регионов', icon: Location01Icon, fallback: 14, color: '#3B82F6' },
-  { key: 'totalProjects', label: 'Проектов подано', icon: File01Icon, fallback: 0, color: '#8B5CF6' },
-  { key: 'totalVotes', label: 'Голосов получено', icon: HeartCheckIcon, fallback: 0, color: '#EC4899' },
-];
-
 export default function StatsRow() {
+  const t = useTranslations('stats');
+
+  const statMeta = [
+    { key: 'totalSchools', label: t('schools'), icon: School01Icon, fallback: 55, color: '#0284C7' },
+    { key: 'regions', label: t('regions'), icon: Location01Icon, fallback: 14, color: '#3B82F6' },
+    { key: 'totalProjects', label: t('projects'), icon: File01Icon, fallback: 0, color: '#8B5CF6' },
+    { key: 'totalVotes', label: t('votes'), icon: HeartCheckIcon, fallback: 0, color: '#EC4899' },
+  ];
   const [apiData, setApiData] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {

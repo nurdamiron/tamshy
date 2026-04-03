@@ -2,45 +2,47 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SmartPhone01Icon, Upload01Icon, HeartCheckIcon, Medal01Icon } from '@hugeicons/core-free-icons';
 
-const steps = [
-  {
-    num: '01',
-    title: 'Зарегистрируйся',
-    desc: 'Введи номер телефона и получи код по SMS. Регистрация занимает 30 секунд.',
-    icon: SmartPhone01Icon,
-    color: '#0284C7',
-    gradient: 'from-[#0284C7] to-[#38BDF8]',
-  },
-  {
-    num: '02',
-    title: 'Загрузи проект',
-    desc: 'Расскажи о своём проекте по водосбережению: видео, исследование, арт или изобретение.',
-    icon: Upload01Icon,
-    color: '#3B82F6',
-    gradient: 'from-[#3B82F6] to-[#60A5FA]',
-  },
-  {
-    num: '03',
-    title: 'Получи голоса',
-    desc: 'Другие участники и зрители голосуют за лучшие проекты. Набери больше всех!',
-    icon: HeartCheckIcon,
-    color: '#EC4899',
-    gradient: 'from-[#EC4899] to-[#F472B6]',
-  },
-  {
-    num: '04',
-    title: 'Стань победителем',
-    desc: 'Жюри из экспертов ИАЦ водных ресурсов оценивает лучшие проекты. Призы и грамоты!',
-    icon: Medal01Icon,
-    color: '#F5A623',
-    gradient: 'from-[#F59E0B] to-[#FBBF24]',
-  },
-];
-
 export default function HowItWorks() {
+  const t = useTranslations('howItWorks');
+
+  const steps = [
+    {
+      num: '01',
+      title: t('step1Title'),
+      desc: t('step1Desc'),
+      icon: SmartPhone01Icon,
+      color: '#0284C7',
+      gradient: 'from-[#0284C7] to-[#38BDF8]',
+    },
+    {
+      num: '02',
+      title: t('step2Title'),
+      desc: t('step2Desc'),
+      icon: Upload01Icon,
+      color: '#3B82F6',
+      gradient: 'from-[#3B82F6] to-[#60A5FA]',
+    },
+    {
+      num: '03',
+      title: t('step3Title'),
+      desc: t('step3Desc'),
+      icon: HeartCheckIcon,
+      color: '#EC4899',
+      gradient: 'from-[#EC4899] to-[#F472B6]',
+    },
+    {
+      num: '04',
+      title: t('step4Title'),
+      desc: t('step4Desc'),
+      icon: Medal01Icon,
+      color: '#F5A623',
+      gradient: 'from-[#F59E0B] to-[#FBBF24]',
+    },
+  ];
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -58,12 +60,12 @@ export default function HowItWorks() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-16"
         >
-          <span className="text-caption text-[#0284C7] tracking-widest">КАК ЭТО РАБОТАЕТ</span>
+          <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-            Четыре шага к победе
+            {t('title')}
           </h2>
           <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
-            От идеи до награды -- простой путь для каждого школьника
+            {t('subtitle')}
           </p>
         </motion.div>
 
