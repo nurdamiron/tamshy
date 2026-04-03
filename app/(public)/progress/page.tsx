@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useTranslations } from 'next-intl';
 import {
+  News01Icon,
+  File01Icon,
+  Image01Icon,
+  Video01Icon,
   Search01Icon,
   Mail01Icon,
   MailSend01Icon,
@@ -16,6 +20,7 @@ import {
   Camera01Icon,
   CheckmarkBadge01Icon,
   DropletIcon,
+  GridViewIcon,
 } from '@hugeicons/core-free-icons';
 
 /* ------------------------------------------------------------------ */
@@ -46,6 +51,41 @@ interface NewsResponse {
 /* ------------------------------------------------------------------ */
 /*  Static data                                                        */
 /* ------------------------------------------------------------------ */
+
+const TAB_KEYS: { key: Category; labelKey: string; icon: typeof News01Icon }[] = [
+  { key: 'all', labelKey: 'tabAll', icon: GridViewIcon },
+  { key: 'news', labelKey: 'tabNews', icon: News01Icon },
+  { key: 'reports', labelKey: 'tabReports', icon: File01Icon },
+  { key: 'photos', labelKey: 'tabPhotos', icon: Image01Icon },
+  { key: 'videos', labelKey: 'tabVideos', icon: Video01Icon },
+];
+
+const TIMELINE_KEYS = [
+  {
+    periodKey: 'timelinePeriod1',
+    titleKey: 'timelineStep1',
+    status: 'done' as const,
+    labelKey: 'done',
+  },
+  {
+    periodKey: 'timelinePeriod2',
+    titleKey: 'timelineStep2',
+    status: 'done' as const,
+    labelKey: 'done',
+  },
+  {
+    periodKey: 'timelinePeriod3',
+    titleKey: 'timelineStep3',
+    status: 'active' as const,
+    labelKey: 'inProgress',
+  },
+  {
+    periodKey: 'timelinePeriod4',
+    titleKey: 'timelineStep4',
+    status: 'upcoming' as const,
+    labelKey: '',
+  },
+];
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */

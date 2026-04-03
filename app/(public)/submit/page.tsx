@@ -248,34 +248,34 @@ export default function SubmitPage() {
 
               <div className="space-y-4">
                 <Input
-                  label="Имя и фамилия"
-                  placeholder="Алмас Серикулы"
+                  label={t('nameLabel')}
+                  placeholder={t('namePlaceholder')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
                 <Select
-                  label="Класс"
+                  label={t('gradeLabel')}
                   value={grade}
                   onChange={(e) => setGrade(e.target.value)}
                   options={GRADES}
-                  placeholder="Выберите класс"
+                  placeholder={t('gradePlaceholder')}
                 />
                 <Input
-                  label="Школа"
-                  placeholder="НИШ г. Астаны"
+                  label={t('schoolLabel')}
+                  placeholder={t('schoolPlaceholder')}
                   value={school}
                   onChange={(e) => setSchool(e.target.value)}
                 />
                 <Select
-                  label="Регион"
+                  label={t('regionLabel')}
                   value={region}
                   onChange={(e) => setRegion(e.target.value)}
                   options={regionOptions}
-                  placeholder="Выберите регион"
+                  placeholder={t('regionPlaceholder')}
                 />
                 <Input
-                  label="ФИО учителя-куратора"
-                  placeholder="Айгуль Сериковна Жумабаева"
+                  label={t('teacherLabel')}
+                  placeholder={t('teacherPlaceholder')}
                   value={teacherName}
                   onChange={(e) => setTeacherName(e.target.value)}
                 />
@@ -286,16 +286,16 @@ export default function SubmitPage() {
           {/* Step 3: About project */}
           {step === 3 && (
             <Card hover={false} padding="lg">
-              <h2 className="text-[20px] font-semibold mb-1">О проекте</h2>
+              <h2 className="text-[20px] font-semibold mb-1">{t('projectTitle')}</h2>
               <p className="text-[14px] text-[#64748B] mb-6">
-                Опишите ваш проект по водосбережению
+                {t('projectDesc')}
               </p>
 
               <div className="space-y-5">
                 {/* Project type cards */}
                 <div>
                   <label className="text-[13px] font-medium text-[#0F172A] block mb-2">
-                    Тип проекта
+                    {t('projectTypeLabel')}
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     {PROJECT_TYPES.filter(t => t.value !== 'OTHER').map((type) => (
@@ -315,20 +315,20 @@ export default function SubmitPage() {
                 </div>
 
                 <Input
-                  label="Название проекта"
-                  placeholder="Система сбора дождевой воды для школы"
+                  label={t('projectNameLabel')}
+                  placeholder={t('projectNamePlaceholder')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
 
                 <Textarea
-                  label="Описание проекта"
-                  placeholder="Расскажите подробно о вашем проекте, его целях и результатах..."
+                  label={t('projectDescLabel')}
+                  placeholder={t('projectDescPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   showCount
                   maxLength={5000}
-                  hint="Минимум 100 символов"
+                  hint={t('minChars')}
                 />
               </div>
             </Card>
@@ -337,9 +337,9 @@ export default function SubmitPage() {
           {/* Step 4: Upload */}
           {step === 4 && (
             <Card hover={false} padding="lg">
-              <h2 className="text-[20px] font-semibold mb-1">Загрузка файлов</h2>
+              <h2 className="text-[20px] font-semibold mb-1">{t('uploadTitle')}</h2>
               <p className="text-[14px] text-[#64748B] mb-6">
-                Загрузите файл проекта или укажите ссылку на видео
+                {t('uploadDesc')}
               </p>
 
               <div className="space-y-5">
@@ -379,7 +379,7 @@ export default function SubmitPage() {
                         onClick={(e) => { e.stopPropagation(); setFile(null); }}
                         className="mt-2 text-[12px] text-red-500 hover:underline"
                       >
-                        Удалить
+                        {t('remove')}
                       </button>
                     </div>
                   ) : (
@@ -390,10 +390,10 @@ export default function SubmitPage() {
                         <line x1="12" y1="3" x2="12" y2="15" />
                       </svg>
                       <p className="text-[14px] text-[#64748B]">
-                        Перетащите файл сюда или <span className="text-[#0284C7] font-medium">нажмите для выбора</span>
+                        {t('dropzone')}
                       </p>
                       <p className="text-[12px] text-[#64748B] mt-1">
-                        PDF, JPG, PNG, MP4, MOV — до 100 МБ
+                        {t('fileFormats')}
                       </p>
                     </div>
                   )}
@@ -410,16 +410,16 @@ export default function SubmitPage() {
 
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-[#E2E8F0]" />
-                  <span className="text-[12px] text-[#64748B]">ИЛИ</span>
+                  <span className="text-[12px] text-[#64748B]">{t('or')}</span>
                   <div className="flex-1 h-px bg-[#E2E8F0]" />
                 </div>
 
                 <Input
-                  label="Ссылка на видео"
-                  placeholder="https://youtube.com/... или https://drive.google.com/..."
+                  label={t('videoUrlLabel')}
+                  placeholder={t('videoUrlPlaceholder')}
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
-                  hint="YouTube или Google Drive"
+                  hint={t('videoUrlHint')}
                 />
               </div>
             </Card>
@@ -435,18 +435,17 @@ export default function SubmitPage() {
                   </svg>
                 </div>
                 <h2 className="text-[24px] font-bold text-[#0F172A] mb-2">
-                  Проект отправлен!
+                  {t('successTitle')}
                 </h2>
                 <p className="text-[15px] text-[#64748B] max-w-md mx-auto">
-                  Ваш проект &quot;{title}&quot; отправлен на модерацию.
-                  Жюри рассмотрит его в течение 3 рабочих дней.
+                  {t('successDesc', { title })}
                 </p>
                 <div className="mt-8 flex gap-3 justify-center">
                   <a href="/projects">
-                    <Button variant="secondary">Смотреть проекты</Button>
+                    <Button variant="secondary">{t('viewProjects')}</Button>
                   </a>
                   <a href="/">
-                    <Button>На главную</Button>
+                    <Button>{t('goHome')}</Button>
                   </a>
                 </div>
               </div>
@@ -464,15 +463,15 @@ export default function SubmitPage() {
       {step > 1 && step < 5 && (
         <div className="flex justify-between mt-6">
           <Button variant="ghost" onClick={() => setStep(step - 1)}>
-            ← Назад
+            &larr; {t('back')}
           </Button>
           {step < 4 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
-              Далее →
+              {t('next')} &rarr;
             </Button>
           ) : (
             <Button onClick={submitProject} loading={loading} disabled={!canProceed()}>
-              Отправить проект
+              {t('submitProject')}
             </Button>
           )}
         </div>

@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
+  const t = useTranslations('login');
   const router = useRouter();
   const [phone, setPhone] = useState('+7');
   const [otp, setOtp] = useState('');
@@ -27,7 +29,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error);
       setOtpSent(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка');
+      setError(e instanceof Error ? e.message : t('error'));
     }
     setLoading(false);
   };
@@ -45,7 +47,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.error);
       router.push('/');
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка');
+      setError(e instanceof Error ? e.message : t('error'));
     }
     setLoading(false);
   };
@@ -59,15 +61,15 @@ export default function LoginPage() {
               <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="white" />
             </svg>
           </div>
-          <h1 className="text-[24px] font-bold text-[#0F172A]">Вход в Тамшы</h1>
+          <h1 className="text-[24px] font-bold text-[#0F172A]">{t('title')}</h1>
           <p className="text-[14px] text-[#64748B] mt-1">
-            Введите номер телефона для входа
+            {t('subtitle')}
           </p>
         </div>
 
         <div className="space-y-4">
           <Input
-            label="Номер телефона"
+            label={t('phoneLabel')}
             type="tel"
             placeholder="+7 (___) ___-__-__"
             value={phone}
@@ -77,12 +79,12 @@ export default function LoginPage() {
 
           {!otpSent ? (
             <Button onClick={sendOtp} loading={loading} className="w-full">
-              Получить код
+              {t('getCode')}
             </Button>
           ) : (
             <>
               <Input
-                label="Код из SMS"
+                label={t('smsCode')}
                 placeholder="______"
                 maxLength={6}
                 value={otp}
@@ -90,13 +92,13 @@ export default function LoginPage() {
                 className="text-center text-[20px] tracking-[8px]"
               />
               <Button onClick={verifyOtp} loading={loading} className="w-full">
-                Войти
+                {t('login')}
               </Button>
               <button
                 onClick={() => { setOtpSent(false); setOtp(''); }}
                 className="w-full text-[13px] text-[#64748B] hover:text-[#0284C7] transition-colors"
               >
-                Отправить код повторно
+                {t('resendCode')}
               </button>
             </>
           )}

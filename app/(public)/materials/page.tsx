@@ -53,7 +53,7 @@ const AUDIENCE_KEYS = [
   { value: 'teachers', key: 'audienceTeacher' },
 ];
 
-const YEARS = [
+const YEARS: { value: string; key?: string; label?: string }[] = [
   { value: 'all', key: 'allYears' },
   { value: '2024', label: '2024' },
   { value: '2023', label: '2023' },
@@ -475,7 +475,7 @@ export default function MaterialsPage() {
           className="w-full h-[42px] px-3 rounded-lg border border-[#E2E8F0] text-[14px] bg-white transition-colors duration-200 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_12px_center] bg-no-repeat focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20 focus:border-[#3B82F6]"
         >
           {YEARS.map((y) => (
-            <option key={y.value} value={y.value}>{'key' in y ? t(y.key) : y.label}</option>
+            <option key={y.value} value={y.value}>{y.key ? t(y.key) : y.label}</option>
           ))}
         </select>
       </div>
