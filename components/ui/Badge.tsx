@@ -21,28 +21,46 @@ const variantStyles: Record<BadgeVariant, string> = {
   winner: 'bg-amber-50 text-amber-700 border border-amber-200',
 };
 
-const typeLabels: Record<string, string> = {
-  VIDEO: 'Видео',
-  RESEARCH: 'Исследование',
-  ART: 'Арт',
-  INVENTION: 'Изобретение',
-  APP: 'Приложение',
-  OTHER: 'Другое',
+export const typeLabelKeys: Record<string, string> = {
+  VIDEO: 'VIDEO',
+  RESEARCH: 'RESEARCH',
+  ART: 'ART',
+  INVENTION: 'INVENTION',
+  APP: 'APP',
+  OTHER: 'OTHER',
 };
 
-const statusLabels: Record<string, string> = {
-  PENDING: 'На модерации',
-  APPROVED: 'Одобрен',
-  REJECTED: 'Отклонён',
-  WINNER: 'Победитель',
+export const statusLabelKeys: Record<string, string> = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  WINNER: 'WINNER',
 };
 
-export function getTypeLabel(type: string) {
-  return typeLabels[type] || type;
+const defaultTypeLabels: Record<string, string> = {
+  VIDEO: 'VIDEO',
+  RESEARCH: 'RESEARCH',
+  ART: 'ART',
+  INVENTION: 'INVENTION',
+  APP: 'APP',
+  OTHER: 'OTHER',
+};
+
+const defaultStatusLabels: Record<string, string> = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  WINNER: 'WINNER',
+};
+
+export function getTypeLabel(type: string, translations?: Record<string, string>) {
+  if (translations && translations[type]) return translations[type];
+  return defaultTypeLabels[type] || type;
 }
 
-export function getStatusLabel(status: string) {
-  return statusLabels[status] || status;
+export function getStatusLabel(status: string, translations?: Record<string, string>) {
+  if (translations && translations[status]) return translations[status];
+  return defaultStatusLabels[status] || status;
 }
 
 export default function Badge({ variant, children, className = '' }: BadgeProps) {

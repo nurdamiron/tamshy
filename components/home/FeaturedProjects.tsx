@@ -69,6 +69,7 @@ interface ApiProject {
 
 export default function FeaturedProjects() {
   const t = useTranslations('featured');
+  const tCommon = useTranslations('common');
   const [projects, setProjects] = useState(fallbackProjects);
 
   useEffect(() => {
@@ -88,7 +89,7 @@ export default function FeaturedProjects() {
               grade: p.grade,
               teacherName: p.teacherName,
               createdAt: p.createdAt,
-              authorName: p.author?.name || 'Автор',
+              authorName: p.author?.name || tCommon('defaultAuthor'),
               voteCount: p._count?.votes || 0,
             }))
           );

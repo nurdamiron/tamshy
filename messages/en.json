@@ -84,7 +84,8 @@
     "fact3Value": "90%",
     "fact3Label": "of the Aral Sea has dried up in the last 60 years",
     "fact4Value": "4 mln",
-    "fact4Label": "people in Kazakhstan lack access to clean drinking water"
+    "fact4Label": "people in Kazakhstan lack access to clean drinking water",
+    "millionSuffix": " mln"
   },
   "impact": {
     "badge": "OUR IMPACT",
@@ -265,6 +266,8 @@
     "remaining": "remaining",
     "days": "days",
     "deadline": "DEADLINE",
+    "deadlineLabel": "DEADLINE",
+    "deadlinePrefix": "by",
     "descriptionTitle": "Description and Conditions",
     "submitTitle": "Submit Application",
     "fullName": "Participant Full Name",
@@ -328,7 +331,8 @@
     "noResults": "No materials found",
     "noResultsHint": "Try changing filters or search query",
     "page": "Page",
-    "materialsCount": "materials"
+    "materialsCount": "materials",
+    "materialsWord": "materials"
   },
   "progress": {
     "title": "Implementation Progress",
@@ -469,7 +473,8 @@
     "errorVerification": "Verification error",
     "errorUpload": "Upload error",
     "errorNetwork": "Network error",
-    "errorSubmitting": "Submission error"
+    "errorSubmitting": "Submission error",
+    "megabytes": "MB"
   },
   "login": {
     "title": "Login to Tamshy",
@@ -493,7 +498,10 @@
     "retry": "Retry",
     "backToHome": "Back to Home",
     "somethingWentWrong": "Something went wrong",
-    "tryAgain": "Try again"
+    "errorTitle": "Something went wrong",
+    "errorDesc": "An error occurred while loading the page. Please try refreshing or return to the home page.",
+    "tryAgain": "Try again",
+    "defaultAuthor": "Author"
   },
   "types": {
     "VIDEO": "Video",
@@ -502,6 +510,35 @@
     "INVENTION": "Invention",
     "APP": "Application",
     "OTHER": "Other"
+  },
+  "jury": {
+    "title": "Jury Panel",
+    "subtitle": "Moderation and project evaluation",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "winners": "Winners",
+    "allRegions": "All regions",
+    "allTypes": "All types",
+    "noProjects": "No projects to display",
+    "votes": "votes",
+    "evaluate": "Evaluate",
+    "modalTitle": "Project Evaluation",
+    "openFile": "Open file",
+    "watchVideo": "Watch video",
+    "scoreLabel": "Score (1-10)",
+    "commentLabel": "Jury comment",
+    "commentPlaceholder": "Your comment on the project...",
+    "statusLabel": "Status",
+    "approve": "Approve",
+    "reject": "Reject",
+    "winner": "Winner",
+    "cancel": "Cancel",
+    "save": "Save",
+    "statusPending": "Pending",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "statusWinner": "Winners"
   },
   "regions": {
     "ASTANA": "Astana",

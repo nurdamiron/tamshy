@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import Badge, { getTypeLabel } from '@/components/ui/Badge';
+import Badge from '@/components/ui/Badge';
 import { regionLabels } from '@/lib/validators';
+import { useTranslations } from 'next-intl';
 
 interface ProjectCardProps {
   project: {
@@ -86,6 +87,9 @@ const rankColors: Record<number, { bg: string; text: string; border: string }> =
 };
 
 export default function ProjectCard({ project, rank }: ProjectCardProps) {
+  const tTypes = useTranslations('types');
+  const tCommon = useTranslations('common');
+  const tRegions = useTranslations('regions');
   const isGlow = rank === 1;
 
   return (
@@ -149,7 +153,7 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
         <div className="p-5 flex flex-col flex-1">
           <div className="mb-3">
             <Badge variant={typeToBadge[project.type] || 'other'}>
-              {getTypeLabel(project.type)}
+              {tTypes(project.type)}
             </Badge>
           </div>
 
@@ -171,10 +175,10 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                 </div>
-                {project.authorName || 'Автор'}
+                {project.authorName || tCommon('defaultAuthor')}
               </span>
               <span className="text-[#E2E8F0]">|</span>
-              <span>{regionLabels[project.region] || project.region}</span>
+              <span>{tRegions(project.region) || regionLabels[project.region] || project.region}</span>
             </div>
             <motion.span
               className="flex items-center gap-1 font-semibold text-[#0284C7]"

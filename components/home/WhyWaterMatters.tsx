@@ -53,7 +53,7 @@ export default function WhyWaterMatters() {
     },
     {
       value: 4,
-      suffix: ' млн',
+      suffix: t('millionSuffix'),
       label: t('fact4'),
       dotColor: '#8B5CF6',
       bg: 'bg-purple-50',

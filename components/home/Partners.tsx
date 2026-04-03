@@ -5,20 +5,26 @@ import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Building01Icon, DropletIcon, Globe02Icon, Location01Icon, StarIcon, CodeIcon } from '@hugeicons/core-free-icons';
 
-const partners = [
-  { short: 'Минводресурсов', icon: Building01Icon },
-  { short: 'ИАЦ Водных ресурсов', icon: DropletIcon },
-  { short: 'UNICEF', icon: Globe02Icon },
-  { short: 'AFD France', icon: Location01Icon },
-  { short: 'Адал азамат', icon: StarIcon },
-  { short: 'alashed.kz', icon: CodeIcon },
+const partnerKeys = [
+  { key: 'ministry', icon: Building01Icon },
+  { key: 'iac', icon: DropletIcon },
+  { key: 'unicef', icon: Globe02Icon },
+  { key: 'afd', icon: Location01Icon },
+  { key: 'adalAzamat', icon: StarIcon },
+  { key: 'alashed', icon: CodeIcon },
 ];
-
-// Duplicate for seamless loop
-const marqueeItems = [...partners, ...partners];
 
 export default function Partners() {
   const t = useTranslations('partners');
+
+  const partners = partnerKeys.map((p) => ({
+    short: t(p.key),
+    icon: p.icon,
+  }));
+
+  // Duplicate for seamless loop
+  const marqueeItems = [...partners, ...partners];
+
   return (
     <section className="py-24 bg-[#F8FAFC] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">

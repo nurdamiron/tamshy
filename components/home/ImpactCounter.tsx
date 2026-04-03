@@ -2,9 +2,9 @@
 
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
-function AnimatedCounter({ target, suffix = '', duration = 2500 }: { target: number; suffix?: string; duration?: number }) {
+function AnimatedCounter({ target, suffix = '', duration = 2500, locale = 'ru' }: { target: number; suffix?: string; duration?: number; locale?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
   const [count, setCount] = useState(0);
@@ -24,7 +24,7 @@ function AnimatedCounter({ target, suffix = '', duration = 2500 }: { target: num
 
   return (
     <span ref={ref}>
-      {count.toLocaleString('ru-RU')}{suffix}
+      {count.toLocaleString(locale)}{suffix}
     </span>
   );
 }
@@ -50,6 +50,7 @@ function StarParticle({ delay, x, y }: { delay: number; x: string; y: string }) 
 
 export default function ImpactCounter() {
   const t = useTranslations('impact');
+  const locale = useLocale();
 
   const impacts = [
     {
@@ -168,7 +169,7 @@ export default function ImpactCounter() {
                   {impact.icon}
                 </div>
                 <div className="text-[32px] sm:text-[40px] font-bold text-white leading-none mb-2">
-                  <AnimatedCounter target={impact.value} suffix={impact.suffix} />
+                  <AnimatedCounter target={impact.value} suffix={impact.suffix} locale={locale} />
                 </div>
                 <div className="text-[15px] font-semibold text-white/80 mb-1">{impact.label}</div>
                 <div className="text-[13px] text-white/40">{impact.description}</div>

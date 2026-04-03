@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function AdminError({
   error,
@@ -9,6 +10,8 @@ export default function AdminError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('common');
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -23,13 +26,13 @@ export default function AdminError({
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
         </div>
-        <h3 className="text-[18px] font-semibold text-[#0F172A] mb-1">Ошибка</h3>
-        <p className="text-[14px] text-[#64748B] mb-6">{error.message || 'Произошла непредвиденная ошибка'}</p>
+        <h3 className="text-[18px] font-semibold text-[#0F172A] mb-1">{t('error')}</h3>
+        <p className="text-[14px] text-[#64748B] mb-6">{error.message || t('errorDesc')}</p>
         <button
           onClick={reset}
           className="h-[38px] px-5 rounded-lg bg-[#3B82F6] text-white font-medium text-[14px] hover:bg-[#2563EB] transition-colors cursor-pointer"
         >
-          Повторить
+          {t('retry')}
         </button>
       </div>
     </div>

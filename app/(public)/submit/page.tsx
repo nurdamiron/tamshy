@@ -19,10 +19,22 @@ const STEP_KEYS = [
   { num: 5, titleKey: 'stepDone' },
 ];
 
-const regionOptions = Object.entries(regionLabels).map(([value, label]) => ({ value, label }));
-
 export default function SubmitPage() {
   const t = useTranslations('submit');
+  const tTypes = useTranslations('types');
+  const tCommon = useTranslations('common');
+
+  const tRegions = useTranslations('regions');
+
+  const translatedGrades = GRADES.map((g) => ({
+    value: g.value,
+    label: `${g.value} ${tCommon('class')}`,
+  }));
+
+  const regionOptions = Object.entries(regionLabels).map(([value, label]) => ({
+    value,
+    label: tRegions(value) || label,
+  }));
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -257,7 +269,7 @@ export default function SubmitPage() {
                   label={t('gradeLabel')}
                   value={grade}
                   onChange={(e) => setGrade(e.target.value)}
-                  options={GRADES}
+                  options={translatedGrades}
                   placeholder={t('gradePlaceholder')}
                 />
                 <Input
@@ -298,17 +310,17 @@ export default function SubmitPage() {
                     {t('projectTypeLabel')}
                   </label>
                   <div className="grid grid-cols-2 gap-3">
-                    {PROJECT_TYPES.filter(t => t.value !== 'OTHER').map((type) => (
+                    {PROJECT_TYPES.filter(pt => pt.value !== 'OTHER').map((pt) => (
                       <button
-                        key={type.value}
+                        key={pt.value}
                         type="button"
-                        onClick={() => setProjectType(type.value)}
+                        onClick={() => setProjectType(pt.value)}
                         className={`p-4 rounded-xl border-2 text-left transition-all
-                          ${projectType === type.value
+                          ${projectType === pt.value
                             ? 'border-[#0284C7] bg-[#E0F2FE]'
                             : 'border-[#E2E8F0] hover:border-[#0284C7]/30'}`}
                       >
-                        <div className="text-[14px] font-medium text-[#0F172A]">{type.label}</div>
+                        <div className="text-[14px] font-medium text-[#0F172A]">{tTypes(pt.value) || pt.label}</div>
                       </button>
                     ))}
                   </div>
@@ -373,7 +385,7 @@ export default function SubmitPage() {
                       </svg>
                       <p className="text-[14px] font-medium text-[#0F172A]">{file.name}</p>
                       <p className="text-[12px] text-[#64748B] mt-1">
-                        {(file.size / (1024 * 1024)).toFixed(1)} МБ
+                        {(file.size / (1024 * 1024)).toFixed(1)} {t('megabytes')}
                       </p>
                       <button
                         onClick={(e) => { e.stopPropagation(); setFile(null); }}

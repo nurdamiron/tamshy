@@ -27,6 +27,9 @@ const typeToBadge: Record<string, 'video' | 'research' | 'art' | 'invention' | '
 
 export default function LeaderboardPage() {
   const t = useTranslations('leaderboard');
+  const tTypes = useTranslations('types');
+  const tCommon = useTranslations('common');
+  const tRegions = useTranslations('regions');
   const [projects, setProjects] = useState<LeaderProject[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -90,9 +93,9 @@ export default function LeaderboardPage() {
                         {project.title}
                       </h3>
                       <div className="flex items-center gap-2 mt-1 text-[12px] text-[#64748B]">
-                        <span>{project.author?.name || 'Автор'}</span>
+                        <span>{project.author?.name || tCommon('defaultAuthor')}</span>
                         <span>·</span>
-                        <span>{regionLabels[project.region]}</span>
+                        <span>{tRegions(project.region) || regionLabels[project.region]}</span>
                         <span>·</span>
                         <span>{project.schoolName}</span>
                       </div>
@@ -101,7 +104,7 @@ export default function LeaderboardPage() {
                     {/* Badge & Votes */}
                     <div className="hidden sm:block">
                       <Badge variant={typeToBadge[project.type] || 'other'}>
-                        {getTypeLabel(project.type)}
+                        {tTypes(project.type) || getTypeLabel(project.type)}
                       </Badge>
                     </div>
 

@@ -72,14 +72,7 @@ const ITEMS_PER_PAGE = 6;
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-function pluralizeMaterials(n: number): string {
-  const abs = Math.abs(n) % 100;
-  const lastDigit = abs % 10;
-  if (abs >= 11 && abs <= 19) return 'материалов';
-  if (lastDigit === 1) return 'материал';
-  if (lastDigit >= 2 && lastDigit <= 4) return 'материала';
-  return 'материалов';
-}
+/* pluralizeMaterials removed — using t('materialsWord') instead */
 
 /* ------------------------------------------------------------------ */
 /*  Inline SVG icons                                                   */
@@ -500,7 +493,7 @@ export default function MaterialsPage() {
             transition={{ delay: 0.05 }}
             className="mt-1 text-[15px] text-[#64748B]"
           >
-            ({totalMaterials} {pluralizeMaterials(totalMaterials)})
+            ({totalMaterials} {t('materialsWord')})
           </motion.p>
         </div>
 

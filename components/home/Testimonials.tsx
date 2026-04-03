@@ -4,43 +4,11 @@ import { motion, useMotionValue } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 
-const testimonials = [
-  {
-    name: 'Айгерим К.',
-    role: 'Ученица 10 класса, НИШ Астана',
-    text: 'Благодаря Тамшы мой проект по очистке дождевой воды увидели тысячи людей. Я даже не думала, что школьница может повлиять на водную политику!',
-    region: 'Астана',
-    avatarColor: '#0284C7',
-    initial: 'А',
-    stars: 5,
-  },
-  {
-    name: 'Дамир С.',
-    role: 'Ученик 9 класса, школа No12 Актау',
-    text: 'Наша команда сняла документальный фильм о проблемах Каспия. Получили 200+ голосов и приглашение на конференцию по экологии.',
-    region: 'Актау',
-    avatarColor: '#38BDF8',
-    initial: 'Д',
-    stars: 5,
-  },
-  {
-    name: 'Мадина Т.',
-    role: 'Учитель биологии, школа No5 Кызылорда',
-    text: 'Тамшы вдохновил моих учеников. Трое из них создали макет системы капельного полива для школьного сада. Проект работает!',
-    region: 'Кызылорда',
-    avatarColor: '#F59E0B',
-    initial: 'М',
-    stars: 5,
-  },
-  {
-    name: 'Арман Б.',
-    role: 'Ученик 11 класса, лицей Алматы',
-    text: 'Я разработал приложение для мониторинга расхода воды в школе. Стал победителем конкурса и получил грант на развитие проекта.',
-    region: 'Алматы',
-    avatarColor: '#0369A1',
-    initial: 'А',
-    stars: 5,
-  },
+const TESTIMONIAL_META = [
+  { avatarColor: '#0284C7', stars: 5 },
+  { avatarColor: '#38BDF8', stars: 5 },
+  { avatarColor: '#F59E0B', stars: 5 },
+  { avatarColor: '#0369A1', stars: 5 },
 ];
 
 function StarRating({ count }: { count: number }) {
@@ -57,6 +25,20 @@ function StarRating({ count }: { count: number }) {
 
 export default function Testimonials() {
   const t = useTranslations('testimonials');
+
+  const testimonials = TESTIMONIAL_META.map((meta, i) => {
+    const idx = i + 1;
+    return {
+      name: t(`t${idx}Name`),
+      role: t(`t${idx}Role`),
+      text: t(`t${idx}Text`),
+      region: t(`t${idx}Region`),
+      avatarColor: meta.avatarColor,
+      initial: t(`t${idx}Name`).charAt(0),
+      stars: meta.stars,
+    };
+  });
+
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const dragX = useMotionValue(0);
@@ -135,9 +117,9 @@ export default function Testimonials() {
               dragConstraints={{ left: -(testimonials.length - 1) * 300, right: 0 }}
               onDragEnd={handleDragEnd}
             >
-              {testimonials.map((t, i) => (
+              {testimonials.map((item, i) => (
                 <motion.div
-                  key={t.name}
+                  key={item.name}
                   className="flex-shrink-0 w-full md:w-[calc(50%-12px)]"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -154,26 +136,26 @@ export default function Testimonials() {
                       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                     </svg>
 
-                    <StarRating count={t.stars} />
+                    <StarRating count={item.stars} />
 
                     <p className="text-[15px] text-[#0F172A] leading-relaxed mt-4 mb-6">
-                      &ldquo;{t.text}&rdquo;
+                      &ldquo;{item.text}&rdquo;
                     </p>
 
                     <div className="flex items-center gap-3 pt-5 border-t border-[#E2E8F0]/60">
                       <div
                         className="w-11 h-11 rounded-full flex items-center justify-center text-white text-[14px] font-bold shrink-0 ring-2 ring-offset-2"
-                        style={{ backgroundColor: t.avatarColor, '--tw-ring-color': t.avatarColor + '40' } as React.CSSProperties}
+                        style={{ backgroundColor: item.avatarColor, '--tw-ring-color': item.avatarColor + '40' } as React.CSSProperties}
                       >
-                        {t.initial}
+                        {item.initial}
                       </div>
                       <div className="min-w-0">
-                        <div className="text-[14px] font-semibold text-[#0F172A]">{t.name}</div>
-                        <div className="text-[12px] text-[#64748B] truncate">{t.role}</div>
+                        <div className="text-[14px] font-semibold text-[#0F172A]">{item.name}</div>
+                        <div className="text-[12px] text-[#64748B] truncate">{item.role}</div>
                       </div>
                       <div className="ml-auto shrink-0">
                         <span className="text-[11px] bg-[#E0F2FE] text-[#0284C7] px-2.5 py-1 rounded-full font-medium">
-                          {t.region}
+                          {item.region}
                         </span>
                       </div>
                     </div>

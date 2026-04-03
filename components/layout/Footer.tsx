@@ -153,9 +153,9 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-[13px] text-white/60 leading-relaxed">
-                    ул. Айтеке би, 12<br />офис 305
+                    {t('address')}
                   </p>
-                  <p className="text-[12px] text-white/30 mt-1">г. Кызылорда, 120000</p>
+                  <p className="text-[12px] text-white/30 mt-1">{t('city')}</p>
                 </div>
               </div>
 
@@ -167,8 +167,8 @@ export default function Footer() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-[13px] text-white/60">+7 (7242) 55-55-55</p>
-                  <p className="text-[12px] text-white/30 mt-1">Пн-Пт, 09:00 - 18:00</p>
+                  <p className="text-[13px] text-white/60">{t('phone')}</p>
+                  <p className="text-[12px] text-white/30 mt-1">{t('workHours')}</p>
                 </div>
               </div>
 
@@ -181,8 +181,8 @@ export default function Footer() {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-[13px] text-white/60">info@tamshy.kz</p>
-                  <p className="text-[12px] text-white/30 mt-1">Для общих вопросов и предложений</p>
+                  <p className="text-[13px] text-white/60">{t('emailAddress')}</p>
+                  <p className="text-[12px] text-white/30 mt-1">{t('emailDesc')}</p>
                 </div>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function Footer() {
               className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/[0.1] flex items-center justify-center transition-all cursor-pointer"
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.95 }}
-              aria-label="Наверх"
+              aria-label={t('scrollToTop')}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeOpacity="0.4">
                 <path d="M18 15l-6-6-6 6" />

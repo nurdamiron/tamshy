@@ -97,12 +97,12 @@ const typeBadgeColor: Record<string, string> = {
   ЛИТЕРАТУРА: 'bg-rose-50 text-rose-700',
 };
 
-function formatDeadline(deadline: string, status: string): string {
+function formatDeadline(deadline: string, status: string, deadlineLabel: string): string {
   if (status === 'ACTIVE') {
     const d = new Date(deadline);
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
-    return `ДЕДЛАЙН ${day}.${month}`;
+    return `${deadlineLabel} ${day}.${month}`;
   }
   const d = new Date(deadline);
   const day = String(d.getDate()).padStart(2, '0');
@@ -111,12 +111,12 @@ function formatDeadline(deadline: string, status: string): string {
   return `${day}.${month}.${year}`;
 }
 
-function shortDeadline(deadline: string, status: string): string {
+function shortDeadline(deadline: string, status: string, prefix: string): string {
   const d = new Date(deadline);
   const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
   if (status === 'ACTIVE') {
-    return `до ${day}.${month}`;
+    return `${prefix} ${day}.${month}`;
   }
   return `${day}.${month}.${d.getFullYear()}`;
 }
@@ -387,7 +387,7 @@ export default function ContestsPage() {
                   </span>
                   <span className="text-[11px] text-[#64748B] ml-auto flex items-center gap-1">
                     <HugeiconsIcon icon={Calendar01Icon} size={12} />
-                    {shortDeadline(c.deadline, c.status)}
+                    {shortDeadline(c.deadline, c.status, t('deadlinePrefix'))}
                   </span>
                 </div>
                 <h3 className="text-[14px] font-semibold text-[#0F172A] leading-snug mb-1">
@@ -451,7 +451,7 @@ export default function ContestsPage() {
             </span>
             <span className={`ml-auto text-[12px] font-semibold flex items-center gap-1 ${selected.status === 'ACTIVE' ? 'text-red-500' : 'text-[#64748B]'}`}>
               <HugeiconsIcon icon={Calendar01Icon} size={13} />
-              {formatDeadline(selected.deadline, selected.status)}
+              {formatDeadline(selected.deadline, selected.status, t('deadlineLabel'))}
             </span>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export default function Error({
   error,
@@ -10,6 +11,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('common');
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -24,20 +27,20 @@ export default function Error({
             <line x1="9" y1="9" x2="15" y2="15" />
           </svg>
         </div>
-        <h2 className="text-[24px] font-bold text-[#0F172A] mb-2">Что-то пошло не так</h2>
+        <h2 className="text-[24px] font-bold text-[#0F172A] mb-2">{t('errorTitle')}</h2>
         <p className="text-[15px] text-[#64748B] mb-8">
-          Произошла ошибка при загрузке страницы. Попробуйте обновить или вернуться на главную.
+          {t('errorDesc')}
         </p>
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
             className="h-[42px] px-6 rounded-xl bg-[#3B82F6] text-white font-semibold text-[14px] hover:bg-[#2563EB] transition-colors cursor-pointer"
           >
-            Попробовать снова
+            {t('tryAgain')}
           </button>
           <Link href="/">
             <button className="h-[42px] px-6 rounded-xl border border-[#E2E8F0] text-[#64748B] font-semibold text-[14px] hover:bg-[#F8FAFC] transition-colors cursor-pointer">
-              На главную
+              {t('backToHome')}
             </button>
           </Link>
         </div>

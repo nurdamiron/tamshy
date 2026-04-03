@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   News01Icon,
   File01Icon,
@@ -99,13 +99,9 @@ function formatDate(dateStr: string): string {
   return `${day}.${month}.${year}`;
 }
 
-function formatDateLong(dateStr: string): string {
+function formatDateLong(dateStr: string, locale: string): string {
   const d = new Date(dateStr);
-  const months = [
-    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
-  ];
-  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function mapCategory(cat: string): Category {
@@ -233,7 +229,7 @@ function Badge({
 
 /* ---- Cards ----- */
 
-function LargeNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
+function LargeNewsCard({ item, t, locale }: { item: NewsItem; t: (key: string) => string; locale: string }) {
   return (
     <motion.article variants={itemVariants} className="col-span-full">
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60">
@@ -253,7 +249,7 @@ function LargeNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string
         <div className="p-5 sm:p-6">
           <div className="flex items-center gap-3 mb-3">
             <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
-            <span className="text-[13px] text-[#64748B]">{formatDateLong(item.createdAt)}</span>
+            <span className="text-[13px] text-[#64748B]">{formatDateLong(item.createdAt, locale)}</span>
           </div>
           <h3 className="text-[18px] font-semibold text-[#0F172A] leading-snug mb-2">
             {item.title}
@@ -377,9 +373,9 @@ function SmallNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string
   );
 }
 
-function NewsCard({ item, isFirst, t }: { item: NewsItem; isFirst: boolean; t: (key: string) => string }) {
+function NewsCard({ item, isFirst, t, locale }: { item: NewsItem; isFirst: boolean; t: (key: string) => string; locale: string }) {
   const category = mapCategory(item.category);
-  if (isFirst && category === 'news') return <LargeNewsCard item={item} t={t} />;
+  if (isFirst && category === 'news') return <LargeNewsCard item={item} t={t} locale={locale} />;
   if (category === 'reports') return <ReportCard item={item} t={t} />;
   if (category === 'videos') return <VideoCard item={item} t={t} />;
   if (category === 'photos') return <PhotoCard item={item} t={t} />;
@@ -392,6 +388,7 @@ function NewsCard({ item, isFirst, t }: { item: NewsItem; isFirst: boolean; t: (
 
 export default function ProgressPage() {
   const t = useTranslations('progress');
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<Category>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -559,7 +556,7 @@ export default function ProgressPage() {
                 >
                   {newsItems.length > 0 ? (
                     newsItems.map((item, index) => (
-                      <NewsCard key={item.id} item={item} isFirst={index === 0} t={t} />
+                      <NewsCard key={item.id} item={item} isFirst={index === 0} t={t} locale={locale} />
                     ))
                   ) : (
                     <motion.div

@@ -46,6 +46,7 @@ export default function ProjectsPage() {
   const t = useTranslations('projects');
   const tRegions = useTranslations('regions');
   const tTypes = useTranslations('types');
+  const tCommon = useTranslations('common');
 
   const regionOptions = [
     { value: 'all', label: t('allRegions') },
@@ -98,7 +99,7 @@ export default function ProjectsPage() {
         grade: p.grade,
         teacherName: p.teacherName,
         createdAt: p.createdAt,
-        authorName: p.author?.name || 'Автор',
+        authorName: p.author?.name || tCommon('defaultAuthor'),
         voteCount: p._count?.votes || 0,
       }));
 
