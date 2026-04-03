@@ -357,7 +357,7 @@ export default function AdminMaterials() {
           </div>
           <Input
             label="URL обложки (превью на сайте)"
-            placeholder="https://images.unsplash.com/... или ссылка после загрузки в S3"
+            placeholder="/media/... или URL после загрузки файла"
             value={form.imageUrl}
             onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
           />

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { mediaUrl } from '../lib/media';
 
 const prisma = new PrismaClient();
 
@@ -24,21 +25,21 @@ const teachers = [
 ];
 
 const projectData = [
-  { title: 'Система сбора дождевой воды для школы', desc: 'Проект по установке системы сбора и фильтрации дождевой воды на территории школы. Система включает водостоки, фильтры и накопительный резервуар на 500 литров. Собранная вода используется для полива школьного сада.', type: 'INVENTION' as const, img: 'https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Документальный фильм "Голос Или"', desc: 'Короткометражный документальный фильм о состоянии реки Или и её значении для экосистемы Алматинской области.', type: 'VIDEO' as const, img: 'https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Исследование качества воды Каспийского моря', desc: 'Комплексное исследование pH, солёности и загрязнённости воды в прибрежной зоне Актау.', type: 'RESEARCH' as const, img: 'https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Плакатная серия "Каждая капля на счету"', desc: 'Серия из 10 информационных плакатов о водосбережении для школ Казахстана.', type: 'ART' as const, img: 'https://images.unsplash.com/photo-1550505193-41b1cfac8c8a?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Приложение WaterTracker KZ', desc: 'Мобильное приложение для мониторинга и учёта расхода воды в школе.', type: 'APP' as const, img: 'https://images.unsplash.com/photo-1616004655123-818cbd4efaec?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Макет системы капельного орошения', desc: 'Работающий макет системы капельного орошения для школьного огорода.', type: 'INVENTION' as const, img: 'https://images.unsplash.com/photo-1596486047123-b67def9ebccc?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Сравнение методов фильтрации', desc: 'Исследовательский проект, в котором мы сравнили эффективность угольного фильтра, песка и керамических фильтров для очистки речной воды.', type: 'RESEARCH' as const, img: 'https://images.unsplash.com/photo-1582210874313-91bce9fcfec4?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Анимационный ролик об очистке озер', desc: 'Двухминутная анимация, объясняющая младшим школьникам важность сохранения чистоты пресноводных водоемов.', type: 'VIDEO' as const, img: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Рисунок "Живая капля"', desc: 'Художественная работа, отражающая важность каждой капли воды в пустынных регионах.', type: 'ART' as const, img: 'https://images.unsplash.com/photo-1527066236128-2ff79f7b9705?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Чат-бот EcoWater', desc: 'Бот в Telegram, который дает советы по экономии воды в быту на каждый день.', type: 'APP' as const, img: 'https://images.unsplash.com/photo-1592656094267-764a45160876?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Умная остановка подачи воды', desc: 'Прототип устройства на базе Arduino, которое автоматически перекрывает кран, если не обнаруживает движения рук в раковине более 2 секунд.', type: 'INVENTION' as const, img: 'https://images.unsplash.com/photo-1525087740718-9e0f2c58c7ef?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Анализ уровня загрязнения реки Сырдарья', desc: 'Сбор проб воды в 5 различных точках реки и анализ на наличие тяжелых металлов и нитратов.', type: 'RESEARCH' as const, img: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Короткометражка "Однажды без воды"', desc: 'Фильм о том, как мог бы выглядеть день из жизни семьи, если бы в городе отключили воду на 24 часа. Снято на смартфон.', type: 'VIDEO' as const, img: 'https://images.unsplash.com/photo-1538460775895-7170a7bb0de2?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Графический дизайн: "Водный баланс"', desc: 'Серия инфографики для социальных сетей, рассказывающая о скрытом "водном следе" при производстве одежды и еды.', type: 'ART' as const, img: 'https://images.unsplash.com/photo-1506544777-64cfbe1142df?auto=format&fit=crop&q=80&w=800' },
-  { title: 'Приложение-игра "Спаси озеро"', desc: 'Мобильная игра для школьников, где игроку предстоит очищать виртуальное озеро от мусора и улучшать экологию.', type: 'APP' as const, img: 'https://images.unsplash.com/photo-1457639598858-eb5cf2d689b9?auto=format&fit=crop&q=80&w=800' },
+  { title: 'Система сбора дождевой воды для школы', desc: 'Проект по установке системы сбора и фильтрации дождевой воды на территории школы. Система включает водостоки, фильтры и накопительный резервуар на 500 литров. Собранная вода используется для полива школьного сада.', type: 'INVENTION' as const, img: mediaUrl('1507525428034-b723cf961d3e') },
+  { title: 'Документальный фильм "Голос Или"', desc: 'Короткометражный документальный фильм о состоянии реки Или и её значении для экосистемы Алматинской области.', type: 'VIDEO' as const, img: mediaUrl('1437482078695-73f5ca6c96e2') },
+  { title: 'Исследование качества воды Каспийского моря', desc: 'Комплексное исследование pH, солёности и загрязнённости воды в прибрежной зоне Актау.', type: 'RESEARCH' as const, img: mediaUrl('1498084393753-b411b2d26b34') },
+  { title: 'Плакатная серия "Каждая капля на счету"', desc: 'Серия из 10 информационных плакатов о водосбережении для школ Казахстана.', type: 'ART' as const, img: mediaUrl('1542601906990-b4d3fb778b09') },
+  { title: 'Приложение WaterTracker KZ', desc: 'Мобильное приложение для мониторинга и учёта расхода воды в школе.', type: 'APP' as const, img: mediaUrl('1437482078695-73f5ca6c96e2') },
+  { title: 'Макет системы капельного орошения', desc: 'Работающий макет системы капельного орошения для школьного огорода.', type: 'INVENTION' as const, img: mediaUrl('1525087740718-9e0f2c58c7ef') },
+  { title: 'Сравнение методов фильтрации', desc: 'Исследовательский проект, в котором мы сравнили эффективность угольного фильтра, песка и керамических фильтров для очистки речной воды.', type: 'RESEARCH' as const, img: mediaUrl('1465146344425-f00d5f5c8f07') },
+  { title: 'Анимационный ролик об очистке озер', desc: 'Двухминутная анимация, объясняющая младшим школьникам важность сохранения чистоты пресноводных водоемов.', type: 'VIDEO' as const, img: mediaUrl('1447752875215-b2761acb3c5d') },
+  { title: 'Рисунок "Живая капля"', desc: 'Художественная работа, отражающая важность каждой капли воды в пустынных регионах.', type: 'ART' as const, img: mediaUrl('1527066236128-2ff79f7b9705') },
+  { title: 'Чат-бот EcoWater', desc: 'Бот в Telegram, который дает советы по экономии воды в быту на каждый день.', type: 'APP' as const, img: mediaUrl('1592656094267-764a45160876') },
+  { title: 'Умная остановка подачи воды', desc: 'Прототип устройства на базе Arduino, которое автоматически перекрывает кран, если не обнаруживает движения рук в раковине более 2 секунд.', type: 'INVENTION' as const, img: mediaUrl('1525087740718-9e0f2c58c7ef') },
+  { title: 'Анализ уровня загрязнения реки Сырдарья', desc: 'Сбор проб воды в 5 различных точках реки и анализ на наличие тяжелых металлов и нитратов.', type: 'RESEARCH' as const, img: mediaUrl('1465146344425-f00d5f5c8f07') },
+  { title: 'Короткометражка "Однажды без воды"', desc: 'Фильм о том, как мог бы выглядеть день из жизни семьи, если бы в городе отключили воду на 24 часа. Снято на смартфон.', type: 'VIDEO' as const, img: mediaUrl('1506544777-64cfbe1142df') },
+  { title: 'Графический дизайн: "Водный баланс"', desc: 'Серия инфографики для социальных сетей, рассказывающая о скрытом "водном следе" при производстве одежды и еды.', type: 'ART' as const, img: mediaUrl('1506544777-64cfbe1142df') },
+  { title: 'Приложение-игра "Спаси озеро"', desc: 'Мобильная игра для школьников, где игроку предстоит очищать виртуальное озеро от мусора и улучшать экологию.', type: 'APP' as const, img: mediaUrl('1507525428034-b723cf961d3e') },
 ];
 
 const names = [
@@ -46,24 +47,24 @@ const names = [
   'Ерлан У.', 'Гульмира Д.', 'Самат Ж.', 'Зарина К.', 'Азамат Е.', 'Асель И.'
 ];
 
-const DUMMY_PDF = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-const DUMMY_VIDEO = 'https://www.w3schools.com/html/mov_bbb.mp4';
-const DUMMY_IMG_CONTEST_1 = 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=800'; // water splash
-const DUMMY_IMG_CONTEST_2 = 'https://images.unsplash.com/photo-1469122312224-c5846569feb1?auto=format&fit=crop&q=80&w=800'; // aral sea vibe
-const DUMMY_IMG_CONTEST_3 = 'https://images.unsplash.com/photo-1423483641154-5411ec9c0ddf?auto=format&fit=crop&q=80&w=800'; // water photography
+const DUMMY_PDF = '/media/dummy.pdf';
+const DUMMY_VIDEO = '/media/sample.mp4';
+const DUMMY_IMG_CONTEST_1 = mediaUrl('1534447677768-be436bb09401');
+const DUMMY_IMG_CONTEST_2 = mediaUrl('1469122312224-c5846569feb1');
+const DUMMY_IMG_CONTEST_3 = mediaUrl('1423483641154-5411ec9c0ddf');
 const NEWS_IMAGES = [
-  'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1510442650500-93217e634e4c?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1504363082875-9612defcedeb?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1457639598858-eb5cf2d689b9?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1521998522336-7ebaf6af651e?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&q=80&w=1200',
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200',
+  mediaUrl('1542601906990-b4d3fb778b09'),
+  mediaUrl('1510442650500-93217e634e4c'),
+  mediaUrl('1522204523234-8729aa6e3d5f'),
+  mediaUrl('1507525428034-b723cf961d3e'),
+  mediaUrl('1497436072909-60f360e1d4b1'),
+  mediaUrl('1470071459604-3b5ec3a7fe05'),
+  mediaUrl('1500530855697-b586d89ba3ee'),
+  mediaUrl('1497436072909-60f360e1d4b1'),
+  mediaUrl('1500530855697-b586d89ba3ee'),
+  mediaUrl('1506905925346-21bda4d32df4'),
+  mediaUrl('1439066615861-d1af74d74000'),
+  mediaUrl('1507525428034-b723cf961d3e'),
 ];
 
 async function main() {
@@ -173,10 +174,10 @@ async function main() {
   // ── Materials ──
   await prisma.material.deleteMany({});
   const materialImages = [
-    'https://images.unsplash.com/photo-1464638706318-c2b4fe8d3637?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1510442650500-93217e634e4c?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&q=80&w=800'
+    mediaUrl('1542601906990-b4d3fb778b09'),
+    mediaUrl('1507525428034-b723cf961d3e'),
+    mediaUrl('1510442650500-93217e634e4c'),
+    mediaUrl('1437482078695-73f5ca6c96e2'),
   ];
 
   const materials = [

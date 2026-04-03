@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokenPayload } from '@/lib/auth';
 import { uploadToS3 } from '@/lib/s3';
+import { saveUploadLocal } from '@/lib/local-upload';
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES } from '@/lib/constants';
 import { checkRateLimit, uploadLimiter } from '@/lib/ratelimit';
+
+function s3UploadEnabled(): boolean {
+  if (process.env.UPLOAD_LOCAL_ONLY === '1' || process.env.DISABLE_S3 === '1') return false;
+  return !!process.env.AWS_ACCESS_KEY_ID?.trim();
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,11 +35,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Недопустимый тип файла' }, { status: 400 });
     }
 
-    const ext = file.name.split('.').pop();
-    const key = `projects/${payload.userId}/${Date.now()}.${ext}`;
+    const ext = file.name.split('.').pop() || 'bin';
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const url = await uploadToS3(buffer, key, file.type);
+    const url = s3UploadEnabled()
+      ? await uploadToS3(buffer, `projects/${payload.userId}/${Date.now()}.${ext}`, file.type)
+      : await saveUploadLocal(buffer, ext, payload.userId);
 
     return NextResponse.json({ url });
   } catch (error) {

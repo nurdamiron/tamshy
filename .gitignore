@@ -20,6 +20,9 @@
 .DS_Store
 *.pem
 
+# локальные загрузки пользователей (не S3)
+public/uploads/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
