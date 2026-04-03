@@ -85,6 +85,7 @@ model Contest {
   rules       String?           @db.Text
   status      ContestStatus     @default(ACTIVE)
   deadline    DateTime
+  imageUrl    String?
   createdAt   DateTime          @default(now())
   documents   ContestDocument[]
   submissions ContestSubmission[]
@@ -124,6 +125,7 @@ model Material {
   format      String           // PDF, DOCX, MP4, PPTX, XLSX
   fileUrl     String
   fileSize    String
+  imageUrl    String?
   type        MaterialType
   audience    MaterialAudience
   year        Int

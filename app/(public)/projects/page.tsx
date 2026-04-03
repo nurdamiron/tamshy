@@ -25,6 +25,7 @@ interface ProjectDataRaw {
   createdAt: string;
   author: { id: string; name: string | null };
   _count: { votes: number };
+  thumbnailUrl?: string | null;
 }
 
 interface ProjectItem {
@@ -40,6 +41,7 @@ interface ProjectItem {
   createdAt: string;
   authorName: string;
   voteCount: number;
+  thumbnailUrl?: string | null;
 }
 
 export default function ProjectsPage() {
@@ -101,6 +103,7 @@ export default function ProjectsPage() {
         createdAt: p.createdAt,
         authorName: p.author?.name || tCommon('defaultAuthor'),
         voteCount: p._count?.votes || 0,
+        thumbnailUrl: p.thumbnailUrl,
       }));
 
       setProjects(prev => append ? [...prev, ...mapped] : mapped);

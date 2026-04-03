@@ -8,9 +8,11 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: ReactNode;
+  /** Tailwind width class for the panel, e.g. max-w-2xl */
+  panelClassName?: string;
 }
 
-export default function Modal({ open, onClose, title, children }: ModalProps) {
+export default function Modal({ open, onClose, title, children, panelClassName }: ModalProps) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -41,7 +43,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <div
-              className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
+              className={`bg-white rounded-xl shadow-xl w-full max-h-[85vh] overflow-y-auto ${panelClassName ?? 'max-w-lg'}`}
               onClick={(e) => e.stopPropagation()}
             >
               {title && (

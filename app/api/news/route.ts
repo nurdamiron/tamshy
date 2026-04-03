@@ -4,6 +4,14 @@ import { getTokenPayload } from '@/lib/auth';
 
 const PER_PAGE = 6;
 
+/** UI tabs → Prisma NewsCategory */
+const TAB_TO_CATEGORY: Record<string, 'NEWS' | 'REPORT' | 'PHOTO' | 'VIDEO'> = {
+  news: 'NEWS',
+  reports: 'REPORT',
+  photos: 'PHOTO',
+  videos: 'VIDEO',
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
@@ -13,9 +21,16 @@ export async function GET(req: NextRequest) {
 
     const where: Record<string, unknown> = {};
 
-    if (category) where.category = category;
+    if (category && TAB_TO_CATEGORY[category]) {
+      where.category = TAB_TO_CATEGORY[category];
+    } else if (category && ['NEWS', 'REPORT', 'PHOTO', 'VIDEO'].includes(category)) {
+      where.category = category;
+    }
     if (search) {
-      where.title = { contains: search, mode: 'insensitive' };
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } },
+      ];
     }
 
     const [news, total] = await Promise.all([

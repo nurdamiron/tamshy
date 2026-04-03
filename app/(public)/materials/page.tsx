@@ -23,6 +23,7 @@ interface Material {
   audience: string;
   year: number;
   featured?: boolean;
+  imageUrl?: string;
 }
 
 interface MaterialsResponse {
@@ -250,14 +251,28 @@ function MaterialCard({ material, index, onDownload, t }: { material: Material; 
       transition={{ delay: Math.min(index * 0.07, 0.35), duration: 0.4 }}
       className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#93C5FD]/60 flex flex-col"
     >
-      {/* Header */}
-      <div className="p-5 pb-0 flex items-start justify-between">
-        <FormatBadge format={material.format} />
-        <span className="text-[12px] text-[#94A3B8] font-medium">{material.fileSize}</span>
-      </div>
+      {/* Header / Cover */}
+      {material.imageUrl ? (
+        <div className="relative w-full h-[140px] overflow-hidden rounded-t-2xl border-b border-[#E2E8F0]/60">
+          <img src={material.imageUrl} alt={material.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <div className="absolute top-3 left-3">
+            <FormatBadge format={material.format} />
+          </div>
+          <div className="absolute top-3 right-3">
+            <span className="bg-white/80 backdrop-blur-md px-2 py-0.5 rounded text-[11px] font-medium text-[#475569] shadow-sm">
+              {material.fileSize}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <div className="p-5 pb-0 flex items-start justify-between bg-[#F8FAFC] rounded-t-2xl">
+          <FormatBadge format={material.format} />
+          <span className="text-[12px] text-[#94A3B8] font-medium bg-white px-2 py-0.5 rounded shadow-sm border border-[#E2E8F0]/40">{material.fileSize}</span>
+        </div>
+      )}
 
       {/* Body */}
-      <div className="p-5 pt-3 flex-1">
+      <div className="p-5 pt-4 flex-1">
         <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mb-2 line-clamp-2">
           {material.title}
         </h3>

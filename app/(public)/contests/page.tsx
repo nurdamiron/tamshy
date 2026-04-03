@@ -39,6 +39,7 @@ interface Contest {
   status: string;
   deadline: string;
   createdAt: string;
+  imageUrl?: string;
   documents: ContestDocument[];
   _count: { submissions: number };
 }
@@ -459,6 +460,17 @@ export default function ContestsPage() {
           <h1 className="text-[22px] sm:text-[26px] font-bold text-[#0F172A] leading-tight mb-6">
             {selected.title}
           </h1>
+
+          {/* Cover */}
+          {selected.imageUrl && (
+            <div className="mb-6 rounded-xl overflow-hidden border border-[#E2E8F0]/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <img 
+                src={selected.imageUrl} 
+                alt={selected.title} 
+                className="w-full h-[200px] sm:h-[260px] object-cover" 
+              />
+            </div>
+          )}
 
           {/* Description */}
           <div className="mb-6">

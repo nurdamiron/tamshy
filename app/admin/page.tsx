@@ -155,7 +155,7 @@ export default function AdminDashboard() {
       {/* page title */}
       <div>
         <h1 className="text-xl font-bold text-[#0F172A]">Дашборд</h1>
-        <p className="text-[13px] text-slate-500 mt-0.5">Обзор системы Tamshy.kz</p>
+        <p className="text-[13px] text-slate-500 mt-0.5">Обзор системы Tamshy</p>
       </div>
 
       {/* stat cards */}

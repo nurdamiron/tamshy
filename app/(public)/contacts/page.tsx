@@ -271,7 +271,7 @@ export default function ContactsPage() {
                 src="https://www.openstreetmap.org/export/embed.html?bbox=71.404%2C51.105%2C71.465%2C51.146&layer=mapnik&marker=51.125762%2C71.434467"
                 className="w-full h-[220px] border-0"
                 loading="lazy"
-                title={`Tamshy.kz — ${t('address')} ${t('city')}`}
+                title={`Tamshy — ${t('address')} ${t('city')}`}
               />
             </motion.div>
           </div>

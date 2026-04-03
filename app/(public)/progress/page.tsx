@@ -22,6 +22,7 @@ import {
   DropletIcon,
   GridViewIcon,
 } from '@hugeicons/core-free-icons';
+import Modal from '@/components/ui/Modal';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -30,7 +31,7 @@ import {
 type Category = 'all' | 'news' | 'reports' | 'photos' | 'videos';
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   content: string;
   category: string;
@@ -107,17 +108,17 @@ function formatDateLong(dateStr: string, locale: string): string {
 function mapCategory(cat: string): Category {
   const lower = cat.toLowerCase();
   if (lower === 'news') return 'news';
-  if (lower === 'reports') return 'reports';
-  if (lower === 'photos') return 'photos';
-  if (lower === 'videos') return 'videos';
+  if (lower === 'report') return 'reports';
+  if (lower === 'photo') return 'photos';
+  if (lower === 'video') return 'videos';
   return 'news';
 }
 
 const CATEGORY_BADGE_KEYS: Record<string, string> = {
   news: 'badgeNews',
-  reports: 'badgeReports',
-  photos: 'badgePhotos',
-  videos: 'badgeVideos',
+  report: 'badgeReports',
+  photo: 'badgePhotos',
+  video: 'badgeVideos',
 };
 
 /* ------------------------------------------------------------------ */
@@ -229,13 +230,34 @@ function Badge({
 
 /* ---- Cards ----- */
 
-function LargeNewsCard({ item, t, locale }: { item: NewsItem; t: (key: string) => string; locale: string }) {
+function LargeNewsCard({
+  item,
+  t,
+  locale,
+  onOpen,
+}: {
+  item: NewsItem;
+  t: (key: string) => string;
+  locale: string;
+  onOpen: () => void;
+}) {
   return (
     <motion.article variants={itemVariants} className="col-span-full">
-      <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+        className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 cursor-pointer text-left w-full"
+      >
         {item.imageUrl ? (
           <div className="h-52 sm:h-64 overflow-hidden">
-            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
           </div>
         ) : (
           <GradientPlaceholder className="h-52 sm:h-64 flex items-center justify-center">
@@ -257,74 +279,121 @@ function LargeNewsCard({ item, t, locale }: { item: NewsItem; t: (key: string) =
           <p className="text-[14px] text-[#64748B] leading-relaxed mb-4 line-clamp-3">
             {item.content}
           </p>
-          <button className="text-[14px] font-medium text-[#3B82F6] hover:text-[#2563EB] transition-colors cursor-pointer">
+          <span className="text-[14px] font-medium text-[#3B82F6]">
             {t('readMore')} &rarr;
-          </button>
+          </span>
         </div>
       </div>
     </motion.article>
   );
 }
 
-function ReportCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
+function ReportCard({ item, t, onOpen }: { item: NewsItem; t: (key: string) => string; onOpen: () => void }) {
   return (
     <motion.article variants={itemVariants}>
-      <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
-        <div className="flex items-center gap-2 text-[13px] text-[#64748B] mb-3">
-          <HugeiconsIcon icon={Clock01Icon} size={15} className="text-[#94A3B8]" />
-          <span>{formatDate(item.createdAt)}</span>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+        className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col cursor-pointer text-left w-full"
+      >
+        {item.imageUrl ? (
+          <div className="h-36 w-full overflow-hidden shrink-0">
+            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+          </div>
+        ) : null}
+        <div className="p-5 flex flex-col flex-1">
+          <div className="flex items-center gap-2 text-[13px] text-[#64748B] mb-3">
+            <HugeiconsIcon icon={Clock01Icon} size={15} className="text-[#94A3B8]" />
+            <span>{formatDate(item.createdAt)}</span>
+          </div>
+          <h3 className="text-[16px] font-semibold text-[#0F172A] leading-snug mb-2">
+            {item.title}
+          </h3>
+          <p className="text-[14px] text-[#64748B] leading-relaxed mb-4 flex-1 line-clamp-4">
+            {item.content}
+          </p>
+          {item.fileUrl && (
+            <a
+              href={item.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2 transition-colors cursor-pointer w-fit"
+            >
+              <HugeiconsIcon icon={Download01Icon} size={15} />
+              {t('downloadPdf')}
+            </a>
+          )}
         </div>
-        <h3 className="text-[16px] font-semibold text-[#0F172A] leading-snug mb-2">
-          {item.title}
-        </h3>
-        <p className="text-[14px] text-[#64748B] leading-relaxed mb-4 flex-1">
-          {item.content}
-        </p>
-        {item.fileUrl && (
-          <a
-            href={item.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2 transition-colors cursor-pointer w-fit"
-          >
-            <HugeiconsIcon icon={Download01Icon} size={15} />
-            {t('downloadPdf')}
-          </a>
-        )}
       </div>
     </motion.article>
   );
 }
 
-function VideoCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
+function VideoCard({ item, t, onOpen }: { item: NewsItem; t: (key: string) => string; onOpen: () => void }) {
   return (
     <motion.article variants={itemVariants}>
-      <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
-        <GradientPlaceholder className="h-40 flex items-center justify-center">
-          <div className="relative z-10">
-            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-110">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+        className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col cursor-pointer text-left w-full"
+      >
+        <div className="relative h-40 w-full overflow-hidden">
+          {item.imageUrl ? (
+            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <GradientPlaceholder className="h-full w-full flex items-center justify-center" />
+          )}
+          <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+            <div className="w-14 h-14 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center transition-transform hover:scale-110">
               <HugeiconsIcon icon={PlayIcon} size={28} className="text-white ml-0.5" />
             </div>
           </div>
-        </GradientPlaceholder>
+        </div>
         <div className="p-5 flex-1 flex flex-col">
           <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
           <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mt-3">
             {item.title}
           </h3>
+          <p className="text-[13px] text-[#64748B] mt-2 line-clamp-2">{item.content}</p>
         </div>
       </div>
     </motion.article>
   );
 }
 
-function PhotoCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
+function PhotoCard({ item, t, onOpen }: { item: NewsItem; t: (key: string) => string; onOpen: () => void }) {
   return (
     <motion.article variants={itemVariants}>
-      <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+        className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col cursor-pointer text-left w-full"
+      >
         {item.imageUrl ? (
           <div className="relative h-36 overflow-hidden rounded-xl">
-            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
             <div className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
               <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
               <span className="text-[12px] font-medium text-white/90">
@@ -353,33 +422,64 @@ function PhotoCard({ item, t }: { item: NewsItem; t: (key: string) => string }) 
   );
 }
 
-function SmallNewsCard({ item, t }: { item: NewsItem; t: (key: string) => string }) {
+function SmallNewsCard({ item, t, onOpen }: { item: NewsItem; t: (key: string) => string; onOpen: () => void }) {
   return (
     <motion.article variants={itemVariants}>
-      <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
-        <div className="flex items-center gap-3 mb-3">
-          <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
-          <span className="text-[12px] text-[#64748B]">{formatDate(item.createdAt)}</span>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onOpen();
+          }
+        }}
+        className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col cursor-pointer text-left w-full"
+      >
+        {item.imageUrl ? (
+          <div className="h-32 w-full overflow-hidden shrink-0">
+            <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+          </div>
+        ) : null}
+        <div className="p-5 flex flex-col flex-1">
+          <div className="flex items-center gap-3 mb-3">
+            <Badge>{t(CATEGORY_BADGE_KEYS[item.category.toLowerCase()] ?? 'badgeNews')}</Badge>
+            <span className="text-[12px] text-[#64748B]">{formatDate(item.createdAt)}</span>
+          </div>
+          <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mb-2">
+            {item.title}
+          </h3>
+          <p className="text-[13px] text-[#64748B] leading-relaxed mb-4 flex-1 line-clamp-3">
+            {item.content}
+          </p>
+          <span className="text-[12px] text-[#94A3B8]">{item.viewCount} {t('viewsCount')}</span>
         </div>
-        <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mb-2">
-          {item.title}
-        </h3>
-        <p className="text-[13px] text-[#64748B] leading-relaxed mb-4 flex-1 line-clamp-2">
-          {item.content}
-        </p>
-        <span className="text-[12px] text-[#94A3B8]">{item.viewCount} {t('viewsCount')}</span>
       </div>
     </motion.article>
   );
 }
 
-function NewsCard({ item, isFirst, t, locale }: { item: NewsItem; isFirst: boolean; t: (key: string) => string; locale: string }) {
+function NewsCard({
+  item,
+  isFirst,
+  t,
+  locale,
+  onOpen,
+}: {
+  item: NewsItem;
+  isFirst: boolean;
+  t: (key: string) => string;
+  locale: string;
+  onOpen: (item: NewsItem) => void;
+}) {
   const category = mapCategory(item.category);
-  if (isFirst && category === 'news') return <LargeNewsCard item={item} t={t} locale={locale} />;
-  if (category === 'reports') return <ReportCard item={item} t={t} />;
-  if (category === 'videos') return <VideoCard item={item} t={t} />;
-  if (category === 'photos') return <PhotoCard item={item} t={t} />;
-  return <SmallNewsCard item={item} t={t} />;
+  const open = () => onOpen(item);
+  if (isFirst && category === 'news') return <LargeNewsCard item={item} t={t} locale={locale} onOpen={open} />;
+  if (category === 'reports') return <ReportCard item={item} t={t} onOpen={open} />;
+  if (category === 'videos') return <VideoCard item={item} t={t} onOpen={open} />;
+  if (category === 'photos') return <PhotoCard item={item} t={t} onOpen={open} />;
+  return <SmallNewsCard item={item} t={t} onOpen={open} />;
 }
 
 /* ------------------------------------------------------------------ */
@@ -403,6 +503,7 @@ export default function ProgressPage() {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
   const [newsletterError, setNewsletterError] = useState('');
+  const [detailItem, setDetailItem] = useState<NewsItem | null>(null);
 
   // Fetch news from API
   const fetchNews = useCallback(async () => {
@@ -462,6 +563,46 @@ export default function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <Modal
+        open={!!detailItem}
+        onClose={() => setDetailItem(null)}
+        title={detailItem?.title}
+        panelClassName="max-w-2xl"
+      >
+        {detailItem && (
+          <>
+            <div className="flex flex-wrap items-center gap-2 mb-4 -mt-1">
+              <Badge>{t(CATEGORY_BADGE_KEYS[detailItem.category.toLowerCase()] ?? 'badgeNews')}</Badge>
+              <span className="text-[13px] text-[#64748B]">{formatDateLong(detailItem.createdAt, locale)}</span>
+              <span className="text-[13px] text-[#94A3B8]">
+                {detailItem.viewCount} {t('viewsCount')}
+              </span>
+            </div>
+            {detailItem.imageUrl && (
+              <div className="relative w-full rounded-xl overflow-hidden mb-5 bg-[#F1F5F9] max-h-[min(360px,50vh)]">
+                <img
+                  src={detailItem.imageUrl}
+                  alt=""
+                  className="w-full h-full object-cover object-center max-h-[min(360px,50vh)]"
+                />
+              </div>
+            )}
+            <div className="text-[15px] text-[#334155] leading-relaxed whitespace-pre-line">{detailItem.content}</div>
+            {detailItem.fileUrl && (
+              <a
+                href={detailItem.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 mt-6 text-[14px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2.5 transition-colors"
+              >
+                <HugeiconsIcon icon={Download01Icon} size={16} />
+                {t('downloadPdf')}
+              </a>
+            )}
+          </>
+        )}
+      </Modal>
+
       {/* ---- Header ---- */}
       <section className="bg-white border-b border-[#E2E8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
@@ -556,7 +697,14 @@ export default function ProgressPage() {
                 >
                   {newsItems.length > 0 ? (
                     newsItems.map((item, index) => (
-                      <NewsCard key={item.id} item={item} isFirst={index === 0} t={t} locale={locale} />
+                      <NewsCard
+                        key={item.id}
+                        item={item}
+                        isFirst={index === 0}
+                        t={t}
+                        locale={locale}
+                        onOpen={setDetailItem}
+                      />
                     ))
                   ) : (
                     <motion.div

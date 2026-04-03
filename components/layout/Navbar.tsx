@@ -62,12 +62,12 @@ export default function Navbar() {
                 >
                   <BrandLogo size="sm" className="w-full h-full" priority />
                 </motion.div>
-                <span className={`text-[17px] font-bold tracking-tight transition-colors duration-300 ${
-                  scrolled || !isHome ? 'text-[#0F172A]' : 'text-white'
-                }`}>
-                  Tamshy<span className={`transition-colors duration-300 ${
-                    scrolled || !isHome ? 'text-[#3B82F6]' : 'text-white/80'
-                  }`}>.kz</span>
+                <span
+                  className={`text-[17px] font-bold tracking-tight transition-colors duration-300 ${
+                    scrolled || !isHome ? 'text-[#0F172A]' : 'text-white'
+                  }`}
+                >
+                  Tamshy
                 </span>
               </Link>
 
@@ -95,7 +95,7 @@ export default function Navbar() {
               {/* Right: lang + CTA */}
               <div className="hidden lg:flex items-center gap-1.5 shrink-0">
                 <LanguageSwitcher variant={scrolled || !isHome ? 'light' : 'dark'} />
-                <Link href="/contests">
+                <Link href="/submit">
                   <Button size="sm">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
@@ -172,7 +172,7 @@ export default function Navbar() {
                 <div className="px-4 py-2">
                   <LanguageSwitcher variant="light" />
                 </div>
-                <Link href="/contests" onClick={() => setMobileOpen(false)}>
+                <Link href="/submit" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full mt-2">{t('submitApplication')}</Button>
                 </Link>
               </div>

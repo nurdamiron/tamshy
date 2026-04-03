@@ -19,6 +19,7 @@ interface ProjectCardProps {
     authorName?: string;
     voteCount: number;
     createdAt: string;
+    thumbnailUrl?: string | null;
   };
   rank?: number;
 }
@@ -108,46 +109,74 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
         }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       >
-        {/* Gradient thumbnail */}
-        <div className={`relative bg-gradient-to-br ${typeGradients[project.type] || typeGradients.OTHER} h-[130px] flex items-center justify-center overflow-hidden`}>
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-[0.06]">
-            <div className="absolute top-2 right-2 w-20 h-20 rounded-full border border-white/40" />
-            <div className="absolute bottom-2 left-2 w-14 h-14 rounded-full border border-white/30" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-white/20" />
+        {/* Gradient thumbnail OR Image */}
+        {project.thumbnailUrl ? (
+          <div className="relative h-[150px] flex items-center justify-center overflow-hidden">
+            <img src={project.thumbnailUrl} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            
+            {/* Rank badge */}
+            {rank && rank <= 3 && (
+              <motion.div
+                className={`absolute top-3 left-3 w-8 h-8 rounded-full ${rankColors[rank].bg} ${rankColors[rank].text} flex items-center justify-center text-[13px] font-bold shadow-lg z-20`}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
+              >
+                {rank}
+              </motion.div>
+            )}
+
+            {/* Winner badge */}
+            {project.status === 'WINNER' && (
+              <div className="absolute top-3 right-3 bg-white/30 backdrop-blur-md rounded-full px-2.5 py-1 flex items-center gap-1 z-20 shadow-sm border border-white/20">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5A623">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span className="text-[10px] font-bold text-white shadow-sm">WINNER</span>
+              </div>
+            )}
           </div>
-
-          {/* Type icon */}
-          <motion.div
-            className="relative z-10 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
-            whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 0.4 }}
-          >
-            {typeIcons[project.type] || typeIcons.OTHER}
-          </motion.div>
-
-          {/* Rank badge */}
-          {rank && rank <= 3 && (
-            <motion.div
-              className={`absolute top-3 left-3 w-8 h-8 rounded-full ${rankColors[rank].bg} ${rankColors[rank].text} flex items-center justify-center text-[13px] font-bold shadow-lg`}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
-            >
-              {rank}
-            </motion.div>
-          )}
-
-          {/* Winner badge */}
-          {project.status === 'WINNER' && (
-            <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5A623">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
-              <span className="text-[10px] font-bold text-white">WINNER</span>
+        ) : (
+          <div className={`relative bg-gradient-to-br ${typeGradients[project.type] || typeGradients.OTHER} h-[130px] flex items-center justify-center overflow-hidden`}>
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-[0.06]">
+              <div className="absolute top-2 right-2 w-20 h-20 rounded-full border border-white/40" />
+              <div className="absolute bottom-2 left-2 w-14 h-14 rounded-full border border-white/30" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-white/20" />
             </div>
-          )}
-        </div>
+
+            {/* Type icon */}
+            <motion.div
+              className="relative z-10 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
+              whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 0.4 }}
+            >
+              {typeIcons[project.type] || typeIcons.OTHER}
+            </motion.div>
+
+            {/* Rank badge */}
+            {rank && rank <= 3 && (
+              <motion.div
+                className={`absolute top-3 left-3 w-8 h-8 rounded-full ${rankColors[rank].bg} ${rankColors[rank].text} flex items-center justify-center text-[13px] font-bold shadow-lg`}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: 'spring', stiffness: 400 }}
+              >
+                {rank}
+              </motion.div>
+            )}
+
+            {/* Winner badge */}
+            {project.status === 'WINNER' && (
+              <div className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center gap-1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5A623">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span className="text-[10px] font-bold text-white">WINNER</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-5 flex flex-col flex-1">

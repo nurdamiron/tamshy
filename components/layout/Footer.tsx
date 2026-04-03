@@ -27,9 +27,7 @@ export default function Footer() {
               <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
                 <BrandLogo size="md" className="w-full h-full" />
               </div>
-              <span className="text-[22px] font-bold tracking-tight">
-                Tamshy<span className="text-[#3B82F6]">.kz</span>
-              </span>
+              <span className="text-[22px] font-bold tracking-tight text-white">Tamshy</span>
             </div>
             <p className="text-[15px] text-white/40 leading-relaxed">
               {t('description')}
@@ -193,7 +191,7 @@ export default function Footer() {
       <div className="relative border-t border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[13px] text-white/25">
-            &copy; 2026 Tamshy.kz. {t('rights')}
+            &copy; 2026 Tamshy. {t('rights')}
           </p>
 
           <div className="flex items-center gap-5">
