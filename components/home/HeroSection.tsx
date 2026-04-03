@@ -187,7 +187,7 @@ export default function HeroSection() {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#F5A623]" />
               </span>
               <span className="text-[13px] font-medium text-white/90">
-                Прием проектов открыт до 30 мая 2026
+                Экологическая инициатива · Казахстан
               </span>
             </motion.div>
 
@@ -198,12 +198,12 @@ export default function HeroSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Суды бірге сақтаймыз
+              Экологическая инициатива
             </motion.p>
 
             {/* Main heading with staggered words */}
-            <h1 className="text-[44px] sm:text-[56px] lg:text-[68px] font-bold text-white leading-[1.02] tracking-tight">
-              {['Сохраняем', 'воду', 'вместе'].map((word, i) => (
+            <h1 className="text-[40px] sm:text-[52px] lg:text-[64px] font-bold text-white leading-[1.05] tracking-tight">
+              {['Экономь', 'воду', '–', 'сохраняй', 'будущее!'].map((word, i) => (
                 <motion.span
                   key={word}
                   custom={i}
@@ -212,7 +212,9 @@ export default function HeroSection() {
                   animate="visible"
                   className="inline-block mr-[0.3em]"
                 >
-                  {word === 'воду' ? (
+                  {word === '–' ? (
+                    <>{word}{' '}<br className="hidden sm:block" /></>
+                  ) : word === 'воду' ? (
                     <span className="relative">
                       {word}
                       <motion.svg
@@ -234,8 +236,6 @@ export default function HeroSection() {
                         />
                       </motion.svg>
                     </span>
-                  ) : word === 'вместе' ? (
-                    <><br className="sm:hidden" />{word}</>
                   ) : (
                     word
                   )}
@@ -249,8 +249,8 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.6 }}
             >
-              Республиканский конкурс водных проектов школьников Казахстана.
-              Покажи свой проект по водосбережению всей стране.
+              Информационный веб-сайт проекта по формированию культуры
+              рационального потребления водных ресурсов в Казахстане.
             </motion.p>
 
             {/* CTA buttons */}
@@ -260,26 +260,23 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
             >
-              <Link href="/submit">
+              <Link href="/about">
                 <motion.button
                   className="group relative h-[54px] px-8 rounded-xl bg-white text-[#0369A1] font-bold text-[16px] transition-all shadow-lg shadow-black/10 flex items-center gap-2.5 cursor-pointer overflow-hidden"
                   whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(0,0,0,0.15)' }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0284C7]/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="relative z-10">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                  <span className="relative z-10">Отправить проект</span>
+                  <span className="relative z-10">Узнать больше</span>
                 </motion.button>
               </Link>
-              <Link href="/projects">
+              <Link href="/contests">
                 <motion.button
                   className="h-[54px] px-8 rounded-xl bg-white/10 text-white font-semibold text-[16px] transition-all border border-white/20 backdrop-blur-sm flex items-center gap-2.5 cursor-pointer"
                   whileHover={{ backgroundColor: 'rgba(255,255,255,0.2)', scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Смотреть проекты
+                  Принять участие
                   <motion.svg
                     width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                     animate={{ x: [0, 4, 0] }}
