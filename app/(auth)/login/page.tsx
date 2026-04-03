@@ -57,7 +57,7 @@ export default function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <Card hover={false} padding="lg" className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-4 ring-1 ring-[#E2E8F0] shadow-sm">
+          <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-4">
             <BrandLogo size={56} className="w-full h-full" />
           </div>
           <h1 className="text-[24px] font-bold text-[#0F172A]">{t('title')}</h1>

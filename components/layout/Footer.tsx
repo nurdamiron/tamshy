@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 mb-16 pb-12 border-b border-white/[0.06]">
           <div className="max-w-md">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_24px_rgba(59,130,246,0.35)] ring-1 ring-white/10">
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center">
                 <BrandLogo size="md" className="w-full h-full" />
               </div>
               <span className="text-[22px] font-bold tracking-tight">

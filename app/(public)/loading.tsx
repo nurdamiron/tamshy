@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
       <div className="text-center">
-        <div className="w-11 h-11 mx-auto mb-4 rounded-xl overflow-hidden flex items-center justify-center animate-pulse ring-1 ring-[#E2E8F0]">
+        <div className="w-11 h-11 mx-auto mb-4 rounded-xl overflow-hidden flex items-center justify-center animate-pulse">
           <BrandLogo size={44} className="w-full h-full" />
         </div>
         <div className="w-48 h-2 bg-[#E2E8F0] rounded-full mx-auto">

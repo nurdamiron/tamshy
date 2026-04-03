@@ -125,7 +125,7 @@ export default function CTABanner() {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
-              className="w-16 h-16 rounded-2xl bg-white/12 flex items-center justify-center mx-auto mb-8 backdrop-blur-sm border border-white/10 p-1.5"
+              className="w-16 h-16 flex items-center justify-center mx-auto mb-8"
             >
               <BrandLogo size={56} className="w-full h-full" />
             </motion.div>

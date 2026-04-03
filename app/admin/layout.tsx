@@ -189,7 +189,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       >
         {/* logo */}
         <div className="flex items-center gap-2.5 px-5 h-16 border-b border-white/10">
-          <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 ring-1 ring-white/15">
+          <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0">
             <BrandLogo size="sm" className="w-full h-full" />
           </div>
           {!sidebarCollapsed && (

@@ -56,7 +56,7 @@ export default function Navbar() {
               {/* Logo */}
               <Link href="/" className="flex items-center gap-2 group shrink-0">
                 <motion.div
-                  className="w-8 h-8 rounded-lg overflow-hidden shrink-0 shadow-sm ring-1 ring-black/[0.06]"
+                  className="w-8 h-8 rounded-lg overflow-hidden shrink-0"
                   whileHover={{ scale: 1.08 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
