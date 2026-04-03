@@ -9,6 +9,7 @@ import Select from '@/components/ui/Select';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
+import { INSTAGRAM_URL } from '@/lib/constants';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -202,11 +203,12 @@ export default function ContactsPage() {
               <p className="text-[11px] font-semibold text-[#64748B] tracking-widest uppercase mb-3">
                 {t('socialTitle')}
               </p>
+              <div className="flex flex-col gap-3">
               <div className="flex gap-2.5">
                 {[
                   {
                     name: 'Instagram',
-                    href: 'https://www.instagram.com/tamshy__kz',
+                    href: INSTAGRAM_URL,
                     hoverBg: '#E1306C',
                     icon: (
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -255,6 +257,15 @@ export default function ContactsPage() {
                     {social.icon}
                   </motion.a>
                 ))}
+              </div>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[14px] font-medium text-[#3B82F6] hover:text-[#2563EB] hover:underline w-fit"
+              >
+                {t('instagramUrl')}
+              </a>
               </div>
             </motion.div>
 

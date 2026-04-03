@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Video01Icon, File01Icon, Image01Icon, BulbIcon, SmartPhone01Icon } from '@hugeicons/core-free-icons';
+import { CATEGORY_COVER_URLS } from '@/lib/constants';
 
 interface CategoryItem {
   type: string;
@@ -13,6 +14,7 @@ interface CategoryItem {
   desc: string;
   count: string;
   gradient: string;
+  coverUrl?: string;
   icon: typeof Video01Icon;
   span: string;
   projectsLabel: string;
@@ -58,24 +60,42 @@ function TiltCard({ category }: { category: CategoryItem }) {
           whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
-          <div className={`relative bg-gradient-to-br ${category.gradient} p-5 pb-8 overflow-hidden`}>
-            {/* Dot pattern */}
-            <div
-              className="absolute inset-0 opacity-[0.08]"
-              style={{
-                backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-                backgroundSize: '16px 16px',
-              }}
-            />
+          <div
+            className={`relative p-5 pb-8 overflow-hidden min-h-[140px] ${
+              category.coverUrl ? '' : `bg-gradient-to-br ${category.gradient}`
+            }`}
+          >
+            {category.coverUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={category.coverUrl}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/30 to-black/15"
+                  aria-hidden
+                />
+              </>
+            ) : (
+              <div
+                className="absolute inset-0 opacity-[0.08]"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                  backgroundSize: '16px 16px',
+                }}
+              />
+            )}
             <motion.div
-              className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3"
+              className="relative z-10 w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3"
               whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
               transition={{ duration: 0.4 }}
             >
               <HugeiconsIcon icon={category.icon} size={24} className="text-white" />
             </motion.div>
-            <div className="text-[24px] font-bold text-white">{category.count}</div>
-            <div className="text-[12px] text-white/60 font-medium">{category.projectsLabel}</div>
+            <div className="relative z-10 text-[24px] font-bold text-white">{category.count}</div>
+            <div className="relative z-10 text-[12px] text-white/80 font-medium">{category.projectsLabel}</div>
           </div>
 
           <div className="bg-white p-5 -mt-3 rounded-t-2xl relative">
@@ -115,6 +135,7 @@ export default function ProjectCategories() {
       desc: t('videoDesc'),
       count: '120+',
       gradient: 'from-blue-500 to-blue-600',
+      coverUrl: CATEGORY_COVER_URLS.VIDEO,
       icon: Video01Icon,
       span: 'sm:col-span-1 lg:col-span-3',
       projectsLabel: t('projects'),
@@ -126,6 +147,7 @@ export default function ProjectCategories() {
       desc: t('researchDesc'),
       count: '85+',
       gradient: 'from-purple-500 to-purple-600',
+      coverUrl: CATEGORY_COVER_URLS.RESEARCH,
       icon: File01Icon,
       span: 'sm:col-span-1 lg:col-span-3',
       projectsLabel: t('projects'),
@@ -137,6 +159,7 @@ export default function ProjectCategories() {
       desc: t('artDesc'),
       count: '150+',
       gradient: 'from-amber-500 to-orange-500',
+      coverUrl: CATEGORY_COVER_URLS.ART,
       icon: Image01Icon,
       span: 'sm:col-span-1 lg:col-span-2',
       projectsLabel: t('projects'),
@@ -148,6 +171,7 @@ export default function ProjectCategories() {
       desc: t('inventionDesc'),
       count: '45+',
       gradient: 'from-orange-500 to-red-500',
+      coverUrl: CATEGORY_COVER_URLS.INVENTION,
       icon: BulbIcon,
       span: 'sm:col-span-1 lg:col-span-2',
       projectsLabel: t('projects'),
@@ -159,6 +183,7 @@ export default function ProjectCategories() {
       desc: t('appDesc'),
       count: '30+',
       gradient: 'from-teal-500 to-emerald-500',
+      coverUrl: CATEGORY_COVER_URLS.APP,
       icon: SmartPhone01Icon,
       span: 'sm:col-span-2 lg:col-span-2',
       projectsLabel: t('projects'),

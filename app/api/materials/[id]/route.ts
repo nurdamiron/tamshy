@@ -33,7 +33,7 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { title, description, format, fileUrl, fileSize, type, audience, year, featured } = body;
+    const { title, description, format, fileUrl, fileSize, type, audience, year, featured, imageUrl } = body;
 
     const data: Record<string, unknown> = {};
     if (title !== undefined) data.title = title;
@@ -45,6 +45,7 @@ export async function PATCH(
     if (audience !== undefined) data.audience = audience;
     if (year !== undefined) data.year = parseInt(year);
     if (featured !== undefined) data.featured = featured;
+    if (imageUrl !== undefined) data.imageUrl = imageUrl || null;
 
     const material = await prisma.material.update({
       where: { id: params.id },

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import BrandLogo from '@/components/brand/BrandLogo';
+import { INSTAGRAM_URL } from '@/lib/constants';
 
 export default function Footer() {
   const t = useTranslations('footer');
@@ -35,11 +36,12 @@ export default function Footer() {
           </div>
 
           {/* Social icons */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-3">
             {[
               {
                 name: 'instagram',
-                href: 'https://www.instagram.com/tamshy__kz',
+                href: INSTAGRAM_URL,
                 hoverColor: '#E1306C',
                 icon: (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -88,6 +90,15 @@ export default function Footer() {
                 {social.icon}
               </motion.a>
             ))}
+            </div>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[12px] text-white/45 hover:text-[#E1306C] transition-colors"
+            >
+              {t('instagramUrl')}
+            </a>
           </div>
         </div>
 

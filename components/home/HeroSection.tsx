@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Building01Icon, Globe02Icon, StarIcon } from '@hugeicons/core-free-icons';
+import { HERO_BACKGROUND_IMAGE_URL } from '@/lib/constants';
 
 function WaterDrop({ delay, x, size }: { delay: number; x: string; size: number }) {
   return (
@@ -125,10 +126,33 @@ export default function HeroSection() {
   return (
     <section
       className="relative overflow-hidden min-h-[620px] sm:min-h-[720px] flex items-center"
-      style={{
-        background: 'linear-gradient(135deg, #0369A1 0%, #0284C7 30%, #38BDF8 60%, #E0F2FE 100%)',
-      }}
+      style={
+        HERO_BACKGROUND_IMAGE_URL
+          ? undefined
+          : {
+              background:
+                'linear-gradient(135deg, #0369A1 0%, #0284C7 30%, #38BDF8 60%, #E0F2FE 100%)',
+            }
+      }
     >
+      {HERO_BACKGROUND_IMAGE_URL ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HERO_BACKGROUND_IMAGE_URL}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(3,105,161,0.92) 0%, rgba(2,132,199,0.88) 35%, rgba(56,189,248,0.82) 70%, rgba(224,242,254,0.75) 100%)',
+            }}
+            aria-hidden
+          />
+        </>
+      ) : null}
       {/* Dot grid background */}
       <div
         className="absolute inset-0 opacity-[0.04]"

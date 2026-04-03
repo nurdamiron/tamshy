@@ -376,6 +376,13 @@ export default function ContestsPage() {
                     : 'border-[#E2E8F0] bg-white hover:border-[#93C5FD]/60 hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
                 }`}
               >
+                <div className="flex gap-3">
+                  {c.imageUrl ? (
+                    <div className="w-[72px] h-[72px] shrink-0 rounded-xl overflow-hidden bg-[#F1F5F9] border border-[#E2E8F0]">
+                      <img src={c.imageUrl} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : null}
+                  <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
                     className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
@@ -397,6 +404,8 @@ export default function ContestsPage() {
                 <p className="text-[12px] text-[#64748B] leading-relaxed line-clamp-2">
                   {c.description}
                 </p>
+                  </div>
+                </div>
               </motion.button>
             ))}
           </AnimatePresence>

@@ -353,6 +353,23 @@ export default function MaterialsPage() {
   const [loading, setLoading] = useState(true);
   const [featuredMaterial, setFeaturedMaterial] = useState<Material | null>(null);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/materials?featured=1');
+        const data: MaterialsResponse = await res.json();
+        const m = data.materials?.[0];
+        if (!cancelled && m) setFeaturedMaterial(m);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const toggleType = (value: string) => {
     setSelectedTypes((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
@@ -385,12 +402,6 @@ export default function MaterialsPage() {
       setMaterials(data.materials ?? []);
       setTotalMaterials(data.total ?? 0);
       setTotalPages(data.pages ?? 1);
-
-      // Find featured material from first load
-      if (!featuredMaterial) {
-        const feat = (data.materials ?? []).find((m) => m.featured);
-        if (feat) setFeaturedMaterial(feat);
-      }
     } catch {
       setMaterials([]);
       setTotalMaterials(0);
@@ -398,7 +409,7 @@ export default function MaterialsPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, selectedTypes, selectedAudiences, selectedYear, sort, currentPage, featuredMaterial]);
+  }, [search, selectedTypes, selectedAudiences, selectedYear, sort, currentPage]);
 
   useEffect(() => {
     fetchMaterials();
@@ -578,19 +589,35 @@ export default function MaterialsPage() {
 
         {/* Content area */}
         <div className="flex-1 min-w-0">
-          {/* Featured banner */}
+          {/* Featured banner: при imageUrl у материала — превью справа; иначе градиент + иконка */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.5 }}
             className="mb-8 rounded-2xl bg-gradient-to-r from-[#059669] via-[#0D9488] to-[#0284C7] p-6 sm:p-8 relative overflow-hidden"
           >
-            {/* Decorative circles */}
-            <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-white/10" />
-            <div className="absolute -right-4 bottom-0 w-24 h-24 rounded-full bg-white/5" />
+            {featuredMaterial?.imageUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={featuredMaterial.imageUrl}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover opacity-35"
+                />
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-[#059669]/95 via-[#0D9488]/90 to-[#0284C7]/85"
+                  aria-hidden
+                />
+              </>
+            ) : (
+              <>
+                <div className="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-white/10" />
+                <div className="absolute -right-4 bottom-0 w-24 h-24 rounded-full bg-white/5" />
+              </>
+            )}
 
-            <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <div className="flex-1">
+            <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6 z-10">
+              <div className="flex-1 min-w-0">
                 <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-[12px] font-semibold mb-3">
                   {t('recommended')}
                 </span>
@@ -612,9 +639,20 @@ export default function MaterialsPage() {
                   {t('downloadFree')} ({featuredMaterial ? featuredMaterial.format.toUpperCase() : 'PDF'})
                 </button>
               </div>
-              <div className="hidden sm:flex items-center justify-center w-[100px] shrink-0 opacity-80">
-                <BookIcon />
-              </div>
+              {featuredMaterial?.imageUrl ? (
+                <div className="hidden sm:block w-[140px] h-[160px] shrink-0 rounded-xl overflow-hidden border border-white/25 shadow-lg">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={featuredMaterial.imageUrl}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="hidden sm:flex items-center justify-center w-[100px] shrink-0 opacity-80">
+                  <BookIcon />
+                </div>
+              )}
             </div>
           </motion.div>
 

@@ -307,7 +307,11 @@ function ReportCard({ item, t, onOpen }: { item: NewsItem; t: (key: string) => s
           <div className="h-36 w-full overflow-hidden shrink-0">
             <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
           </div>
-        ) : null}
+        ) : (
+          <GradientPlaceholder className="h-36 w-full shrink-0 flex items-center justify-center">
+            <HugeiconsIcon icon={File01Icon} size={32} className="text-white/85" />
+          </GradientPlaceholder>
+        )}
         <div className="p-5 flex flex-col flex-1">
           <div className="flex items-center gap-2 text-[13px] text-[#64748B] mb-3">
             <HugeiconsIcon icon={Clock01Icon} size={15} className="text-[#94A3B8]" />

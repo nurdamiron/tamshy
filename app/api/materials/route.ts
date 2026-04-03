@@ -7,12 +7,26 @@ const PER_PAGE = 6;
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = req.nextUrl;
+    const featuredOnly = searchParams.get('featured') === '1';
     const type = searchParams.get('type');
     const audience = searchParams.get('audience');
     const year = searchParams.get('year');
     const search = searchParams.get('search');
     const sort = searchParams.get('sort') || 'new';
     const page = parseInt(searchParams.get('page') || '1');
+
+    if (featuredOnly) {
+      const material = await prisma.material.findFirst({
+        where: { featured: true },
+        orderBy: { createdAt: 'desc' },
+      });
+      return NextResponse.json({
+        materials: material ? [material] : [],
+        total: material ? 1 : 0,
+        pages: 1,
+        page: 1,
+      });
+    }
 
     const where: Record<string, unknown> = {};
 
@@ -61,7 +75,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, description, format, fileUrl, fileSize, type, audience, year, featured } = body;
+    const { title, description, format, fileUrl, fileSize, type, audience, year, featured, imageUrl } = body;
 
     if (!title || !description || !format || !fileUrl || !fileSize || !type || !audience || !year) {
       return NextResponse.json(
@@ -81,6 +95,7 @@ export async function POST(req: NextRequest) {
         audience,
         year: parseInt(year),
         featured: featured || false,
+        imageUrl: imageUrl || null,
       },
     });
 

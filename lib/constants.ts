@@ -1,3 +1,6 @@
+/** Публичный Instagram Tamshy */
+export const INSTAGRAM_URL = 'https://www.instagram.com/tamshy__kz/';
+
 // Labels removed — use useTranslations('types') in components
 export const PROJECT_TYPES = [
   { value: 'VIDEO', icon: 'video', color: 'blue' },
@@ -20,6 +23,31 @@ export const GRADES = Array.from({ length: 11 }, (_, i) => ({
   value: String(i + 1),
   num: i + 1,
 }));
+
+/**
+ * Обложки верхней части карточек «Жоба түрлері» на главной.
+ * Пустая строка = только градиент. Можно переопределить через .env.
+ */
+export const CATEGORY_COVER_URLS: Record<string, string> = {
+  VIDEO:
+    process.env.NEXT_PUBLIC_CATEGORY_COVER_VIDEO ||
+    'https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&q=80&w=1200',
+  RESEARCH:
+    process.env.NEXT_PUBLIC_CATEGORY_COVER_RESEARCH ||
+    'https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&q=80&w=1200',
+  ART:
+    process.env.NEXT_PUBLIC_CATEGORY_COVER_ART ||
+    'https://images.unsplash.com/photo-1550505193-41b1cfac8c8a?auto=format&fit=crop&q=80&w=1200',
+  INVENTION:
+    process.env.NEXT_PUBLIC_CATEGORY_COVER_INVENTION ||
+    'https://images.unsplash.com/photo-1542382257-80da9fb9f5abc?auto=format&fit=crop&q=80&w=1200',
+  APP:
+    process.env.NEXT_PUBLIC_CATEGORY_COVER_APP ||
+    'https://images.unsplash.com/photo-1616004655123-818cbd4efaec?auto=format&fit=crop&q=80&w=1200',
+};
+
+/** Опциональный фон hero (поверх — градиент для читаемости текста). */
+export const HERO_BACKGROUND_IMAGE_URL = process.env.NEXT_PUBLIC_HERO_BACKGROUND_URL || '';
 
 export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 export const ACCEPTED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'];

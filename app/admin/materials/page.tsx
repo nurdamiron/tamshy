@@ -15,6 +15,7 @@ interface Material {
   format: string;
   fileUrl: string;
   fileSize: string;
+  imageUrl: string | null;
   type: string;
   audience: string;
   year: number;
@@ -76,6 +77,7 @@ export default function AdminMaterials() {
     format: 'PDF',
     fileUrl: '',
     fileSize: '',
+    imageUrl: '',
     type: 'METHODICAL',
     audience: 'SCHOOL',
     year: new Date().getFullYear().toString(),
@@ -105,10 +107,14 @@ export default function AdminMaterials() {
     if (!form.title || !form.description || !form.fileUrl || !form.fileSize) return;
     setSaving(true);
     try {
+      const payload: Record<string, unknown> = { ...form, year: parseInt(form.year) };
+      if (form.imageUrl.trim()) payload.imageUrl = form.imageUrl.trim();
+      else delete payload.imageUrl;
+
       const res = await fetch('/api/materials', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, year: parseInt(form.year) }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -121,6 +127,7 @@ export default function AdminMaterials() {
         format: 'PDF',
         fileUrl: '',
         fileSize: '',
+        imageUrl: '',
         type: 'METHODICAL',
         audience: 'SCHOOL',
         year: new Date().getFullYear().toString(),
@@ -199,6 +206,7 @@ export default function AdminMaterials() {
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-slate-50 text-left">
+                  <th className="px-5 py-3 font-semibold text-slate-500 w-16">Обложка</th>
                   <th className="px-5 py-3 font-semibold text-slate-500">Название</th>
                   <th className="px-5 py-3 font-semibold text-slate-500">Формат</th>
                   <th className="px-5 py-3 font-semibold text-slate-500">Тип</th>
@@ -217,6 +225,17 @@ export default function AdminMaterials() {
                     transition={{ delay: i * 0.04 }}
                     className="border-t border-[#E2E8F0] hover:bg-slate-50/60 transition-colors"
                   >
+                    <td className="px-5 py-3 align-middle">
+                      {mat.imageUrl ? (
+                        <img
+                          src={mat.imageUrl}
+                          alt=""
+                          className="w-12 h-12 rounded-lg object-cover border border-slate-200 bg-slate-100"
+                        />
+                      ) : (
+                        <span className="text-[11px] text-slate-400">—</span>
+                      )}
+                    </td>
                     <td className="px-5 py-3 font-medium text-slate-700 max-w-[250px] truncate">
                       {mat.title}
                     </td>
@@ -336,6 +355,12 @@ export default function AdminMaterials() {
               onChange={(e) => setForm({ ...form, year: e.target.value })}
             />
           </div>
+          <Input
+            label="URL обложки (превью на сайте)"
+            placeholder="https://images.unsplash.com/... или ссылка после загрузки в S3"
+            value={form.imageUrl}
+            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+          />
           <Input
             label="URL файла"
             placeholder="https://..."

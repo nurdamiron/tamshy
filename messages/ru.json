@@ -215,6 +215,7 @@
     "email": "info@tamshy.kz",
     "emailDesc": "Для общих вопросов",
     "socialTitle": "МЫ В СОЦИАЛЬНЫХ СЕТЯХ",
+    "instagramUrl": "instagram.com/tamshy__kz",
     "formTitle": "Напишите нам",
     "formDesc": "Заполните форму ниже и мы свяжемся с вами в течение одного рабочего дня. Все поля, отмеченные звёздочкой, обязательны.",
     "nameLabel": "ВАШЕ ИМЯ *",
@@ -378,7 +379,8 @@
     "workHours": "Пн-Пт, 09:00 - 18:00",
     "emailAddress": "info@tamshy.kz",
     "emailDesc": "Для общих вопросов и предложений",
-    "scrollToTop": "Наверх"
+    "scrollToTop": "Наверх",
+    "instagramUrl": "instagram.com/tamshy__kz"
   },
   "common": {
     "votes": "голосов",
