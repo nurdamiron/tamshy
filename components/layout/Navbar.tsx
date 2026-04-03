@@ -5,17 +5,20 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
-const navLinks = [
-  { href: '/', label: 'Главная' },
-  { href: '/about', label: 'О проекте' },
-  { href: '/progress', label: 'Ход реализации' },
-  { href: '/contests', label: 'Конкурсы' },
-  { href: '/materials', label: 'Материалы' },
-  { href: '/contacts', label: 'Контакты' },
-];
+const navKeys = [
+  { href: '/', key: 'home' },
+  { href: '/about', key: 'about' },
+  { href: '/progress', key: 'progress' },
+  { href: '/contests', key: 'contests' },
+  { href: '/materials', key: 'materials' },
+  { href: '/contacts', key: 'contacts' },
+] as const;
 
 export default function Navbar() {
+  const t = useTranslations('nav');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -64,7 +67,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <div className="hidden lg:flex items-center gap-0.5 relative">
-          {navLinks.map((link) => {
+          {navKeys.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
             return (
               <Link
@@ -76,7 +79,7 @@ export default function Navbar() {
                     : isActive ? 'text-white' : 'text-white/70 hover:text-white hover:bg-white/10'
                 }`}
               >
-                {link.label}
+                {t(link.key)}
                 {isActive && (
                   <motion.div
                     className={`absolute bottom-0 left-2 right-2 h-[2px] rounded-full ${showSolid ? 'bg-[#3B82F6]' : 'bg-white'}`}
@@ -89,15 +92,16 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* CTA */}
-        <div className="hidden lg:flex items-center">
+        {/* CTA + Language Switcher */}
+        <div className="hidden lg:flex items-center gap-2">
+          <LanguageSwitcher variant={showSolid ? 'light' : 'dark'} />
           <Link href="/contests">
             <Button size="md">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
-              Подать заявку
+              {t('submitApplication')}
             </Button>
           </Link>
         </div>
@@ -106,7 +110,7 @@ export default function Navbar() {
         <button
           className={`lg:hidden p-2 rounded-lg transition-colors ${showSolid ? 'text-[#64748B] hover:bg-[#F8FAFC]' : 'text-white/80 hover:bg-white/10'}`}
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Меню"
+          aria-label={t('menu')}
         >
           <motion.div
             animate={mobileOpen ? { rotate: 90 } : { rotate: 0 }}
@@ -144,7 +148,7 @@ export default function Navbar() {
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               <div className="p-6 pt-20 space-y-1">
-                {navLinks.map((link, i) => (
+                {navKeys.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}
@@ -160,13 +164,16 @@ export default function Navbar() {
                       }`}
                       onClick={() => setMobileOpen(false)}
                     >
-                      {link.label}
+                      {t(link.key)}
                     </Link>
                   </motion.div>
                 ))}
                 <hr className="border-[#E2E8F0] my-4" />
+                <div className="px-4 py-2">
+                  <LanguageSwitcher variant="light" />
+                </div>
                 <Link href="/contests" onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full mt-2">Подать заявку</Button>
+                  <Button className="w-full mt-2">{t('submitApplication')}</Button>
                 </Link>
               </div>
             </motion.div>

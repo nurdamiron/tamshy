@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 import './globals.css';
 import LayoutShell from '@/components/layout/LayoutShell';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -30,15 +32,20 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="kk">
+    <html lang={locale}>
       <body className={`${onest.variable} font-sans antialiased`}>
-        <LayoutShell>{children}</LayoutShell>
+        <NextIntlClientProvider messages={messages}>
+          <LayoutShell>{children}</LayoutShell>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 export default function Footer() {
+  const t = useTranslations('footer');
+  const tNav = useTranslations('nav');
   return (
     <footer className="relative bg-[#0F172A] text-white">
       {/* Wave separator */}
@@ -29,7 +32,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[14px] text-white/50 leading-relaxed max-w-xs">
-              Информационный веб-сайт проекта по формированию культуры рационального потребления водных ресурсов в Казахстане.
+              {t('description')}
             </p>
 
             {/* Social icons */}
@@ -86,16 +89,16 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
-              Навигация
+              {t('navigation')}
             </h4>
             <div className="space-y-3">
               {[
-                { href: '/', label: 'Главная' },
-                { href: '/about', label: 'О проекте' },
-                { href: '/progress', label: 'Ход реализации' },
-                { href: '/contests', label: 'Конкурсы' },
-                { href: '/materials', label: 'Материалы' },
-                { href: '/contacts', label: 'Контакты' },
+                { href: '/', label: tNav('home') },
+                { href: '/about', label: tNav('about') },
+                { href: '/progress', label: tNav('progress') },
+                { href: '/contests', label: tNav('contests') },
+                { href: '/materials', label: tNav('materials') },
+                { href: '/contacts', label: tNav('contacts') },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -114,21 +117,21 @@ export default function Footer() {
           {/* Partners */}
           <div>
             <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
-              Партнёры
+              {t('partners')}
             </h4>
             <div className="space-y-3 text-[14px] text-white/50">
-              <p>Министерство водных ресурсов РК</p>
-              <p>НАО ИАЦ водных ресурсов</p>
-              <p>ЮНИСЕФ Казахстан</p>
-              <p>Французское агентство развития</p>
-              <p>Программа «Адал азамат»</p>
+              <p>{t('partner1')}</p>
+              <p>{t('partner2')}</p>
+              <p>{t('partner3')}</p>
+              <p>{t('partner4')}</p>
+              <p>{t('partner5')}</p>
             </div>
           </div>
 
           {/* Contact */}
           <div>
             <h4 className="text-[11px] font-semibold text-white/30 uppercase tracking-widest mb-4">
-              Контакты
+              {t('contacts')}
             </h4>
             <div className="space-y-3 text-[14px] text-white/50">
               <div className="flex items-start gap-2.5">
@@ -160,11 +163,11 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[13px] text-white/30">
-            &copy; 2026 Tamshy.kz. Все права защищены.
+            &copy; 2026 Tamshy.kz. {t('rights')}
           </p>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-[13px] text-white/30 hover:text-white/60 transition-colors">
-              Вход для администраторов
+              {t('adminLogin')}
             </Link>
             <motion.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
