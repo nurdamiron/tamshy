@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const submissions = await prisma.contestSubmission.findMany({

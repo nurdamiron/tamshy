@@ -29,7 +29,7 @@ export async function PATCH(
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
@@ -65,7 +65,7 @@ export async function DELETE(
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     await prisma.material.delete({

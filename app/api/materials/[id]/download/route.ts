@@ -6,11 +6,14 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
+    const exists = await prisma.material.findUnique({ where: { id: params.id } });
+    if (!exists) {
+      return NextResponse.json({ error: 'Материал не найден' }, { status: 404 });
+    }
+
     await prisma.material.update({
       where: { id: params.id },
-      data: {
-        downloads: { increment: 1 },
-      },
+      data: { downloads: { increment: 1 } },
     });
 
     return NextResponse.json({ success: true });

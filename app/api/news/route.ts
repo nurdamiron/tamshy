@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();

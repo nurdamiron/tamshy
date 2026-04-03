@@ -7,16 +7,15 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const newsItem = await prisma.news.update({
-      where: { id: params.id },
-      data: {
-        viewCount: { increment: 1 },
-      },
-    });
-
-    if (!newsItem) {
+    const exists = await prisma.news.findUnique({ where: { id: params.id } });
+    if (!exists) {
       return NextResponse.json({ error: 'Новость не найдена' }, { status: 404 });
     }
+
+    const newsItem = await prisma.news.update({
+      where: { id: params.id },
+      data: { viewCount: { increment: 1 } },
+    });
 
     return NextResponse.json({ news: newsItem });
   } catch (error) {
@@ -32,7 +31,7 @@ export async function PATCH(
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
@@ -65,7 +64,7 @@ export async function DELETE(
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     await prisma.news.delete({

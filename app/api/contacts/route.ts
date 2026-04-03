@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, email, topic, message, fileUrl } = body;
 
-    if (!name || !email || !message) {
+    if (!name || !email || !topic || !message) {
       return NextResponse.json(
         { error: 'Заполните все обязательные поля' },
         { status: 400 }
@@ -35,7 +35,7 @@ export async function GET() {
   try {
     const payload = await getTokenPayload();
     if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const messages = await prisma.contactMessage.findMany({

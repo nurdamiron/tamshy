@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const phoneSchema = z
-  .string()
+  .string({ error: 'Введите номер телефона' })
   .regex(/^\+7\d{10}$/, 'Формат: +7XXXXXXXXXX');
 
 export const otpSchema = z
-  .string()
+  .string({ error: 'Введите код' })
   .length(6, 'Код должен содержать 6 цифр')
   .regex(/^\d{6}$/, 'Только цифры');
 
