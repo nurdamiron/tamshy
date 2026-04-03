@@ -83,7 +83,7 @@ const WATER_ISSUES: Record<string, string> = {
 };
 
 const CITY_MARKERS: { regionKey: string; coordinates: [number, number]; projects: number }[] = [
-  { regionKey: 'ASTANA', coordinates: [71.43, 51.13], projects: 45 },
+  { regionKey: 'ASTANA', coordinates: [71.434467, 51.125762], projects: 45 },
   { regionKey: 'ALMATY', coordinates: [76.95, 43.24], projects: 62 },
   { regionKey: 'SHYMKENT', coordinates: [69.6, 42.32], projects: 28 },
 ];

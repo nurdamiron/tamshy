@@ -149,7 +149,7 @@ export default function ContactsPage() {
                   {t('phoneLabel')}
                 </p>
                 <a
-                  href="tel:+77242555555"
+                  href="tel:+77072054181"
                   className="text-[15px] text-[#0F172A] hover:text-[#3B82F6] transition-colors"
                 >
                   {t('phone')}
@@ -268,10 +268,10 @@ export default function ContactsPage() {
               className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] overflow-hidden mt-2"
             >
               <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=65.48%2C44.83%2C65.53%2C44.86&layer=mapnik&marker=44.848%2C65.503"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=71.404%2C51.105%2C71.465%2C51.146&layer=mapnik&marker=51.125762%2C71.434467"
                 className="w-full h-[220px] border-0"
                 loading="lazy"
-                title={`Tamshy.kz — ${t('city')}`}
+                title={`Tamshy.kz — ${t('address')} ${t('city')}`}
               />
             </motion.div>
           </div>

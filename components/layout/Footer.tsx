@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import BrandLogo from '@/components/brand/BrandLogo';
 
 export default function Footer() {
   const t = useTranslations('footer');
@@ -23,10 +24,8 @@ export default function Footer() {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 mb-16 pb-12 border-b border-white/[0.06]">
           <div className="max-w-md">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#3B82F6] flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                <svg width="18" height="24" viewBox="0 0 20 28" fill="none">
-                  <path d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z" fill="white" />
-                </svg>
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_24px_rgba(59,130,246,0.35)] ring-1 ring-white/10">
+                <BrandLogo size="md" className="w-full h-full" />
               </div>
               <span className="text-[22px] font-bold tracking-tight">
                 Tamshy<span className="text-[#3B82F6]">.kz</span>

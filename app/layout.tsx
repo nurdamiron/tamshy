@@ -23,11 +23,13 @@ export const metadata: Metadata = {
     siteName: 'Tamshy.kz',
     title: 'Tamshy.kz — Экономь воду, сохраняй будущее',
     description: 'Информационный веб-сайт проекта по формированию культуры рационального потребления водных ресурсов в Казахстане.',
+    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Tamshy' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Tamshy.kz — Экономь воду, сохраняй будущее',
     description: 'Проект по формированию культуры водосбережения в Казахстане.',
+    images: ['/logo.png'],
   },
   robots: { index: true, follow: true },
 };

@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import BrandLogo from '@/components/brand/BrandLogo';
 
 const navKeys = [
   { href: '/', key: 'home' },
@@ -55,13 +56,11 @@ export default function Navbar() {
               {/* Logo */}
               <Link href="/" className="flex items-center gap-2 group shrink-0">
                 <motion.div
-                  className="w-8 h-8 rounded-lg bg-[#3B82F6] flex items-center justify-center"
+                  className="w-8 h-8 rounded-lg overflow-hidden shrink-0 shadow-sm ring-1 ring-black/[0.06]"
                   whileHover={{ scale: 1.08 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
-                  <svg width="14" height="20" viewBox="0 0 20 28" fill="none">
-                    <path d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z" fill="white" />
-                  </svg>
+                  <BrandLogo size="sm" className="w-full h-full" priority />
                 </motion.div>
                 <span className={`text-[17px] font-bold tracking-tight transition-colors duration-300 ${
                   scrolled || !isHome ? 'text-[#0F172A]' : 'text-white'

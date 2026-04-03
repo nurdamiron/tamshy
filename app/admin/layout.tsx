@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
+import BrandLogo from '@/components/brand/BrandLogo';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -188,10 +189,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       >
         {/* logo */}
         <div className="flex items-center gap-2.5 px-5 h-16 border-b border-white/10">
-          <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-              <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" />
-            </svg>
+          <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 ring-1 ring-white/15">
+            <BrandLogo size="sm" className="w-full h-full" />
           </div>
           {!sidebarCollapsed && (
             <motion.span

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
+import BrandLogo from '@/components/brand/BrandLogo';
 
 function FloatingParticle({ delay, x, y, size }: { delay: number; x: string; y: string; size: number }) {
   return (
@@ -109,15 +110,13 @@ export default function CTABanner() {
           <FloatingShape delay={1.5} x="78%" y="60%" rotation={25} />
           <FloatingShape delay={2.5} x="55%" y="8%" rotation={-30} />
 
-          {/* Animated water drop */}
+          {/* Decorative mascot */}
           <motion.div
-            className="absolute right-[10%] top-[15%] opacity-10"
+            className="absolute right-[8%] top-[12%] w-24 h-24 opacity-[0.12]"
             animate={{ y: [0, -12, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <svg width="80" height="112" viewBox="0 0 20 28" fill="white">
-              <path d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z" />
-            </svg>
+            <BrandLogo size={96} className="w-full h-full" />
           </motion.div>
 
           <div className="relative px-8 sm:px-14 py-16 sm:py-20 text-center">
@@ -126,11 +125,9 @@ export default function CTABanner() {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
-              className="w-16 h-16 rounded-2xl bg-white/12 flex items-center justify-center mx-auto mb-8 backdrop-blur-sm border border-white/10"
+              className="w-16 h-16 rounded-2xl bg-white/12 flex items-center justify-center mx-auto mb-8 backdrop-blur-sm border border-white/10 p-1.5"
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="white" fillOpacity="0.9" />
-              </svg>
+              <BrandLogo size={56} className="w-full h-full" />
             </motion.div>
 
             {/* Split-text heading */}

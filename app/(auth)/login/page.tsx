@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
 import { useTranslations } from 'next-intl';
+import BrandLogo from '@/components/brand/BrandLogo';
 
 export default function LoginPage() {
   const t = useTranslations('login');
@@ -56,10 +57,8 @@ export default function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <Card hover={false} padding="lg" className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#0284C7] flex items-center justify-center mx-auto mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z" fill="white" />
-            </svg>
+          <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-4 ring-1 ring-[#E2E8F0] shadow-sm">
+            <BrandLogo size={56} className="w-full h-full" />
           </div>
           <h1 className="text-[24px] font-bold text-[#0F172A]">{t('title')}</h1>
           <p className="text-[14px] text-[#64748B] mt-1">
