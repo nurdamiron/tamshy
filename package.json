@@ -13,7 +13,8 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:deploy": "prisma generate && prisma db push && prisma db seed",
-    "db:local": "bash scripts/local-db-up.sh && DATABASE_URL=postgresql://tamshy:tamshy@127.0.0.1:5432/tamshy DIRECT_URL=postgresql://tamshy:tamshy@127.0.0.1:5432/tamshy npm run db:deploy"
+    "db:local": "bash scripts/local-db-up.sh && DATABASE_URL=postgresql://tamshy:tamshy@127.0.0.1:5432/tamshy DIRECT_URL=postgresql://tamshy:tamshy@127.0.0.1:5432/tamshy npm run db:deploy",
+    "db:seed-local": "bash scripts/seed-local-db.sh"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
