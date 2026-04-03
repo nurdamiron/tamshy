@@ -104,13 +104,6 @@ async function main() {
     await download(pdfUrl, pdfDest);
   }
 
-  const mp4Url = 'https://www.w3schools.com/html/mov_bbb.mp4';
-  const mp4Dest = path.join(outDir, 'sample.mp4');
-  if (!fs.existsSync(mp4Dest) || fs.statSync(mp4Dest).size < 1000) {
-    console.log('→ sample.mp4');
-    await download(mp4Url, mp4Dest);
-  }
-
   console.log('✓ done');
 }
 

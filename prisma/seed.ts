@@ -48,7 +48,9 @@ const names = [
 ];
 
 const DUMMY_PDF = '/media/dummy.pdf';
-const DUMMY_VIDEO = '/media/sample.mp4';
+/** Короткое демо-видео без хранения в репозитории (cc0, MDN). */
+const DUMMY_VIDEO =
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
 const DUMMY_IMG_CONTEST_1 = mediaUrl('1534447677768-be436bb09401');
 const DUMMY_IMG_CONTEST_2 = mediaUrl('1469122312224-c5846569feb1');
 const DUMMY_IMG_CONTEST_3 = mediaUrl('1423483641154-5411ec9c0ddf');
