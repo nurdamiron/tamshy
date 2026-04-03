@@ -62,7 +62,7 @@ const YEARS = [
 const SORT_OPTIONS = [
   { value: 'new', label: 'Сначала новые' },
   { value: 'popular', label: 'По популярности' },
-  { value: 'az', label: 'По алфавиту' },
+  { value: 'alpha', label: 'По алфавиту' },
 ];
 
 const ITEMS_PER_PAGE = 6;
