@@ -34,17 +34,34 @@ export default function ContactsPage() {
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const canSubmit = name.trim() && email.trim() && message.trim() && consent;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
     setLoading(true);
-    // Simulate submission
-    setTimeout(() => {
-      setLoading(false);
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          topic: topic || 'general',
+          message: message.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Ошибка при отправке сообщения');
+      }
+
       setSubmitted(true);
       setName('');
       setEmail('');
@@ -54,7 +71,12 @@ export default function ContactsPage() {
       setConsent(false);
       // Reset success message after 5 seconds
       setTimeout(() => setSubmitted(false), 5000);
-    }, 1200);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      setErrorMsg(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -300,6 +322,25 @@ export default function ContactsPage() {
                     <p className="text-[13px] text-green-700 mt-0.5">
                       Спасибо за обращение. Мы ответим вам в ближайшее время.
                     </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Error message */}
+              {errorMsg && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5" className="shrink-0 mt-0.5">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                  </svg>
+                  <div>
+                    <p className="text-[14px] font-semibold text-red-800">Ошибка отправки</p>
+                    <p className="text-[13px] text-red-700 mt-0.5">{errorMsg}</p>
                   </div>
                 </motion.div>
               )}

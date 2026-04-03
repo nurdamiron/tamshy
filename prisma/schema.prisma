@@ -75,6 +75,130 @@ enum ProjectStatus {
   WINNER
 }
 
+// ── Contests ────────────────────────────────────────
+
+model Contest {
+  id          String            @id @default(cuid())
+  title       String
+  type        String            // ВИДЕОКОНКУРС, ЭССЕ, ФОТОКОНКУРС
+  description String            @db.Text
+  rules       String?           @db.Text
+  status      ContestStatus     @default(ACTIVE)
+  deadline    DateTime
+  createdAt   DateTime          @default(now())
+  documents   ContestDocument[]
+  submissions ContestSubmission[]
+}
+
+model ContestDocument {
+  id        String  @id @default(cuid())
+  contestId String
+  contest   Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  title     String
+  fileUrl   String
+  fileSize  String
+  fileType  String  // PDF, DOCX
+}
+
+model ContestSubmission {
+  id          String           @id @default(cuid())
+  contestId   String
+  contest     Contest          @relation(fields: [contestId], references: [id])
+  fullName    String
+  birthDate   String
+  email       String
+  phone       String
+  institution String
+  region      Region
+  fileUrl     String?
+  status      SubmissionStatus @default(NEW)
+  createdAt   DateTime         @default(now())
+}
+
+// ── Materials ───────────────────────────────────────
+
+model Material {
+  id          String           @id @default(cuid())
+  title       String
+  description String           @db.Text
+  format      String           // PDF, DOCX, MP4, PPTX, XLSX
+  fileUrl     String
+  fileSize    String
+  type        MaterialType
+  audience    MaterialAudience
+  year        Int
+  downloads   Int              @default(0)
+  views       Int              @default(0)
+  featured    Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+}
+
+// ── News ────────────────────────────────────────────
+
+model News {
+  id         String       @id @default(cuid())
+  title      String
+  content    String       @db.Text
+  category   NewsCategory
+  imageUrl   String?
+  fileUrl    String?
+  photoCount Int?
+  viewCount  Int          @default(0)
+  createdAt  DateTime     @default(now())
+}
+
+// ── Contact & Newsletter ────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  topic     String
+  message   String   @db.Text
+  fileUrl   String?
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSub {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+// ── Enums ───────────────────────────────────────────
+
+enum ContestStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum SubmissionStatus {
+  NEW
+  REVIEWING
+  ACCEPTED
+  REJECTED
+}
+
+enum MaterialType {
+  METHODICAL
+  BOOKLET
+  PRESENTATION
+  VIDEO
+}
+
+enum MaterialAudience {
+  SCHOOL
+  STUDENT
+  TEACHER
+}
+
+enum NewsCategory {
+  NEWS
+  REPORT
+  PHOTO
+  VIDEO
+}
+
 enum Region {
   ASTANA
   ALMATY

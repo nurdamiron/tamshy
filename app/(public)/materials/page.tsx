@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /* ------------------------------------------------------------------ */
-/*  Types & mock data                                                  */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
 type FileFormat = 'PDF' | 'PPT' | 'DOCX' | 'MP4' | 'XLS';
@@ -14,158 +14,30 @@ interface Material {
   title: string;
   description: string;
   format: FileFormat;
-  size: string;
+  fileUrl: string;
+  fileSize: string;
   downloads: number;
   views?: number;
-  type: string;       // ТИП МАТЕРИАЛА
-  audience: string;   // ЦЕЛЕВАЯ АУДИТОРИЯ
+  type: string;
+  audience: string;
   year: number;
+  featured?: boolean;
 }
 
-const FORMAT_META: Record<FileFormat, { color: string; bg: string; label: string }> = {
+interface MaterialsResponse {
+  materials: Material[];
+  total: number;
+  pages: number;
+  page: number;
+}
+
+const FORMAT_META: Record<string, { color: string; bg: string; label: string }> = {
   PDF:  { color: '#EF4444', bg: '#FEF2F2', label: 'PDF' },
   PPT:  { color: '#F97316', bg: '#FFF7ED', label: 'PPT' },
   DOCX: { color: '#3B82F6', bg: '#EFF6FF', label: 'DOCX' },
   MP4:  { color: '#8B5CF6', bg: '#F5F3FF', label: 'MP4' },
   XLS:  { color: '#22C55E', bg: '#F0FDF4', label: 'XLS' },
 };
-
-const MATERIALS: Material[] = [
-  {
-    id: 1,
-    title: 'Сборник сценариев экологических уроков для 5-9 классов',
-    description: 'Готовые планы уроков с интерактивными заданиями по теме водосбережения для учителей средней школы.',
-    format: 'PDF',
-    size: '2.4 MB',
-    downloads: 128,
-    type: 'methodical',
-    audience: 'teachers',
-    year: 2024,
-  },
-  {
-    id: 2,
-    title: 'Презентация «Аральское море: вчера, сегодня, завтра»',
-    description: 'Наглядная презентация об истории, экологической катастрофе и перспективах восстановления Аральского моря.',
-    format: 'PPT',
-    size: '15.1 MB',
-    downloads: 85,
-    type: 'presentations',
-    audience: 'students',
-    year: 2024,
-  },
-  {
-    id: 3,
-    title: 'Брошюра «Как экономить воду дома» (Макет)',
-    description: 'Информационный буклет с практическими советами по экономии воды в быту для школьников и их семей.',
-    format: 'DOCX',
-    size: '450 KB',
-    downloads: 210,
-    type: 'booklets',
-    audience: 'schoolchildren',
-    year: 2023,
-  },
-  {
-    id: 4,
-    title: 'Анимационный ролик «Капелька путешествует»',
-    description: 'Образовательный мультфильм о круговороте воды в природе для учеников начальных классов.',
-    format: 'MP4',
-    size: '48 MB',
-    downloads: 0,
-    views: 540,
-    type: 'video',
-    audience: 'schoolchildren',
-    year: 2024,
-  },
-  {
-    id: 5,
-    title: 'Инфографика «Водный баланс Казахстана»',
-    description: 'Наглядная схема распределения водных ресурсов по регионам Казахстана с ключевыми показателями.',
-    format: 'PDF',
-    size: '1.8 MB',
-    downloads: 92,
-    type: 'booklets',
-    audience: 'students',
-    year: 2023,
-  },
-  {
-    id: 6,
-    title: 'Таблица учёта водопотребления',
-    description: 'Шаблон электронной таблицы для отслеживания расхода воды в школе или дома на протяжении месяца.',
-    format: 'XLS',
-    size: '45 KB',
-    downloads: 64,
-    type: 'methodical',
-    audience: 'teachers',
-    year: 2023,
-  },
-  {
-    id: 7,
-    title: 'Руководство «Школьный мониторинг качества воды»',
-    description: 'Пошаговая инструкция по организации мониторинга качества воды в ближайшем водоёме силами учащихся.',
-    format: 'PDF',
-    size: '3.2 MB',
-    downloads: 76,
-    type: 'methodical',
-    audience: 'teachers',
-    year: 2024,
-  },
-  {
-    id: 8,
-    title: 'Презентация «Ледники Казахстана и изменение климата»',
-    description: 'Обзор состояния ледников Тянь-Шаня и их роли в водоснабжении южных регионов страны.',
-    format: 'PPT',
-    size: '12.5 MB',
-    downloads: 63,
-    type: 'presentations',
-    audience: 'students',
-    year: 2024,
-  },
-  {
-    id: 9,
-    title: 'Плакат «Береги воду — береги жизнь»',
-    description: 'Макет информационного плаката для размещения в школах и общественных местах.',
-    format: 'PDF',
-    size: '5.6 MB',
-    downloads: 145,
-    type: 'booklets',
-    audience: 'schoolchildren',
-    year: 2023,
-  },
-  {
-    id: 10,
-    title: 'Видеоурок «Очистка воды в домашних условиях»',
-    description: 'Демонстрация простых способов фильтрации и обеззараживания воды доступными средствами.',
-    format: 'MP4',
-    size: '95 MB',
-    downloads: 0,
-    views: 312,
-    type: 'video',
-    audience: 'schoolchildren',
-    year: 2024,
-  },
-  {
-    id: 11,
-    title: 'Буклет «Водные ресурсы моего региона»',
-    description: 'Шаблон информационного буклета с заданиями для исследования местных водных объектов.',
-    format: 'DOCX',
-    size: '380 KB',
-    downloads: 98,
-    type: 'booklets',
-    audience: 'students',
-    year: 2023,
-  },
-  {
-    id: 12,
-    title: 'Калькулятор водного следа (шаблон)',
-    description: 'Электронная таблица для расчёта индивидуального водного следа по основным категориям потребления.',
-    format: 'XLS',
-    size: '52 KB',
-    downloads: 87,
-    type: 'methodical',
-    audience: 'teachers',
-    year: 2024,
-  },
-];
 
 const MATERIAL_TYPES = [
   { value: 'methodical', label: 'Методические пособия' },
@@ -188,13 +60,28 @@ const YEARS = [
 ];
 
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'Сначала новые' },
+  { value: 'new', label: 'Сначала новые' },
   { value: 'popular', label: 'По популярности' },
   { value: 'az', label: 'По алфавиту' },
 ];
 
+const ITEMS_PER_PAGE = 6;
+
 /* ------------------------------------------------------------------ */
-/*  Inline SVG icons (no external icon dependency needed)              */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+function pluralizeMaterials(n: number): string {
+  const abs = Math.abs(n) % 100;
+  const lastDigit = abs % 10;
+  if (abs >= 11 && abs <= 19) return 'материалов';
+  if (lastDigit === 1) return 'материал';
+  if (lastDigit >= 2 && lastDigit <= 4) return 'материала';
+  return 'материалов';
+}
+
+/* ------------------------------------------------------------------ */
+/*  Inline SVG icons                                                   */
 /* ------------------------------------------------------------------ */
 
 function SearchIcon({ className = '' }: { className?: string }) {
@@ -309,8 +196,8 @@ function Checkbox({
 /*  Format badge component                                             */
 /* ------------------------------------------------------------------ */
 
-function FormatBadge({ format }: { format: FileFormat }) {
-  const meta = FORMAT_META[format];
+function FormatBadge({ format }: { format: string }) {
+  const meta = FORMAT_META[format.toUpperCase()] ?? { color: '#64748B', bg: '#F1F5F9', label: format };
   return (
     <span
       className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wide"
@@ -326,11 +213,41 @@ function FormatBadge({ format }: { format: FileFormat }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Skeleton loader                                                    */
+/* ------------------------------------------------------------------ */
+
+function MaterialCardSkeleton({ index }: { index: number }) {
+  return (
+    <div
+      className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] animate-pulse flex flex-col"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      <div className="p-5 pb-0 flex items-start justify-between">
+        <div className="h-5 w-14 rounded bg-[#E2E8F0]" />
+        <div className="h-4 w-12 rounded bg-[#E2E8F0]" />
+      </div>
+      <div className="p-5 pt-3 flex-1 space-y-2">
+        <div className="h-4 w-3/4 rounded bg-[#E2E8F0]" />
+        <div className="h-3 w-full rounded bg-[#E2E8F0]" />
+        <div className="h-3 w-2/3 rounded bg-[#E2E8F0]" />
+      </div>
+      <div className="px-5 pb-5 pt-0">
+        <div className="h-px bg-[#E2E8F0] mb-3" />
+        <div className="flex items-center justify-between">
+          <div className="h-3 w-24 rounded bg-[#E2E8F0]" />
+          <div className="h-8 w-20 rounded-lg bg-[#E2E8F0]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Material card                                                      */
 /* ------------------------------------------------------------------ */
 
-function MaterialCard({ material, index }: { material: Material; index: number }) {
-  const isVideo = material.format === 'MP4';
+function MaterialCard({ material, index, onDownload }: { material: Material; index: number; onDownload: (m: Material) => void }) {
+  const isVideo = material.format.toUpperCase() === 'MP4';
 
   return (
     <motion.div
@@ -342,7 +259,7 @@ function MaterialCard({ material, index }: { material: Material; index: number }
       {/* Header */}
       <div className="p-5 pb-0 flex items-start justify-between">
         <FormatBadge format={material.format} />
-        <span className="text-[12px] text-[#94A3B8] font-medium">{material.size}</span>
+        <span className="text-[12px] text-[#94A3B8] font-medium">{material.fileSize}</span>
       </div>
 
       {/* Body */}
@@ -363,7 +280,7 @@ function MaterialCard({ material, index }: { material: Material; index: number }
             {isVideo ? (
               <>
                 <EyeIcon className="text-[#94A3B8]" />
-                <span>{material.views} просмотров</span>
+                <span>{material.views ?? 0} просмотров</span>
               </>
             ) : (
               <>
@@ -373,6 +290,7 @@ function MaterialCard({ material, index }: { material: Material; index: number }
             )}
           </div>
           <button
+            onClick={() => onDownload(material)}
             className={`
               inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[13px] font-semibold
               transition-all duration-200 cursor-pointer
@@ -409,9 +327,16 @@ export default function MaterialsPage() {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState('all');
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('new');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Data fetching state
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [totalMaterials, setTotalMaterials] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [featuredMaterial, setFeaturedMaterial] = useState<Material | null>(null);
 
   const toggleType = (value: string) => {
     setSelectedTypes((prev) =>
@@ -427,55 +352,56 @@ export default function MaterialsPage() {
     setCurrentPage(1);
   };
 
-  /* Filtering */
-  const filtered = useMemo(() => {
-    let result = [...MATERIALS];
+  // Fetch materials from API
+  const fetchMaterials = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedTypes.length > 0) params.set('type', selectedTypes.join(','));
+      if (selectedAudiences.length > 0) params.set('audience', selectedAudiences.join(','));
+      if (selectedYear !== 'all') params.set('year', selectedYear);
+      if (search.trim()) params.set('search', search.trim());
+      params.set('sort', sort);
+      params.set('page', String(currentPage));
 
-    // Search
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (m) =>
-          m.title.toLowerCase().includes(q) ||
-          m.description.toLowerCase().includes(q)
-      );
+      const res = await fetch(`/api/materials?${params.toString()}`);
+      const data: MaterialsResponse = await res.json();
+
+      setMaterials(data.materials ?? []);
+      setTotalMaterials(data.total ?? 0);
+      setTotalPages(data.pages ?? 1);
+
+      // Find featured material from first load
+      if (!featuredMaterial) {
+        const feat = (data.materials ?? []).find((m) => m.featured);
+        if (feat) setFeaturedMaterial(feat);
+      }
+    } catch {
+      setMaterials([]);
+      setTotalMaterials(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
     }
+  }, [search, selectedTypes, selectedAudiences, selectedYear, sort, currentPage, featuredMaterial]);
 
-    // Type filter
-    if (selectedTypes.length > 0) {
-      result = result.filter((m) => selectedTypes.includes(m.type));
+  useEffect(() => {
+    fetchMaterials();
+  }, [fetchMaterials]);
+
+  // Handle download click
+  const handleDownload = async (material: Material) => {
+    try {
+      // Track download
+      await fetch(`/api/materials/${material.id}/download`, { method: 'POST' });
+    } catch {
+      // Tracking failed silently
     }
-
-    // Audience filter
-    if (selectedAudiences.length > 0) {
-      result = result.filter((m) => selectedAudiences.includes(m.audience));
+    // Open the file
+    if (material.fileUrl) {
+      window.open(material.fileUrl, '_blank');
     }
-
-    // Year filter
-    if (selectedYear !== 'all') {
-      result = result.filter((m) => m.year === Number(selectedYear));
-    }
-
-    // Sort
-    if (sort === 'newest') {
-      result.sort((a, b) => b.year - a.year || b.id - a.id);
-    } else if (sort === 'popular') {
-      result.sort((a, b) => (b.downloads + (b.views || 0)) - (a.downloads + (a.views || 0)));
-    } else if (sort === 'az') {
-      result.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
-    }
-
-    return result;
-  }, [search, selectedTypes, selectedAudiences, selectedYear, sort]);
-
-  /* Pagination (page 1 of 2 if unfiltered) */
-  const ITEMS_PER_PAGE = 6;
-  const totalMaterials = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(totalMaterials / ITEMS_PER_PAGE));
-  const pagedMaterials = filtered.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  };
 
   const activeFilterCount = selectedTypes.length + selectedAudiences.length + (selectedYear !== 'all' ? 1 : 0);
 
@@ -567,7 +493,7 @@ export default function MaterialsPage() {
             transition={{ delay: 0.05 }}
             className="mt-1 text-[15px] text-[#64748B]"
           >
-            ({totalMaterials} материалов)
+            ({totalMaterials} {pluralizeMaterials(totalMaterials)})
           </motion.p>
         </div>
 
@@ -594,7 +520,7 @@ export default function MaterialsPage() {
           {/* Sort dropdown */}
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            onChange={(e) => { setSort(e.target.value); setCurrentPage(1); }}
             className="h-[42px] px-3 pr-8 rounded-lg border border-[#E2E8F0] text-[14px] bg-white transition-colors duration-200 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394A3B8%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_12px_center] bg-no-repeat focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/20 focus:border-[#3B82F6]"
           >
             {SORT_OPTIONS.map((o) => (
@@ -654,14 +580,21 @@ export default function MaterialsPage() {
                   Рекомендуем
                 </span>
                 <h2 className="text-[20px] sm:text-[22px] font-bold text-white leading-snug mb-2">
-                  Методическое пособие «Водный след»
+                  {featuredMaterial ? featuredMaterial.title : 'Методическое пособие «Водный след»'}
                 </h2>
                 <p className="text-[14px] text-white/80 leading-relaxed mb-4 max-w-lg">
-                  Полное руководство для педагогов по проведению интерактивных занятий на тему водного следа продуктов и услуг.
+                  {featuredMaterial
+                    ? featuredMaterial.description
+                    : 'Полное руководство для педагогов по проведению интерактивных занятий на тему водного следа продуктов и услуг.'}
                 </p>
-                <button className="inline-flex items-center gap-2 h-[42px] px-5 rounded-xl bg-white text-[#059669] text-[14px] font-semibold hover:bg-white/90 transition-colors cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+                <button
+                  onClick={() => {
+                    if (featuredMaterial) handleDownload(featuredMaterial);
+                  }}
+                  className="inline-flex items-center gap-2 h-[42px] px-5 rounded-xl bg-white text-[#059669] text-[14px] font-semibold hover:bg-white/90 transition-colors cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
+                >
                   <DownloadIcon />
-                  Скачать бесплатно (PDF)
+                  Скачать бесплатно ({featuredMaterial ? featuredMaterial.format.toUpperCase() : 'PDF'})
                 </button>
               </div>
               <div className="hidden sm:flex items-center justify-center w-[100px] shrink-0 opacity-80">
@@ -671,10 +604,16 @@ export default function MaterialsPage() {
           </motion.div>
 
           {/* Materials grid */}
-          {pagedMaterials.length > 0 ? (
+          {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-              {pagedMaterials.map((material, i) => (
-                <MaterialCard key={material.id} material={material} index={i} />
+              {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
+                <MaterialCardSkeleton key={i} index={i} />
+              ))}
+            </div>
+          ) : materials.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {materials.map((material, i) => (
+                <MaterialCard key={material.id} material={material} index={i} onDownload={handleDownload} />
               ))}
             </div>
           ) : (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
@@ -23,23 +23,33 @@ import {
 } from '@hugeicons/core-free-icons';
 
 /* ------------------------------------------------------------------ */
-/*  Types & mock data                                                  */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
 type Category = 'all' | 'news' | 'reports' | 'photos' | 'videos';
 
-interface MaterialItem {
+interface NewsItem {
   id: number;
-  type: Category;
   title: string;
-  description?: string;
-  date?: string;
-  badge?: string;
-  views?: number;
-  photoCount?: number;
-  subtitle?: string;
-  size: 'large' | 'normal';
+  content: string;
+  category: string;
+  imageUrl: string | null;
+  fileUrl: string | null;
+  photoCount: number | null;
+  viewCount: number;
+  createdAt: string;
 }
+
+interface NewsResponse {
+  news: NewsItem[];
+  total: number;
+  pages: number;
+  page: number;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Static data                                                        */
+/* ------------------------------------------------------------------ */
 
 const TABS: { key: Category; label: string; icon: typeof News01Icon }[] = [
   { key: 'all', label: 'Все материалы', icon: GridViewIcon },
@@ -47,54 +57,6 @@ const TABS: { key: Category; label: string; icon: typeof News01Icon }[] = [
   { key: 'reports', label: 'Отчёты', icon: File01Icon },
   { key: 'photos', label: 'Фото', icon: Image01Icon },
   { key: 'videos', label: 'Видео', icon: Video01Icon },
-];
-
-const MATERIALS: MaterialItem[] = [
-  {
-    id: 1,
-    type: 'news',
-    size: 'large',
-    badge: 'Новости',
-    date: '28 апреля 2026',
-    title: 'Завершен первый этап внедрения систем капельного орошения в пилотных школах',
-    description:
-      'В рамках проекта Тамшы успешно установлены системы капельного орошения в 15 школах трёх регионов Казахстана. Экономия воды составила 40% по сравнению с традиционными методами полива.',
-  },
-  {
-    id: 2,
-    type: 'reports',
-    size: 'normal',
-    date: '15.04.2026',
-    title: 'Отчёт по мониторингу потребления воды',
-    description: 'Результаты замеров за 1 квартал 2026 года.',
-  },
-  {
-    id: 3,
-    type: 'videos',
-    size: 'normal',
-    badge: 'Видео',
-    title: "Вебинар: 'Водные ресурсы будущего'",
-  },
-  {
-    id: 4,
-    type: 'photos',
-    size: 'normal',
-    badge: 'Фото',
-    title: 'Фотоотчет: Эко-субботник',
-    subtitle: 'Очистка береговой линии.',
-    photoCount: 12,
-  },
-  {
-    id: 5,
-    type: 'news',
-    size: 'normal',
-    badge: 'Новости',
-    date: '10.04.2026',
-    title: 'Запуск конкурса экологических плакатов',
-    description:
-      'Школьники со всех регионов могут принять участие в конкурсе плакатов на тему бережного отношения к водным ресурсам.',
-    views: 142,
-  },
 ];
 
 const TIMELINE = [
@@ -125,6 +87,46 @@ const TIMELINE = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+function formatDateLong(dateStr: string): string {
+  const d = new Date(dateStr);
+  const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
+  ];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function mapCategory(cat: string): Category {
+  const lower = cat.toLowerCase();
+  if (lower === 'news') return 'news';
+  if (lower === 'reports') return 'reports';
+  if (lower === 'photos') return 'photos';
+  if (lower === 'videos') return 'videos';
+  return 'news';
+}
+
+function getCategoryBadge(cat: string): string {
+  const map: Record<string, string> = {
+    news: 'Новости',
+    reports: 'Отчёт',
+    photos: 'Фото',
+    videos: 'Видео',
+  };
+  return map[cat.toLowerCase()] ?? 'Новости';
+}
+
+/* ------------------------------------------------------------------ */
 /*  Animation variants                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -152,6 +154,35 @@ const sidebarVariants = {
     transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
 };
+
+/* ------------------------------------------------------------------ */
+/*  Skeleton loader                                                    */
+/* ------------------------------------------------------------------ */
+
+function CardSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 animate-pulse">
+      <div className="h-4 w-20 rounded bg-[#E2E8F0] mb-3" />
+      <div className="h-5 w-3/4 rounded bg-[#E2E8F0] mb-2" />
+      <div className="h-3 w-full rounded bg-[#E2E8F0] mb-1" />
+      <div className="h-3 w-2/3 rounded bg-[#E2E8F0]" />
+    </div>
+  );
+}
+
+function LargeCardSkeleton() {
+  return (
+    <div className="col-span-full bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden animate-pulse">
+      <div className="h-52 sm:h-64 bg-[#E2E8F0]" />
+      <div className="p-5 sm:p-6 space-y-3">
+        <div className="h-4 w-32 rounded bg-[#E2E8F0]" />
+        <div className="h-5 w-3/4 rounded bg-[#E2E8F0]" />
+        <div className="h-3 w-full rounded bg-[#E2E8F0]" />
+        <div className="h-3 w-2/3 rounded bg-[#E2E8F0]" />
+      </div>
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  Sub-components                                                     */
@@ -204,27 +235,33 @@ function Badge({
 
 /* ---- Cards ----- */
 
-function LargeNewsCard({ item }: { item: MaterialItem }) {
+function LargeNewsCard({ item }: { item: NewsItem }) {
   return (
     <motion.article variants={itemVariants} className="col-span-full">
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60">
-        <GradientPlaceholder className="h-52 sm:h-64 flex items-center justify-center">
-          <div className="relative z-10 flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
-              <HugeiconsIcon icon={DropletIcon} size={28} className="text-white/80" />
-            </div>
+        {item.imageUrl ? (
+          <div className="h-52 sm:h-64 overflow-hidden">
+            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
           </div>
-        </GradientPlaceholder>
+        ) : (
+          <GradientPlaceholder className="h-52 sm:h-64 flex items-center justify-center">
+            <div className="relative z-10 flex flex-col items-center gap-3">
+              <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                <HugeiconsIcon icon={DropletIcon} size={28} className="text-white/80" />
+              </div>
+            </div>
+          </GradientPlaceholder>
+        )}
         <div className="p-5 sm:p-6">
           <div className="flex items-center gap-3 mb-3">
-            <Badge>{item.badge}</Badge>
-            <span className="text-[13px] text-[#64748B]">{item.date}</span>
+            <Badge>{getCategoryBadge(item.category)}</Badge>
+            <span className="text-[13px] text-[#64748B]">{formatDateLong(item.createdAt)}</span>
           </div>
           <h3 className="text-[18px] font-semibold text-[#0F172A] leading-snug mb-2">
             {item.title}
           </h3>
           <p className="text-[14px] text-[#64748B] leading-relaxed mb-4 line-clamp-3">
-            {item.description}
+            {item.content}
           </p>
           <button className="text-[14px] font-medium text-[#3B82F6] hover:text-[#2563EB] transition-colors cursor-pointer">
             Читать далее &rarr;
@@ -235,30 +272,37 @@ function LargeNewsCard({ item }: { item: MaterialItem }) {
   );
 }
 
-function ReportCard({ item }: { item: MaterialItem }) {
+function ReportCard({ item }: { item: NewsItem }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
         <div className="flex items-center gap-2 text-[13px] text-[#64748B] mb-3">
           <HugeiconsIcon icon={Clock01Icon} size={15} className="text-[#94A3B8]" />
-          <span>{item.date}</span>
+          <span>{formatDate(item.createdAt)}</span>
         </div>
         <h3 className="text-[16px] font-semibold text-[#0F172A] leading-snug mb-2">
           {item.title}
         </h3>
         <p className="text-[14px] text-[#64748B] leading-relaxed mb-4 flex-1">
-          {item.description}
+          {item.content}
         </p>
-        <button className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2 transition-colors cursor-pointer w-fit">
-          <HugeiconsIcon icon={Download01Icon} size={15} />
-          Скачать (PDF)
-        </button>
+        {item.fileUrl && (
+          <a
+            href={item.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#3B82F6] bg-[#3B82F6]/8 hover:bg-[#3B82F6]/15 rounded-lg px-4 py-2 transition-colors cursor-pointer w-fit"
+          >
+            <HugeiconsIcon icon={Download01Icon} size={15} />
+            Скачать (PDF)
+          </a>
+        )}
       </div>
     </motion.article>
   );
 }
 
-function VideoCard({ item }: { item: MaterialItem }) {
+function VideoCard({ item }: { item: NewsItem }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
@@ -270,7 +314,7 @@ function VideoCard({ item }: { item: MaterialItem }) {
           </div>
         </GradientPlaceholder>
         <div className="p-5 flex-1 flex flex-col">
-          <Badge>{item.badge}</Badge>
+          <Badge>{getCategoryBadge(item.category)}</Badge>
           <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mt-3">
             {item.title}
           </h3>
@@ -280,54 +324,67 @@ function VideoCard({ item }: { item: MaterialItem }) {
   );
 }
 
-function PhotoCard({ item }: { item: MaterialItem }) {
+function PhotoCard({ item }: { item: NewsItem }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
-        <GradientPlaceholder className="h-36 flex items-end justify-end p-3">
-          <div className="relative z-10 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
-            <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
-            <span className="text-[12px] font-medium text-white/90">
-              {item.photoCount} фото
-            </span>
+        {item.imageUrl ? (
+          <div className="relative h-36 overflow-hidden rounded-xl">
+            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+            <div className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
+              <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
+              <span className="text-[12px] font-medium text-white/90">
+                {item.photoCount ?? 0} фото
+              </span>
+            </div>
           </div>
-        </GradientPlaceholder>
+        ) : (
+          <GradientPlaceholder className="h-36 flex items-end justify-end p-3">
+            <div className="relative z-10 inline-flex items-center gap-1.5 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1.5">
+              <HugeiconsIcon icon={Camera01Icon} size={14} className="text-white/90" />
+              <span className="text-[12px] font-medium text-white/90">
+                {item.photoCount ?? 0} фото
+              </span>
+            </div>
+          </GradientPlaceholder>
+        )}
         <div className="p-5 flex-1 flex flex-col">
           <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug">
             {item.title}
           </h3>
-          <p className="text-[13px] text-[#64748B] mt-1">{item.subtitle}</p>
+          <p className="text-[13px] text-[#64748B] mt-1 line-clamp-2">{item.content}</p>
         </div>
       </div>
     </motion.article>
   );
 }
 
-function SmallNewsCard({ item }: { item: MaterialItem }) {
+function SmallNewsCard({ item }: { item: NewsItem }) {
   return (
     <motion.article variants={itemVariants}>
       <div className="bg-white rounded-2xl border border-[#E2E8F0]/60 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_16px_rgba(0,0,0,0.03)] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-[#93C5FD]/60 h-full flex flex-col">
         <div className="flex items-center gap-3 mb-3">
-          <Badge>{item.badge}</Badge>
-          <span className="text-[12px] text-[#64748B]">{item.date}</span>
+          <Badge>{getCategoryBadge(item.category)}</Badge>
+          <span className="text-[12px] text-[#64748B]">{formatDate(item.createdAt)}</span>
         </div>
         <h3 className="text-[15px] font-semibold text-[#0F172A] leading-snug mb-2">
           {item.title}
         </h3>
         <p className="text-[13px] text-[#64748B] leading-relaxed mb-4 flex-1 line-clamp-2">
-          {item.description}
+          {item.content}
         </p>
-        <span className="text-[12px] text-[#94A3B8]">{item.views} просмотра</span>
+        <span className="text-[12px] text-[#94A3B8]">{item.viewCount} просмотра</span>
       </div>
     </motion.article>
   );
 }
 
-function MaterialCard({ item }: { item: MaterialItem }) {
-  if (item.type === 'news' && item.size === 'large') return <LargeNewsCard item={item} />;
-  if (item.type === 'reports') return <ReportCard item={item} />;
-  if (item.type === 'videos') return <VideoCard item={item} />;
-  if (item.type === 'photos') return <PhotoCard item={item} />;
+function NewsCard({ item, isFirst }: { item: NewsItem; isFirst: boolean }) {
+  const category = mapCategory(item.category);
+  if (isFirst && category === 'news') return <LargeNewsCard item={item} />;
+  if (category === 'reports') return <ReportCard item={item} />;
+  if (category === 'videos') return <VideoCard item={item} />;
+  if (category === 'photos') return <PhotoCard item={item} />;
   return <SmallNewsCard item={item} />;
 }
 
@@ -341,14 +398,71 @@ export default function ProgressPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [email, setEmail] = useState('');
 
-  const filtered = MATERIALS.filter((m) => {
-    const matchesTab = activeTab === 'all' || m.type === activeTab;
-    const matchesSearch =
-      searchQuery === '' ||
-      m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (m.description && m.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesTab && matchesSearch;
-  });
+  // Data fetching state
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  // Newsletter state
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+  const [newsletterError, setNewsletterError] = useState('');
+
+  // Fetch news from API
+  const fetchNews = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (activeTab !== 'all') params.set('category', activeTab);
+      if (searchQuery.trim()) params.set('search', searchQuery.trim());
+      params.set('page', String(currentPage));
+
+      const res = await fetch(`/api/news?${params.toString()}`);
+      const data: NewsResponse = await res.json();
+
+      setNewsItems(data.news ?? []);
+      setTotalPages(data.pages ?? 1);
+    } catch {
+      setNewsItems([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, searchQuery, currentPage]);
+
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
+
+  // Newsletter subscription
+  const handleNewsletter = async () => {
+    if (!email.trim()) return;
+    setNewsletterLoading(true);
+    setNewsletterError('');
+    setNewsletterSuccess(false);
+
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || 'Ошибка при подписке');
+      }
+
+      setNewsletterSuccess(true);
+      setEmail('');
+      setTimeout(() => setNewsletterSuccess(false), 5000);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Произошла ошибка. Попробуйте позже.';
+      setNewsletterError(message);
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -427,68 +541,81 @@ export default function ProgressPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab + searchQuery}
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-              >
-                {filtered.length > 0 ? (
-                  filtered.map((item) => <MaterialCard key={item.id} item={item} />)
-                ) : (
-                  <motion.div
-                    variants={itemVariants}
-                    className="col-span-full text-center py-16"
-                  >
-                    <p className="text-[16px] text-[#64748B]">
-                      Материалы не найдены
-                    </p>
-                  </motion.div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <LargeCardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+                <CardSkeleton />
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab + searchQuery + currentPage}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                >
+                  {newsItems.length > 0 ? (
+                    newsItems.map((item, index) => (
+                      <NewsCard key={item.id} item={item} isFirst={index === 0} />
+                    ))
+                  ) : (
+                    <motion.div
+                      variants={itemVariants}
+                      className="col-span-full text-center py-16"
+                    >
+                      <p className="text-[16px] text-[#64748B]">
+                        Материалы не найдены
+                      </p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
 
             {/* ---- Pagination ---- */}
-            <motion.div
-              className="mt-8 flex items-center justify-center gap-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <button
-                className="w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white flex items-center justify-center text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            {totalPages > 1 && (
+              <motion.div
+                className="mt-8 flex items-center justify-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
-              </button>
-
-              {[1, 2, 3].map((p) => (
                 <button
-                  key={p}
-                  onClick={() => setCurrentPage(p)}
-                  className={`w-9 h-9 rounded-lg text-[13px] font-semibold transition-all cursor-pointer
-                    ${
-                      currentPage === p
-                        ? 'bg-[#3B82F6] text-white shadow-md shadow-[#3B82F6]/20'
-                        : 'border border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6]'
-                    }`}
+                  className="w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white flex items-center justify-center text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 >
-                  {p}
+                  <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
                 </button>
-              ))}
 
-              <button
-                className="w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white flex items-center justify-center text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                disabled={currentPage === 3}
-                onClick={() => setCurrentPage((p) => Math.min(3, p + 1))}
-              >
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
-              </button>
-            </motion.div>
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-9 h-9 rounded-lg text-[13px] font-semibold transition-all cursor-pointer
+                      ${
+                        currentPage === i + 1
+                          ? 'bg-[#3B82F6] text-white shadow-md shadow-[#3B82F6]/20'
+                          : 'border border-[#E2E8F0] bg-white text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6]'
+                      }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button
+                  className="w-9 h-9 rounded-lg border border-[#E2E8F0] bg-white flex items-center justify-center text-[#64748B] hover:border-[#93C5FD] hover:text-[#3B82F6] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
+                </button>
+              </motion.div>
+            )}
           </div>
 
           {/* ---- Sidebar ---- */}
@@ -573,6 +700,18 @@ export default function ProgressPage() {
               <p className="text-[13px] text-[#64748B] mb-4">
                 Получайте уведомления о новых материалах проекта.
               </p>
+
+              {newsletterSuccess && (
+                <div className="mb-3 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-[13px] text-emerald-700">
+                  Вы успешно подписались!
+                </div>
+              )}
+              {newsletterError && (
+                <div className="mb-3 p-2.5 rounded-lg bg-red-50 border border-red-200 text-[13px] text-red-700">
+                  {newsletterError}
+                </div>
+              )}
+
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <HugeiconsIcon
@@ -588,8 +727,16 @@ export default function ProgressPage() {
                     className="w-full h-10 pl-9 pr-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] text-[13px] text-[#0F172A] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/30 focus:border-[#3B82F6] transition-all"
                   />
                 </div>
-                <button className="h-10 w-10 shrink-0 rounded-xl bg-[#3B82F6] text-white flex items-center justify-center hover:bg-[#2563EB] transition-colors cursor-pointer shadow-md shadow-[#3B82F6]/20">
-                  <HugeiconsIcon icon={MailSend01Icon} size={18} />
+                <button
+                  onClick={handleNewsletter}
+                  disabled={newsletterLoading || !email.trim()}
+                  className="h-10 w-10 shrink-0 rounded-xl bg-[#3B82F6] text-white flex items-center justify-center hover:bg-[#2563EB] transition-colors cursor-pointer shadow-md shadow-[#3B82F6]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {newsletterLoading ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <HugeiconsIcon icon={MailSend01Icon} size={18} />
+                  )}
                 </button>
               </div>
             </div>

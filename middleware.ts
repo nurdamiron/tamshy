@@ -6,6 +6,7 @@ const TOKEN_NAME = 'tamshy-token';
 
 const PROTECTED_ROUTES: Record<string, string[]> = {
   '/jury': ['JURY', 'ADMIN'],
+  '/admin': ['ADMIN'],
 };
 
 export async function middleware(req: NextRequest) {
@@ -38,5 +39,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/jury/:path*'],
+  matcher: ['/jury/:path*', '/admin/:path*'],
 };

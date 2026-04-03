@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Onest } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import LayoutShell from '@/components/layout/LayoutShell';
 
 const onest = Onest({
   subsets: ['latin', 'cyrillic'],
@@ -24,9 +23,7 @@ export default function RootLayout({
   return (
     <html lang="kk">
       <body className={`${onest.variable} font-sans antialiased`}>
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );
