@@ -1,10 +1,11 @@
+// Labels removed — use useTranslations('types') in components
 export const PROJECT_TYPES = [
-  { value: 'VIDEO', label: 'Видео', icon: 'video', color: 'blue' },
-  { value: 'RESEARCH', label: 'Исследование', icon: 'research', color: 'purple' },
-  { value: 'ART', label: 'Арт / Плакат', icon: 'art', color: 'amber' },
-  { value: 'INVENTION', label: 'Изобретение', icon: 'invention', color: 'orange' },
-  { value: 'APP', label: 'Приложение / Сайт', icon: 'app', color: 'teal' },
-  { value: 'OTHER', label: 'Другое', icon: 'other', color: 'gray' },
+  { value: 'VIDEO', icon: 'video', color: 'blue' },
+  { value: 'RESEARCH', icon: 'research', color: 'purple' },
+  { value: 'ART', icon: 'art', color: 'amber' },
+  { value: 'INVENTION', icon: 'invention', color: 'orange' },
+  { value: 'APP', icon: 'app', color: 'teal' },
+  { value: 'OTHER', icon: 'other', color: 'gray' },
 ] as const;
 
 export const REGIONS = [
@@ -14,9 +15,10 @@ export const REGIONS = [
   'KYZYLORDA', 'TARAZ', 'PETROPAVLOVSK', 'ORAL', 'KOSTANAY',
 ] as const;
 
+// Grade labels — use useTranslations('common') with gradeLabel key in components
 export const GRADES = Array.from({ length: 11 }, (_, i) => ({
   value: String(i + 1),
-  label: `${i + 1} класс`,
+  num: i + 1,
 }));
 
 export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB

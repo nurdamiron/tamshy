@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import Badge, { getTypeLabel, getStatusLabel } from '@/components/ui/Badge';
+import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Select from '@/components/ui/Select';
@@ -11,23 +11,7 @@ import Modal from '@/components/ui/Modal';
 import PageHeader from '@/components/layout/PageHeader';
 import { regionLabels } from '@/lib/validators';
 import { PROJECT_TYPES } from '@/lib/constants';
-
-const regionOptions = [
-  { value: 'all', label: 'Все регионы' },
-  ...Object.entries(regionLabels).map(([value, label]) => ({ value, label })),
-];
-
-const typeOptions = [
-  { value: 'all', label: 'Все типы' },
-  ...PROJECT_TYPES.map((t) => ({ value: t.value, label: t.label })),
-];
-
-const statusOptions = [
-  { value: 'PENDING', label: 'На модерации' },
-  { value: 'APPROVED', label: 'Одобрённые' },
-  { value: 'REJECTED', label: 'Отклонённые' },
-  { value: 'WINNER', label: 'Победители' },
-];
+import { useTranslations } from 'next-intl';
 
 interface JuryProject {
   id: string;
@@ -57,6 +41,28 @@ const statusToBadge: Record<string, 'pending' | 'approved' | 'rejected' | 'winne
 };
 
 export default function JuryPage() {
+  const t = useTranslations('jury');
+  const tTypes = useTranslations('types');
+  const tCommon = useTranslations('common');
+  const tRegions = useTranslations('regions');
+
+  const regionOptions = [
+    { value: 'all', label: t('allRegions') },
+    ...Object.entries(regionLabels).map(([value, label]) => ({ value, label: tRegions(value) || label })),
+  ];
+
+  const typeOptions = [
+    { value: 'all', label: t('allTypes') },
+    ...PROJECT_TYPES.map((pt) => ({ value: pt.value, label: tTypes(pt.value) })),
+  ];
+
+  const statusOptions = [
+    { value: 'PENDING', label: t('statusPending') },
+    { value: 'APPROVED', label: t('statusApproved') },
+    { value: 'REJECTED', label: t('statusRejected') },
+    { value: 'WINNER', label: t('statusWinner') },
+  ];
+
   const [projects, setProjects] = useState<JuryProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState('all');
@@ -155,17 +161,17 @@ export default function JuryPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <PageHeader
-        title="Панель жюри"
-        subtitle="Модерация и оценка проектов"
+        title={t('title')}
+        subtitle={t('subtitle')}
       />
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'На модерации', value: stats.pending, color: 'text-yellow-600', bg: 'bg-yellow-50' },
-          { label: 'Одобрено', value: stats.approved, color: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Отклонено', value: stats.rejected, color: 'text-red-600', bg: 'bg-red-50' },
-          { label: 'Победители', value: stats.winner, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: t('pending'), value: stats.pending, color: 'text-yellow-600', bg: 'bg-yellow-50' },
+          { label: t('approved'), value: stats.approved, color: 'text-green-600', bg: 'bg-green-50' },
+          { label: t('rejected'), value: stats.rejected, color: 'text-red-600', bg: 'bg-red-50' },
+          { label: t('winners'), value: stats.winner, color: 'text-amber-600', bg: 'bg-amber-50' },
         ].map((stat) => (
           <Card key={stat.label} hover={false} padding="md">
             <div className={`text-[28px] font-bold ${stat.color}`}>{stat.value}</div>
@@ -199,7 +205,7 @@ export default function JuryPage() {
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-[16px] text-[#64748B]">Нет проектов для отображения</p>
+          <p className="text-[16px] text-[#64748B]">{t('noProjects')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -215,17 +221,17 @@ export default function JuryPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant={typeToBadge[project.type] || 'other'}>
-                        {getTypeLabel(project.type)}
+                        {tTypes(project.type)}
                       </Badge>
                       <Badge variant={statusToBadge[project.status] || 'pending'}>
-                        {getStatusLabel(project.status)}
+                        {statusOptions.find(s => s.value === project.status)?.label || project.status}
                       </Badge>
                     </div>
                     <h3 className="text-[15px] font-semibold text-[#0F172A] truncate">
                       {project.title}
                     </h3>
                     <div className="text-[12px] text-[#64748B] mt-1">
-                      {project.author?.name || 'Автор'} · {regionLabels[project.region]} · {project.schoolName} · {project.grade} класс
+                      {project.author?.name || tCommon('defaultAuthor')} · {tRegions(project.region) || regionLabels[project.region]} · {project.schoolName} · {project.grade} {tCommon('class')}
                     </div>
                   </div>
 
@@ -233,9 +239,9 @@ export default function JuryPage() {
                     {project.juryScore && (
                       <span className="text-[14px] font-bold text-[#F5A623]">{project.juryScore}/10</span>
                     )}
-                    <span className="text-[13px] text-[#64748B]">{project._count.votes} голосов</span>
+                    <span className="text-[13px] text-[#64748B]">{project._count.votes} {t('votes')}</span>
                     <Button size="sm" variant="secondary" onClick={() => openScoreModal(project)}>
-                      Оценить
+                      {t('evaluate')}
                     </Button>
                   </div>
                 </div>
@@ -246,7 +252,7 @@ export default function JuryPage() {
       )}
 
       {/* Score Modal */}
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Оценка проекта">
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('modalTitle')}>
         {selectedProject && (
           <div className="space-y-4">
             <div>
@@ -259,13 +265,13 @@ export default function JuryPage() {
                 {selectedProject.fileUrl && (
                   <a href={selectedProject.fileUrl} target="_blank" rel="noopener noreferrer"
                     className="text-[13px] text-[#0284C7] hover:underline">
-                    Открыть файл
+                    {t('openFile')}
                   </a>
                 )}
                 {selectedProject.videoUrl && (
                   <a href={selectedProject.videoUrl} target="_blank" rel="noopener noreferrer"
                     className="text-[13px] text-[#0284C7] hover:underline">
-                    Смотреть видео
+                    {t('watchVideo')}
                   </a>
                 )}
               </div>
@@ -273,7 +279,7 @@ export default function JuryPage() {
 
             <div>
               <label className="text-[13px] font-medium text-[#0F172A] block mb-1.5">
-                Оценка (1-10)
+                {t('scoreLabel')}
               </label>
               <input
                 type="number"
@@ -286,26 +292,26 @@ export default function JuryPage() {
             </div>
 
             <Textarea
-              label="Комментарий жюри"
-              placeholder="Ваш комментарий к проекту..."
+              label={t('commentLabel')}
+              placeholder={t('commentPlaceholder')}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
 
             <Select
-              label="Статус"
+              label={t('statusLabel')}
               value={newStatus}
               onChange={(e) => setNewStatus(e.target.value)}
               options={[
-                { value: 'APPROVED', label: 'Одобрить' },
-                { value: 'REJECTED', label: 'Отклонить' },
-                { value: 'WINNER', label: 'Победитель' },
+                { value: 'APPROVED', label: t('approve') },
+                { value: 'REJECTED', label: t('reject') },
+                { value: 'WINNER', label: t('winner') },
               ]}
             />
 
             <div className="flex gap-3 pt-2">
               <Button variant="ghost" onClick={() => setModalOpen(false)} className="flex-1">
-                Отмена
+                {t('cancel')}
               </Button>
               <Button
                 onClick={submitScore}
@@ -313,7 +319,7 @@ export default function JuryPage() {
                 disabled={!score || !comment || comment.length < 10}
                 className="flex-1"
               >
-                Сохранить
+                {t('save')}
               </Button>
             </div>
           </div>

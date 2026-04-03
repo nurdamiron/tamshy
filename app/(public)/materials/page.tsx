@@ -580,12 +580,12 @@ export default function MaterialsPage() {
                   {t('recommended')}
                 </span>
                 <h2 className="text-[20px] sm:text-[22px] font-bold text-white leading-snug mb-2">
-                  {featuredMaterial ? featuredMaterial.title : 'Методическое пособие «Водный след»'}
+                  {featuredMaterial ? featuredMaterial.title : t('featuredTitle')}
                 </h2>
                 <p className="text-[14px] text-white/80 leading-relaxed mb-4 max-w-lg">
                   {featuredMaterial
                     ? featuredMaterial.description
-                    : 'Полное руководство для педагогов по проведению интерактивных занятий на тему водного следа продуктов и услуг.'}
+                    : t('featuredDesc')}
                 </p>
                 <button
                   onClick={() => {

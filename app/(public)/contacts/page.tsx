@@ -271,7 +271,7 @@ export default function ContactsPage() {
                 src="https://www.openstreetmap.org/export/embed.html?bbox=65.48%2C44.83%2C65.53%2C44.86&layer=mapnik&marker=44.848%2C65.503"
                 className="w-full h-[220px] border-0"
                 loading="lazy"
-                title="Офис Tamshy.kz — Кызылорда"
+                title={`Tamshy.kz — ${t('city')}`}
               />
             </motion.div>
           </div>

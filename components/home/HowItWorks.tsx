@@ -1,7 +1,6 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SmartPhone01Icon, Upload01Icon, HeartCheckIcon, Medal01Icon } from '@hugeicons/core-free-icons';
@@ -43,15 +42,8 @@ export default function HowItWorks() {
       gradient: 'from-[#F59E0B] to-[#FBBF24]',
     },
   ];
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start 80%', 'end 50%'],
-  });
-  const lineWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-
   return (
-    <section ref={sectionRef} className="py-24 bg-white">
+    <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -70,13 +62,8 @@ export default function HowItWorks() {
         </motion.div>
 
         <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-          {/* Animated connector line -- desktop only */}
-          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-[2px] bg-[#E2E8F0]/60">
-            <motion.div
-              className="h-full bg-gradient-to-r from-[#0284C7] via-[#EC4899] to-[#F59E0B] rounded-full"
-              style={{ width: lineWidth }}
-            />
-          </div>
+          {/* Connector dots -- desktop only */}
+          <div className="hidden lg:block absolute top-[52px] left-[12.5%] right-[12.5%] h-[2px]" style={{ backgroundImage: 'radial-gradient(circle, #CBD5E1 1px, transparent 1px)', backgroundSize: '12px 2px', backgroundRepeat: 'repeat-x' }} />
 
           {steps.map((step, i) => (
             <motion.div

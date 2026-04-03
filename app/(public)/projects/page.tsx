@@ -55,7 +55,7 @@ export default function ProjectsPage() {
 
   const typeOptions = [
     { value: 'all', label: t('allTypes') },
-    ...PROJECT_TYPES.map((pt) => ({ value: pt.value, label: tTypes(pt.value) || pt.label })),
+    ...PROJECT_TYPES.map((pt) => ({ value: pt.value, label: tTypes(pt.value) })),
   ];
 
   const sortOptions = [

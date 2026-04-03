@@ -320,7 +320,7 @@ export default function SubmitPage() {
                             ? 'border-[#0284C7] bg-[#E0F2FE]'
                             : 'border-[#E2E8F0] hover:border-[#0284C7]/30'}`}
                       >
-                        <div className="text-[14px] font-medium text-[#0F172A]">{tTypes(pt.value) || pt.label}</div>
+                        <div className="text-[14px] font-medium text-[#0F172A]">{tTypes(pt.value)}</div>
                       </button>
                     ))}
                   </div>

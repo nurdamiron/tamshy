@@ -9,6 +9,7 @@ import {
   Marker,
 } from 'react-simple-maps';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 const GEO_URL = '/kz-all.topo.json';
 
@@ -81,10 +82,10 @@ const WATER_ISSUES: Record<string, string> = {
   'Aqmola': 'Качество грунтовых вод',
 };
 
-const CITY_MARKERS: { name: string; coordinates: [number, number]; projects: number }[] = [
-  { name: 'Астана', coordinates: [71.43, 51.13], projects: 45 },
-  { name: 'Алматы', coordinates: [76.95, 43.24], projects: 62 },
-  { name: 'Шымкент', coordinates: [69.6, 42.32], projects: 28 },
+const CITY_MARKERS: { regionKey: string; coordinates: [number, number]; projects: number }[] = [
+  { regionKey: 'ASTANA', coordinates: [71.43, 51.13], projects: 45 },
+  { regionKey: 'ALMATY', coordinates: [76.95, 43.24], projects: 62 },
+  { regionKey: 'SHYMKENT', coordinates: [69.6, 42.32], projects: 28 },
 ];
 
 interface TooltipData {
@@ -94,7 +95,7 @@ interface TooltipData {
   y: number;
 }
 
-const MapContent = memo(function MapContent() {
+const MapContent = memo(function MapContent({ regionNameFn, projectsWord, cityNameFn }: { regionNameFn: (rawName: string) => string; projectsWord: string; cityNameFn: (key: string) => string }) {
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
 
@@ -102,12 +103,12 @@ const MapContent = memo(function MapContent() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (geo: any, event: React.MouseEvent) => {
       const rawName = geo.properties.name;
-      const name = REGION_NAMES[rawName] || rawName;
+      const name = regionNameFn(rawName);
       const issue = WATER_ISSUES[rawName] || '';
       setHoveredRegion(rawName);
       setTooltip({ name, issue, x: event.clientX, y: event.clientY });
     },
-    []
+    [regionNameFn]
   );
 
   const handleMouseMove = useCallback(
@@ -181,8 +182,8 @@ const MapContent = memo(function MapContent() {
         </Geographies>
 
         {/* City markers with pulsing rings */}
-        {CITY_MARKERS.map(({ name, coordinates, projects }, i) => (
-          <Marker key={name} coordinates={coordinates}>
+        {CITY_MARKERS.map(({ regionKey, coordinates, projects }, i) => (
+          <Marker key={regionKey} coordinates={coordinates}>
             {/* Pulsing ring */}
             <circle r={12} fill="#0284C7" fillOpacity={0} stroke="#0284C7" strokeWidth={1.5} className="animate-pulse-ring" style={{ animationDelay: `${i * 0.4}s` }} />
             <circle r={12} fill="#0284C7" fillOpacity={0.1} />
@@ -197,7 +198,7 @@ const MapContent = memo(function MapContent() {
                 fontFamily: 'Onest, sans-serif',
               }}
             >
-              {name}
+              {cityNameFn(regionKey)}
             </text>
             <text
               textAnchor="middle"
@@ -208,7 +209,7 @@ const MapContent = memo(function MapContent() {
                 fontFamily: 'Onest, sans-serif',
               }}
             >
-              {projects} проектов
+              {projects} {projectsWord}
             </text>
           </Marker>
         ))}
@@ -242,6 +243,17 @@ const MapContent = memo(function MapContent() {
 });
 
 export default function RegionMap() {
+  const t = useTranslations('regionMap');
+  const tRegions = useTranslations('regions');
+
+  const regionNameFn = useCallback((rawName: string) => {
+    const enumKey = REGION_TO_ENUM[rawName];
+    if (enumKey) {
+      try { return tRegions(enumKey); } catch { /* fallback */ }
+    }
+    return REGION_NAMES[rawName] || rawName;
+  }, [tRegions]);
+
   return (
     <section className="py-24 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -252,12 +264,12 @@ export default function RegionMap() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10"
         >
-          <span className="text-caption text-[#0284C7] tracking-widest">ГЕОГРАФИЯ</span>
+          <span className="text-caption text-[#0284C7] tracking-widest">{t('caption')}</span>
           <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0F172A] mt-3">
-            Карта проектов
+            {t('title')}
           </h2>
           <p className="text-[15px] text-[#64748B] mt-3 max-w-lg mx-auto">
-            Наведите на регион, чтобы увидеть водные проблемы. Нажмите для просмотра проектов.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -271,7 +283,7 @@ export default function RegionMap() {
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(248,250,252,0.6)_100%)] z-10" />
 
           <div className="p-4 sm:p-6">
-            <MapContent />
+            <MapContent regionNameFn={regionNameFn} projectsWord={t('projectsWord')} cityNameFn={(key: string) => tRegions(key)} />
           </div>
 
           {/* Legend */}
@@ -284,16 +296,16 @@ export default function RegionMap() {
           >
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-3 rounded-sm bg-[#DBEAFE] border border-[#93C5FD]" />
-              <span className="text-[12px] text-[#64748B]">Регион</span>
+              <span className="text-[12px] text-[#64748B]">{t('regionLegend')}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-full bg-[#0284C7] relative">
                 <div className="absolute inset-0 rounded-full bg-[#0284C7] animate-ping opacity-30" />
               </div>
-              <span className="text-[12px] text-[#64748B]">Города респ. значения</span>
+              <span className="text-[12px] text-[#64748B]">{t('cityLegend')}</span>
             </div>
             <div className="text-[12px] text-[#64748B] ml-auto font-medium">
-              20 регионов
+              {t('regionsCount')}
             </div>
           </motion.div>
         </motion.div>

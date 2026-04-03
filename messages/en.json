@@ -18,7 +18,13 @@
     "badge": "Ecological Initiative · Kazakhstan",
     "ecoBadge": "Ecological Initiative",
     "title": "Save Water – Protect the Future!",
-    "titleWords": ["Save", "water", "–", "protect", "the future!"],
+    "titleWords": [
+      "Save",
+      "water",
+      "–",
+      "protect",
+      "the future!"
+    ],
     "subtitle": "Information website for developing a culture of rational water resource consumption in Kazakhstan.",
     "learnMore": "Learn More",
     "participate": "Participate",
@@ -26,7 +32,10 @@
     "viewBtn": "View Projects",
     "trustMinistry": "Ministry of Water Resources RK",
     "trustUnicef": "UNICEF",
-    "trustProgram": "Adal Azamat Program"
+    "trustProgram": "Adal Azamat Program",
+    "partner1": "Ministry of Water Resources",
+    "partner2": "UNICEF",
+    "partner3": "Adal Azamat Program"
   },
   "stats": {
     "schools": "Schools participating",
@@ -45,7 +54,8 @@
     "step3Title": "Get votes",
     "step3Desc": "Other participants and viewers vote for the best projects. Get the most votes!",
     "step4Title": "Become a winner",
-    "step4Desc": "A jury of water resources experts evaluates the best projects. Prizes and certificates!"
+    "step4Desc": "A jury of water resources experts evaluates the best projects. Prizes and certificates!",
+    "caption": "HOW IT WORKS"
   },
   "categories": {
     "badge": "CATEGORIES",
@@ -62,14 +72,20 @@
     "apps": "Applications",
     "appsDesc": "Mobile apps for water monitoring",
     "projects": "projects",
-    "view": "View"
+    "view": "View",
+    "app": "Applications",
+    "appDesc": "Mobile apps for water monitoring",
+    "caption": "CATEGORIES",
+    "invention": "Inventions",
+    "inventionDesc": "Devices and technical solutions for water conservation"
   },
   "featured": {
     "badge": "FEATURED",
     "title": "Best Projects",
     "subtitle": "Projects with the most votes",
     "viewAll": "View all",
-    "viewAllProjects": "View all projects"
+    "viewAllProjects": "View all projects",
+    "caption": "FEATURED"
   },
   "whyWater": {
     "badge": "WHY IT MATTERS",
@@ -85,7 +101,14 @@
     "fact3Label": "of the Aral Sea has dried up in the last 60 years",
     "fact4Value": "4 mln",
     "fact4Label": "people in Kazakhstan lack access to clean drinking water",
-    "millionSuffix": " mln"
+    "millionSuffix": " mln",
+    "caption": "WHY IT MATTERS",
+    "fact1": "of Kazakhstan's water resources are formed outside the country",
+    "fact2": "of water is lost due to outdated irrigation infrastructure",
+    "fact3": "of the Aral Sea has dried up in the last 60 years",
+    "fact4": "people in Kazakhstan lack access to clean drinking water",
+    "title": "Kazakhstan is one of the most",
+    "titleEnd": "countries in the world"
   },
   "impact": {
     "badge": "OUR IMPACT",
@@ -98,7 +121,10 @@
     "schools": "Schools participating",
     "schoolsDesc": "Across Kazakhstan",
     "regions": "Regions covered",
-    "regionsDesc": "All regions of Kazakhstan"
+    "regionsDesc": "All regions of Kazakhstan",
+    "caption": "OUR IMPACT",
+    "regionsLabel": "Regions covered",
+    "schoolsLabel": "Schools participating"
   },
   "testimonials": {
     "badge": "REVIEWS",
@@ -119,7 +145,8 @@
     "t4Name": "Arman B.",
     "t4Role": "11th grade student, Lyceum, Almaty",
     "t4Text": "I developed an app to monitor water consumption at school. I became the contest winner and received a grant to develop the project.",
-    "t4Region": "Almaty"
+    "t4Region": "Almaty",
+    "caption": "REVIEWS"
   },
   "timeline": {
     "badge": "STAGES",
@@ -142,7 +169,26 @@
     "jun2026Desc": "Ceremonial announcement of winners in Astana",
     "aug2026": "August 2026",
     "aug2026Title": "Implementation",
-    "aug2026Desc": "Grants for the implementation of the best projects"
+    "aug2026Desc": "Grants for the implementation of the best projects",
+    "caption": "STAGES",
+    "jan": "January 2026",
+    "janTitle": "Competition Start",
+    "janDesc": "Opening registration and accepting projects",
+    "feb": "February 2026",
+    "febTitle": "Regional Stages",
+    "febDesc": "Selecting best projects in each region",
+    "mar": "March 2026",
+    "marTitle": "Voting",
+    "marDesc": "Public voting for best projects",
+    "apr": "April 2026",
+    "aprTitle": "Expert Evaluation",
+    "aprDesc": "IAC Water Resources jury evaluates finalists",
+    "jun": "June 2026",
+    "junTitle": "Final",
+    "junDesc": "Grand announcement of winners in Astana",
+    "aug": "August 2026",
+    "augTitle": "Implementation",
+    "augDesc": "Grants for implementing best projects"
   },
   "partners": {
     "badge": "PARTNERS",
@@ -153,7 +199,8 @@
     "unicef": "UNICEF",
     "afd": "AFD France",
     "adalAzamat": "Adal Azamat",
-    "alashed": "alashed.kz"
+    "alashed": "alashed.kz",
+    "caption": "PARTNERS"
   },
   "faq": {
     "badge": "QUESTIONS",
@@ -174,7 +221,8 @@
     "q7": "Can I submit multiple projects?",
     "a7": "Yes, one participant can upload up to 3 projects in different categories.",
     "q8": "What is the deadline for project submissions?",
-    "a8": "Project submissions are open until May 30, 2026. After this date, final voting and jury evaluation will begin."
+    "a8": "Project submissions are open until May 30, 2026. After this date, final voting and jury evaluation will begin.",
+    "caption": "QUESTIONS"
   },
   "cta": {
     "heading": "Ready to show your project to the whole country?",
@@ -183,7 +231,9 @@
     "viewExamples": "View Examples",
     "free": "Free",
     "grades": "Grades 1-11",
-    "prizes": "Prizes & Certificates"
+    "prizes": "Prizes & Certificates",
+    "submitProject": "Submit Project",
+    "title": "Ready to show your project to the whole country?"
   },
   "about": {
     "navigation": "NAVIGATION",
@@ -332,7 +382,9 @@
     "noResultsHint": "Try changing filters or search query",
     "page": "Page",
     "materialsCount": "materials",
-    "materialsWord": "materials"
+    "materialsWord": "materials",
+    "featuredTitle": "Methodological Guide \"Water Footprint\"",
+    "featuredDesc": "A complete guide for teachers on conducting interactive lessons about the ecological footprint and water conservation."
   },
   "progress": {
     "title": "Implementation Progress",
@@ -395,7 +447,19 @@
     "rights": "All rights reserved.",
     "dev": "Developed by",
     "adminLogin": "Admin Login",
-    "scrollToTop": "Back to top"
+    "scrollToTop": "Back to top",
+    "address": "12 Aiteke Bi St., office 305",
+    "city": "Kyzylorda, 120000",
+    "phone": "+7 (7242) 55-55-55",
+    "workHours": "Mon-Fri, 09:00 - 18:00",
+    "emailAddress": "info@tamshy.kz",
+    "emailDesc": "For general inquiries",
+    "contacts": "Contacts",
+    "partner1": "Ministry of Water Resources RK",
+    "partner2": "IAC Water Resources",
+    "partner3": "UNICEF Kazakhstan",
+    "partner4": "French Development Agency",
+    "partner5": "Adal Azamat Program"
   },
   "projects": {
     "title": "Projects",
@@ -408,6 +472,22 @@
     "searchPlaceholder": "Search by title...",
     "noResults": "No projects found",
     "noResultsHint": "Try changing your filters"
+  },
+  "projectDetail": {
+    "notFound": "Project not found",
+    "notFoundDesc": "It may have been deleted or not yet approved",
+    "allProjects": "All projects",
+    "authorLabel": "Author",
+    "participant": "Participant",
+    "schoolLabel": "School",
+    "regionLabel": "Region",
+    "gradeLabel": "Grade",
+    "teacherLabel": "Teacher-Mentor: ",
+    "descriptionTitle": "Project Description",
+    "materialsTitle": "Project Materials",
+    "downloadFile": "Download file",
+    "watchVideo": "Watch video",
+    "juryTitle": "Jury Evaluation"
   },
   "leaderboard": {
     "title": "Leaderboard",
@@ -510,6 +590,15 @@
     "INVENTION": "Invention",
     "APP": "Application",
     "OTHER": "Other"
+  },
+  "regionMap": {
+    "caption": "GEOGRAPHY",
+    "title": "Project Map",
+    "subtitle": "Hover over a region to see water issues. Click to view projects.",
+    "regionLegend": "Region",
+    "cityLegend": "Cities of republican significance",
+    "regionsCount": "20 regions",
+    "projectsWord": "projects"
   },
   "jury": {
     "title": "Jury Panel",
