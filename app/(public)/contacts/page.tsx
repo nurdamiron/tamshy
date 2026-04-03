@@ -265,29 +265,12 @@ export default function ContactsPage() {
               viewport={{ once: true }}
               className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] overflow-hidden mt-2"
             >
-              <div className="relative h-[220px] flex items-center justify-center">
-                {/* Grid pattern background */}
-                <div
-                  className="absolute inset-0 opacity-[0.4]"
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(#E2E8F0 1px, transparent 1px), linear-gradient(90deg, #E2E8F0 1px, transparent 1px)',
-                    backgroundSize: '24px 24px',
-                  }}
-                />
-                {/* Pin marker */}
-                <div className="relative flex flex-col items-center">
-                  <div className="bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-[#E2E8F0] px-4 py-2.5 mb-2">
-                    <p className="text-[13px] font-semibold text-[#0F172A]">Офис Tamshy.kz</p>
-                    <p className="text-[11px] text-[#64748B]">г. Кызылорда</p>
-                  </div>
-                  {/* Pin stem + dot */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-[2px] h-3 bg-[#3B82F6]" />
-                    <div className="w-3 h-3 rounded-full bg-[#3B82F6] shadow-[0_0_0_4px_rgba(59,130,246,0.2)]" />
-                  </div>
-                </div>
-              </div>
+              <iframe
+                src="https://www.openstreetmap.org/export/embed.html?bbox=65.48%2C44.83%2C65.53%2C44.86&layer=mapnik&marker=44.848%2C65.503"
+                className="w-full h-[220px] border-0"
+                loading="lazy"
+                title="Офис Tamshy.kz — Кызылорда"
+              />
             </motion.div>
           </div>
 

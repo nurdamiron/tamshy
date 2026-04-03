@@ -1,0 +1,83 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { getTokenPayload } from '@/lib/auth';
+
+export async function GET(req: NextRequest) {
+  try {
+    const payload = await getTokenPayload();
+    if (!payload || payload.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
+    }
+
+    const { searchParams } = req.nextUrl;
+    const search = searchParams.get('search');
+    const page = parseInt(searchParams.get('page') || '1');
+    const perPage = 20;
+
+    const where: Record<string, unknown> = {};
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { phone: { contains: search } },
+      ];
+    }
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * perPage,
+        take: perPage,
+        select: {
+          id: true,
+          phone: true,
+          name: true,
+          role: true,
+          createdAt: true,
+          _count: { select: { projects: true } },
+        },
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return NextResponse.json({
+      users,
+      total,
+      pages: Math.ceil(total / perPage),
+      page,
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    return NextResponse.json({ error: 'Ошибка загрузки пользователей' }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const payload = await getTokenPayload();
+    if (!payload || payload.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
+    }
+
+    const { userId, role } = await req.json();
+
+    if (!userId || !role) {
+      return NextResponse.json({ error: 'Укажите userId и role' }, { status: 400 });
+    }
+
+    if (!['STUDENT', 'TEACHER', 'JURY', 'ADMIN'].includes(role)) {
+      return NextResponse.json({ error: 'Некорректная роль' }, { status: 400 });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, phone: true, name: true, role: true },
+    });
+
+    return NextResponse.json({ user });
+  } catch (error) {
+    console.error('Update user role error:', error);
+    return NextResponse.json({ error: 'Ошибка обновления роли' }, { status: 500 });
+  }
+}

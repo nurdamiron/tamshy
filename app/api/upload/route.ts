@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTokenPayload } from '@/lib/auth';
 import { uploadToS3 } from '@/lib/s3';
 import { MAX_FILE_SIZE, ACCEPTED_FILE_TYPES } from '@/lib/constants';
+import { checkRateLimit, uploadLimiter } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await checkRateLimit(req, uploadLimiter);
+    if (blocked) return blocked;
+
     const payload = await getTokenPayload();
     if (!payload) {
       return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });

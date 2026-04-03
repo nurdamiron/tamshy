@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await checkRateLimit(req, formLimiter);
+    if (blocked) return blocked;
     const body = await req.json();
     const { email } = body;
 

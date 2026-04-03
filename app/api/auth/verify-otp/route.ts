@@ -3,9 +3,13 @@ import { phoneSchema, otpSchema } from '@/lib/validators';
 import { verifyOTP } from '@/lib/sms';
 import { createToken, setAuthCookie } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit, otpLimiter } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await checkRateLimit(req, otpLimiter);
+    if (blocked) return blocked;
+
     const body = await req.json();
 
     const phoneResult = phoneSchema.safeParse(body.phone);

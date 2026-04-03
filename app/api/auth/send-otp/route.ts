@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { phoneSchema } from '@/lib/validators';
 import { sendOTP } from '@/lib/sms';
+import { checkRateLimit, otpLimiter } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await checkRateLimit(req, otpLimiter);
+    if (blocked) return blocked;
     const body = await req.json();
     const result = phoneSchema.safeParse(body.phone);
 
