@@ -8,6 +8,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const isAdmin = pathname.startsWith('/admin');
   const isJury = pathname.startsWith('/jury');
+  const isHome = pathname === '/';
 
   if (isAdmin || isJury) {
     return <>{children}</>;
@@ -16,7 +17,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   return (
     <>
       <Navbar />
-      <main className="min-h-screen">{children}</main>
+      <main className={`min-h-screen ${isHome ? '' : 'pt-20'}`}>{children}</main>
       <Footer />
     </>
   );
