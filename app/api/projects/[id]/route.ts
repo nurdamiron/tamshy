@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
 import { juryScoreSchema } from '@/lib/validators';
+import { sendNotification } from '@/lib/sms';
+
+const STATUS_SMS: Record<string, string> = {
+  APPROVED: 'Ваш проект одобрен и допущен к голосованию на платформе Tamshy.kz 🎉',
+  REJECTED: 'К сожалению, ваш проект был отклонён. Подробности — на Tamshy.kz',
+  WINNER: '🏆 Поздравляем! Ваш проект признан победителем конкурса Tamshy! Подробности на Tamshy.kz',
+};
 
 export async function GET(
   _req: NextRequest,
@@ -47,6 +54,11 @@ export async function PATCH(
       );
     }
 
+    const existing = await prisma.project.findUnique({
+      where: { id: params.id },
+      include: { author: { select: { phone: true, consentSms: true } } },
+    });
+
     const project = await prisma.project.update({
       where: { id: params.id },
       data: {
@@ -55,6 +67,16 @@ export async function PATCH(
         status: result.data.status,
       },
     });
+
+    // SMS-уведомление при смене статуса (только если учитель дал согласие)
+    if (
+      existing &&
+      existing.status !== result.data.status &&
+      existing.author.consentSms &&
+      STATUS_SMS[result.data.status]
+    ) {
+      sendNotification(existing.author.phone, STATUS_SMS[result.data.status]).catch(() => {});
+    }
 
     return NextResponse.json({ project });
   } catch (error) {

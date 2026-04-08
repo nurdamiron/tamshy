@@ -31,15 +31,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Файл слишком большой (макс 100МБ)' }, { status: 400 });
     }
 
-    if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
+    const ADMIN_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    const isAdminImageUpload = payload.role === 'ADMIN' && ADMIN_IMAGE_TYPES.includes(file.type);
+
+    if (!ACCEPTED_FILE_TYPES.includes(file.type) && !isAdminImageUpload) {
       return NextResponse.json({ error: 'Недопустимый тип файла' }, { status: 400 });
     }
 
     const ext = file.name.split('.').pop() || 'bin';
     const buffer = Buffer.from(await file.arrayBuffer());
 
+    const s3Key = isAdminImageUpload
+      ? `admin/${Date.now()}.${ext}`
+      : `projects/${payload.userId}/${Date.now()}.${ext}`;
+
     const url = s3UploadEnabled()
-      ? await uploadToS3(buffer, `projects/${payload.userId}/${Date.now()}.${ext}`, file.type)
+      ? await uploadToS3(buffer, s3Key, file.type)
       : await saveUploadLocal(buffer, ext, payload.userId);
 
     return NextResponse.json({ url });

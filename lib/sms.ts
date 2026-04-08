@@ -39,6 +39,27 @@ export async function sendOTP(phone: string): Promise<void> {
   });
 }
 
+export async function sendNotification(phone: string, text: string): Promise<void> {
+  const isDev = process.env.NODE_ENV === 'development' || !process.env.MOBIZON_API_KEY;
+  if (isDev) {
+    console.log(`[DEV SMS] → ${phone}: ${text}`);
+    return;
+  }
+  try {
+    await fetch('https://api.mobizon.kz/service/Message/SendSmsMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: process.env.MOBIZON_API_KEY,
+        recipient: phone,
+        text,
+      }),
+    });
+  } catch {
+    console.error('[SMS] Failed to send notification to', phone);
+  }
+}
+
 export async function verifyOTP(phone: string, code: string): Promise<boolean> {
   const user = await prisma.user.findUnique({ where: { phone } });
 

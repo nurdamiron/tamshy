@@ -7,6 +7,7 @@ import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
+import FileUpload from '@/components/admin/FileUpload';
 
 interface NewsItem {
   id: string;
@@ -279,11 +280,12 @@ export default function AdminNews() {
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
           />
-          <Input
-            label="URL изображения"
-            placeholder="https://... (необязательно)"
+          <FileUpload
+            label="Изображение"
             value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            onChange={(url) => setForm({ ...form, imageUrl: url })}
+            accept="image/jpeg,image/png,image/webp"
+            folder="admin"
           />
           <Input
             label="URL файла"

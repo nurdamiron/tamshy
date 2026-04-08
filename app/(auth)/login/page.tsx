@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
@@ -16,6 +17,8 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [consentPd, setConsentPd] = useState(false);
+  const [consentSms, setConsentSms] = useState(false);
 
   const sendOtp = async () => {
     setLoading(true);
@@ -42,7 +45,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code: otp }),
+        body: JSON.stringify({ phone, code: otp, consentPd, consentSms }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -76,8 +79,47 @@ export default function LoginPage() {
             disabled={otpSent}
           />
 
+          {!otpSent && (
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={consentPd}
+                  onChange={(e) => setConsentPd(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                />
+                <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                  Я согласен(а) на обработку персональных данных в соответствии с{' '}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#0284C7] hover:underline font-medium"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Политикой конфиденциальности
+                  </Link>
+                  . Данные хранятся на серверах в ЕС (Швеция) с моего явного согласия.{' '}
+                  <span className="text-red-500">*</span>
+                </span>
+              </label>
+
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={consentSms}
+                  onChange={(e) => setConsentSms(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                />
+                <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                  Я согласен(а) на получение SMS-уведомлений о статусе заявки и результатах конкурса.
+                </span>
+              </label>
+            </div>
+          )}
+
           {!otpSent ? (
-            <Button onClick={sendOtp} loading={loading} className="w-full">
+            <Button onClick={sendOtp} loading={loading} disabled={!consentPd} className="w-full">
               {t('getCode')}
             </Button>
           ) : (

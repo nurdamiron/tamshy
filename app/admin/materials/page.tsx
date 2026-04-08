@@ -7,6 +7,7 @@ import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
+import FileUpload from '@/components/admin/FileUpload';
 
 interface Material {
   id: string;
@@ -355,17 +356,19 @@ export default function AdminMaterials() {
               onChange={(e) => setForm({ ...form, year: e.target.value })}
             />
           </div>
-          <Input
-            label="URL обложки (превью на сайте)"
-            placeholder="/media/... или URL после загрузки файла"
+          <FileUpload
+            label="Обложка (превью на сайте)"
             value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            onChange={(url) => setForm({ ...form, imageUrl: url })}
+            accept="image/jpeg,image/png,image/webp"
+            folder="admin"
           />
-          <Input
-            label="URL файла"
-            placeholder="https://..."
+          <FileUpload
+            label="Файл материала"
             value={form.fileUrl}
-            onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
+            onChange={(url) => setForm({ ...form, fileUrl: url })}
+            accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,video/mp4"
+            folder="admin"
           />
           <Input
             label="Размер файла"

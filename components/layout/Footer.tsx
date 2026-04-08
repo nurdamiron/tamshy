@@ -206,6 +206,15 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-5">
+            <Link href="/privacy" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
+              Политика конфиденциальности
+            </Link>
+            <Link href="/terms" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
+              Пользовательское соглашение
+            </Link>
+            <Link href="/data-rights" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
+              Права субъектов ПД
+            </Link>
             <Link href="/login" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
               {t('adminLogin')}
             </Link>

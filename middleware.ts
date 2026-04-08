@@ -4,19 +4,22 @@ import { jwtVerify } from 'jose';
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 const TOKEN_NAME = 'tamshy-token';
 
-const PROTECTED_ROUTES: Record<string, string[]> = {
+const PROTECTED_ROUTES: Record<string, string[] | null> = {
   '/jury': ['JURY', 'ADMIN'],
   '/admin': ['ADMIN'],
+  '/cabinet': null, // any authenticated user
 };
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const requiredRoles = Object.entries(PROTECTED_ROUTES).find(([route]) =>
+  const matchedEntry = Object.entries(PROTECTED_ROUTES).find(([route]) =>
     pathname.startsWith(route)
-  )?.[1];
+  );
 
-  if (!requiredRoles) return NextResponse.next();
+  if (!matchedEntry) return NextResponse.next();
+
+  const [, requiredRoles] = matchedEntry;
 
   const token = req.cookies.get(TOKEN_NAME)?.value;
 
@@ -26,10 +29,13 @@ export async function middleware(req: NextRequest) {
 
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    const role = payload.role as string;
 
-    if (!requiredRoles.includes(role)) {
-      return NextResponse.redirect(new URL('/', req.url));
+    // null means any authenticated user is allowed
+    if (requiredRoles !== null) {
+      const role = payload.role as string;
+      if (!requiredRoles.includes(role)) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
     }
 
     return NextResponse.next();
@@ -39,5 +45,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/jury/:path*', '/admin/:path*'],
+  matcher: ['/jury/:path*', '/admin/:path*', '/cabinet/:path*'],
 };

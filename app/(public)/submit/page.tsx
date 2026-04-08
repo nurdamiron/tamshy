@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
@@ -56,6 +57,20 @@ export default function SubmitPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
 
+  // Consent state
+  const [consentPd, setConsentPd] = useState(false);
+  const [consentSms, setConsentSms] = useState(false);
+  const [consentParental, setConsentParental] = useState(false);
+  const [consentLicense, setConsentLicense] = useState(false);
+
+  useEffect(() => {
+    if (authenticated) {
+      fetch('/api/me').then(r => r.json()).then(data => {
+        if (data.user?.name) setTeacherName(data.user.name);
+      }).catch(() => {});
+    }
+  }, [authenticated]);
+
   const sendOtp = async () => {
     setLoading(true);
     setError('');
@@ -81,7 +96,7 @@ export default function SubmitPage() {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, code: otp }),
+        body: JSON.stringify({ phone, code: otp, consentPd, consentSms }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -141,7 +156,7 @@ export default function SubmitPage() {
           region,
           teacherName,
           grade: parseInt(grade),
-          userName: name,
+          studentName: name,
         }),
       });
       const data = await res.json();
@@ -155,10 +170,10 @@ export default function SubmitPage() {
 
   const canProceed = () => {
     switch (step) {
-      case 1: return authenticated;
-      case 2: return name && grade && school && region && teacherName;
+      case 1: return authenticated && consentPd;
+      case 2: return name && grade && school && region && teacherName && consentParental;
       case 3: return projectType && title && description.length >= 100;
-      case 4: return file || videoUrl;
+      case 4: return (file || videoUrl) && consentLicense;
       default: return false;
     }
   };
@@ -217,8 +232,47 @@ export default function SubmitPage() {
                   disabled={otpSent}
                 />
 
+                {!otpSent && (
+                  <div className="space-y-3">
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={consentPd}
+                        onChange={(e) => setConsentPd(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                      />
+                      <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                        Я согласен(а) на обработку персональных данных в соответствии с{' '}
+                        <Link
+                          href="/privacy"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#0284C7] hover:underline font-medium"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Политикой конфиденциальности
+                        </Link>
+                        . Данные хранятся на серверах в ЕС (Швеция) с моего явного согласия.{' '}
+                        <span className="text-red-500">*</span>
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={consentSms}
+                        onChange={(e) => setConsentSms(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                      />
+                      <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                        Я согласен(а) на получение SMS-уведомлений о статусе заявки и результатах конкурса.
+                      </span>
+                    </label>
+                  </div>
+                )}
+
                 {!otpSent ? (
-                  <Button onClick={sendOtp} loading={loading} className="w-full">
+                  <Button onClick={sendOtp} loading={loading} disabled={!consentPd} className="w-full">
                     {t('getCode')}
                   </Button>
                 ) : (
@@ -259,12 +313,17 @@ export default function SubmitPage() {
               </p>
 
               <div className="space-y-4">
-                <Input
-                  label={t('nameLabel')}
-                  placeholder={t('namePlaceholder')}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <div>
+                  <Input
+                    label="ФИО ученика"
+                    placeholder={t('namePlaceholder')}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                  <p className="text-[12px] text-[#64748B] mt-1.5">
+                    Введите имя ученика, от имени которого подаётся работа
+                  </p>
+                </div>
                 <Select
                   label={t('gradeLabel')}
                   value={grade}
@@ -286,11 +345,27 @@ export default function SubmitPage() {
                   placeholder={t('regionPlaceholder')}
                 />
                 <Input
-                  label={t('teacherLabel')}
+                  label="Ваше ФИО (учитель)"
                   placeholder={t('teacherPlaceholder')}
                   value={teacherName}
                   onChange={(e) => setTeacherName(e.target.value)}
                 />
+
+                <div className="pt-2 border-t border-[#F1F5F9]">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={consentParental}
+                      onChange={(e) => setConsentParental(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                    />
+                    <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                      Я подтверждаю, что имею письменное согласие родителей/законных представителей
+                      ученика на обработку его персональных данных (обязательно для учеников до 14 лет).{' '}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                </div>
               </div>
             </Card>
           )}
@@ -433,6 +508,33 @@ export default function SubmitPage() {
                   onChange={(e) => setVideoUrl(e.target.value)}
                   hint={t('videoUrlHint')}
                 />
+
+                <div className="pt-2 border-t border-[#F1F5F9]">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={consentLicense}
+                      onChange={(e) => setConsentLicense(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-[#0284C7] cursor-pointer shrink-0"
+                    />
+                    <span className="text-[13px] text-[#475569] leading-relaxed group-hover:text-[#0F172A] transition-colors">
+                      Загружая проект, я подтверждаю, что являюсь автором/законным представителем
+                      автора и предоставляю НАО «ИАЦ водных ресурсов» неисключительную лицензию
+                      на публикацию и использование проекта в рамках конкурса согласно{' '}
+                      <Link
+                        href="/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#0284C7] hover:underline font-medium"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Пользовательскому соглашению
+                      </Link>
+                      .{' '}
+                      <span className="text-red-500">*</span>
+                    </span>
+                  </label>
+                </div>
               </div>
             </Card>
           )}

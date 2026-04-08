@@ -12,7 +12,7 @@ import BrandLogo from '@/components/brand/BrandLogo';
 const navKeys = [
   { href: '/', key: 'home' },
   { href: '/about', key: 'about' },
-  { href: '/progress', key: 'progress' },
+  { href: '/news', key: 'news' },
   { href: '/contests', key: 'contests' },
   { href: '/materials', key: 'materials' },
   { href: '/contacts', key: 'contacts' },
@@ -22,6 +22,7 @@ export default function Navbar() {
   const t = useTranslations('nav');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === '/';
 
@@ -34,6 +35,14 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    fetch('/api/me')
+      .then((r) => {
+        setLoggedIn(r.ok);
+      })
+      .catch(() => setLoggedIn(false));
+  }, []);
 
   return (
     <>
@@ -95,6 +104,22 @@ export default function Navbar() {
               {/* Right: lang + CTA */}
               <div className="hidden lg:flex items-center gap-1.5 shrink-0">
                 <LanguageSwitcher variant={scrolled || !isHome ? 'light' : 'dark'} />
+                {loggedIn && (
+                  <Link
+                    href="/cabinet"
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
+                      scrolled || !isHome
+                        ? pathname.startsWith('/cabinet') ? 'text-[#3B82F6] bg-[#EFF6FF]' : 'text-[#4B5563] hover:text-[#0F172A] hover:bg-[#F3F4F6]'
+                        : pathname.startsWith('/cabinet') ? 'text-white bg-white/20' : 'text-white/90 hover:text-white hover:bg-white/15'
+                    }`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    Личный кабинет
+                  </Link>
+                )}
                 <Link href="/submit">
                   <Button size="sm">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -169,6 +194,29 @@ export default function Navbar() {
                   </motion.div>
                 ))}
                 <hr className="border-[#E2E8F0] my-4" />
+                {loggedIn && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navKeys.length * 0.04 }}
+                  >
+                    <Link
+                      href="/cabinet"
+                      className={`flex items-center gap-2 px-4 py-3 rounded-xl text-[15px] font-medium transition-colors ${
+                        pathname.startsWith('/cabinet')
+                          ? 'text-[#3B82F6] bg-[#EFF6FF]'
+                          : 'text-[#0F172A] hover:bg-[#F8FAFC]'
+                      }`}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                      Личный кабинет
+                    </Link>
+                  </motion.div>
+                )}
                 <div className="px-4 py-2">
                   <LanguageSwitcher variant="light" />
                 </div>

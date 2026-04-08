@@ -9,15 +9,19 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  phone     String    @unique
-  name      String?
-  role      Role      @default(STUDENT)
-  createdAt DateTime  @default(now())
-  projects  Project[]
-  votes     Vote[]
-  otpCode   String?
-  otpExpiry DateTime?
+  id           String    @id @default(cuid())
+  phone        String    @unique
+  name         String?
+  role         Role      @default(STUDENT)
+  createdAt    DateTime  @default(now())
+  projects     Project[]
+  votes        Vote[]
+  otpCode      String?
+  otpExpiry    DateTime?
+  consentPd    Boolean   @default(false)
+  consentPdAt  DateTime?
+  consentSms   Boolean   @default(false)
+  consentSmsAt DateTime?
 }
 
 model Project {
@@ -34,6 +38,7 @@ model Project {
   schoolName   String
   region       Region
   teacherName  String
+  studentName  String?
   grade        Int
   juryScore    Int?
   juryComment  String?       @db.Text

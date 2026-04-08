@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     if (status) {
       where.status = status;
     } else {
-      where.status = 'APPROVED';
+      where.status = { in: ['APPROVED', 'WINNER'] };
     }
     if (search) {
       where.title = { contains: search, mode: 'insensitive' };
@@ -78,18 +78,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Update user name if provided
-    if (body.userName) {
-      await prisma.user.update({
-        where: { id: payload.userId },
-        data: { name: body.userName },
-      });
-    }
-
     const project = await prisma.project.create({
       data: {
         ...result.data,
         authorId: payload.userId,
+        ...(body.studentName ? { studentName: body.studentName } : {}),
       },
     });
 

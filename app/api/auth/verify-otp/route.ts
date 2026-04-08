@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
 
     const phoneResult = phoneSchema.safeParse(body.phone);
     const otpResult = otpSchema.safeParse(body.code);
+    const consentPd = body.consentPd === true;
+    const consentSms = body.consentSms === true;
 
     if (!phoneResult.success) {
       return NextResponse.json({ error: phoneResult.error.issues[0].message }, { status: 400 });
@@ -27,13 +29,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Неверный или просроченный код' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { phone: phoneResult.data },
-    });
+    const now = new Date();
 
-    if (!user) {
-      return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
-    }
+    // Upsert user: create if not exists, update consent timestamps on every verify
+    const user = await prisma.user.upsert({
+      where: { phone: phoneResult.data },
+      update: {
+        ...(consentPd && { consentPd: true, consentPdAt: now }),
+        ...(consentSms && { consentSms: true, consentSmsAt: now }),
+      },
+      create: {
+        phone: phoneResult.data,
+        consentPd,
+        consentPdAt: consentPd ? now : null,
+        consentSms,
+        consentSmsAt: consentSms ? now : null,
+      },
+    });
 
     const token = await createToken({
       userId: user.id,
