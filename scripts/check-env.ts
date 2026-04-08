@@ -83,13 +83,12 @@ const VARS: VarSpec[] = [
   { key: 'AWS_SECRET_ACCESS_KEY', description: 'AWS секретный ключ',                        required: true,  envs: ['staging', 'production'] },
   { key: 'AWS_S3_BUCKET_NAME',  description: 'Имя S3 бакета',                              required: true,  envs: ['staging', 'production'] },
 
-  // SMS
-  { key: 'MOBIZON_API_KEY',     description: 'API ключ SMS-сервиса Mobizon',                required: true,  envs: ['production'] },
-  { key: 'MOBIZON_API_KEY',     description: 'API ключ SMS-сервиса Mobizon (рекомендуется)', required: false, envs: ['staging'] },
+  // SMS (без ключа — dev-режим OTP 000000, SMS не отправляются)
+  { key: 'MOBIZON_API_KEY',     description: 'API ключ Mobizon (без него SMS отключены)',   required: false, envs: ['staging', 'production'] },
 
-  // Redis
-  { key: 'UPSTASH_REDIS_REST_URL',   description: 'Upstash Redis REST URL',                required: true,  envs: ['production'] },
-  { key: 'UPSTASH_REDIS_REST_TOKEN', description: 'Upstash Redis REST Token',              required: true,  envs: ['production'] },
+  // Redis (без него rate limiting отключён — допустимо)
+  { key: 'UPSTASH_REDIS_REST_URL',   description: 'Upstash Redis REST URL (rate limiting)', required: false, envs: ['staging', 'production'] },
+  { key: 'UPSTASH_REDIS_REST_TOKEN', description: 'Upstash Redis REST Token',               required: false, envs: ['staging', 'production'] },
 ];
 
 // ── Проверка ───────────────────────────────────────────────────────────────
