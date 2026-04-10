@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { projectSchema } from '@/lib/validators';
 import { getTokenPayload } from '@/lib/auth';
@@ -27,8 +28,7 @@ export async function GET(req: NextRequest) {
       where.title = { contains: search, mode: 'insensitive' };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const orderBy: any =
+    const orderBy: Prisma.ProjectOrderByWithRelationInput =
       sort === 'popular'
         ? { votes: { _count: 'desc' } }
         : sort === 'winner'
@@ -49,12 +49,15 @@ export async function GET(req: NextRequest) {
       prisma.project.count({ where }),
     ]);
 
-    return NextResponse.json({
-      projects,
-      total,
-      pages: Math.ceil(total / PROJECTS_PER_PAGE),
-      page,
-    });
+    return NextResponse.json(
+      { projects, total, pages: Math.ceil(total / PROJECTS_PER_PAGE), page },
+      {
+        headers: {
+          // Публичный кеш: 60 с свежие, 5 мин stale пока обновляется
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error) {
     console.error('Get projects error:', error);
     return NextResponse.json({ error: 'Ошибка загрузки проектов' }, { status: 500 });
@@ -82,7 +85,6 @@ export async function POST(req: NextRequest) {
       data: {
         ...result.data,
         authorId: payload.userId,
-        ...(body.studentName ? { studentName: body.studentName } : {}),
       },
     });
 

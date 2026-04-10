@@ -43,12 +43,12 @@ export async function GET(req: NextRequest) {
       prisma.news.count({ where }),
     ]);
 
-    return NextResponse.json({
-      news,
-      total,
-      pages: Math.ceil(total / PER_PAGE),
-      page,
-    });
+    return NextResponse.json(
+      { news, total, pages: Math.ceil(total / PER_PAGE), page },
+      {
+        headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' },
+      }
+    );
   } catch (error) {
     console.error('Get news error:', error);
     return NextResponse.json({ error: 'Ошибка загрузки новостей' }, { status: 500 });

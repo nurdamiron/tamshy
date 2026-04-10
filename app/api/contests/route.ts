@@ -24,7 +24,12 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ contests });
+    return NextResponse.json(
+      { contests },
+      {
+        headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' },
+      }
+    );
   } catch (error) {
     console.error('Get contests error:', error);
     return NextResponse.json({ error: 'Ошибка загрузки конкурсов' }, { status: 500 });

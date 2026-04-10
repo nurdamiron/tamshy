@@ -4,6 +4,7 @@ import { verifyOTP } from '@/lib/sms';
 import { createToken, setAuthCookie } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { checkRateLimit, otpLimiter } from '@/lib/ratelimit';
+import { logger } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   try {
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Verify OTP error:', error);
+    logger.error({ err: String(error) }, 'Verify OTP error');
     return NextResponse.json({ error: 'Ошибка верификации' }, { status: 500 });
   }
 }

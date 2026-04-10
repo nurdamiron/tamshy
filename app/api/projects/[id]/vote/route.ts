@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   _req: NextRequest,
@@ -41,24 +42,24 @@ export async function POST(
     });
 
     if (existing) {
-      // Remove vote (toggle)
-      await prisma.vote.delete({ where: { id: existing.id } });
-      const count = await prisma.vote.count({ where: { projectId: params.id } });
+      // Toggle off: удаляем голос и считаем новый count в одной транзакции
+      const [, count] = await prisma.$transaction([
+        prisma.vote.delete({ where: { id: existing.id } }),
+        prisma.vote.count({ where: { projectId: params.id } }),
+      ]);
       return NextResponse.json({ voted: false, count });
     }
 
-    // Create vote
-    await prisma.vote.create({
-      data: {
-        projectId: params.id,
-        userId: payload.userId,
-      },
-    });
-
-    const count = await prisma.vote.count({ where: { projectId: params.id } });
+    // Toggle on: создаём голос и считаем в одной транзакции
+    const [, count] = await prisma.$transaction([
+      prisma.vote.create({
+        data: { projectId: params.id, userId: payload.userId },
+      }),
+      prisma.vote.count({ where: { projectId: params.id } }),
+    ]);
     return NextResponse.json({ voted: true, count });
   } catch (error) {
-    console.error('Vote error:', error);
+    logger.error({ err: String(error), projectId: params.id }, 'Vote error');
     return NextResponse.json({ error: 'Ошибка голосования' }, { status: 500 });
   }
 }

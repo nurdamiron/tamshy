@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
+import { ADMIN_USERS_PER_PAGE } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = req.nextUrl;
     const search = searchParams.get('search');
     const page = parseInt(searchParams.get('page') || '1');
-    const perPage = 20;
+    const perPage = ADMIN_USERS_PER_PAGE;
 
     const where: Record<string, unknown> = {};
     if (search) {

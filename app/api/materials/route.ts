@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
 
@@ -37,8 +38,7 @@ export async function GET(req: NextRequest) {
       where.title = { contains: search, mode: 'insensitive' };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const orderBy: any =
+    const orderBy: Prisma.MaterialOrderByWithRelationInput =
       sort === 'popular'
         ? { downloads: 'desc' }
         : sort === 'alpha'
@@ -55,12 +55,12 @@ export async function GET(req: NextRequest) {
       prisma.material.count({ where }),
     ]);
 
-    return NextResponse.json({
-      materials,
-      total,
-      pages: Math.ceil(total / PER_PAGE),
-      page,
-    });
+    return NextResponse.json(
+      { materials, total, pages: Math.ceil(total / PER_PAGE), page },
+      {
+        headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' },
+      }
+    );
   } catch (error) {
     console.error('Get materials error:', error);
     return NextResponse.json({ error: 'Ошибка загрузки материалов' }, { status: 500 });

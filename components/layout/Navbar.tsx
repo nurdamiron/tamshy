@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import BrandLogo from '@/components/brand/BrandLogo';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 const navKeys = [
   { href: '/', key: 'home' },
@@ -22,9 +23,11 @@ export default function Navbar() {
   const t = useTranslations('nav');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === '/';
+
+  // SWR-кеш: запрос дедуплицируется 60 с — не ходит в БД при каждом переходе
+  const { isLoggedIn: loggedIn } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -35,14 +38,6 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    fetch('/api/me')
-      .then((r) => {
-        setLoggedIn(r.ok);
-      })
-      .catch(() => setLoggedIn(false));
-  }, []);
 
   return (
     <>
@@ -117,7 +112,7 @@ export default function Navbar() {
                       <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                       <circle cx="12" cy="7" r="4" />
                     </svg>
-                    Личный кабинет
+                    {t('cabinet')}
                   </Link>
                 )}
                 <Link href="/submit">
@@ -213,7 +208,7 @@ export default function Navbar() {
                         <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                       </svg>
-                      Личный кабинет
+                      {t('cabinet')}
                     </Link>
                   </motion.div>
                 )}

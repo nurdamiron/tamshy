@@ -44,6 +44,8 @@ model Project {
   juryComment  String?       @db.Text
   createdAt    DateTime      @default(now())
   votes        Vote[]
+
+  // Индексы создаются через scripts/create-indexes.sql (права DBA нужны в prod RDS)
 }
 
 model Vote {
@@ -55,6 +57,7 @@ model Vote {
   createdAt DateTime @default(now())
 
   @@unique([projectId, userId])
+  // Индексы создаются через scripts/create-indexes.sql (права DBA нужны в prod RDS)
 }
 
 enum Role {
@@ -138,6 +141,11 @@ model Material {
   views       Int              @default(0)
   featured    Boolean          @default(false)
   createdAt   DateTime         @default(now())
+
+  // Индексы создаются через scripts/create-indexes.sql (права DBA нужны в prod RDS)
+  // @@index([type, audience])
+  // @@index([featured])
+  // @@index([downloads(sort: Desc)])
 }
 
 // ── News ────────────────────────────────────────────
@@ -152,6 +160,9 @@ model News {
   photoCount Int?
   viewCount  Int          @default(0)
   createdAt  DateTime     @default(now())
+
+  // Индексы создаются через scripts/create-indexes.sql (права DBA нужны в prod RDS)
+  // @@index([category, createdAt(sort: Desc)])
 }
 
 // ── Contact & Newsletter ────────────────────────────

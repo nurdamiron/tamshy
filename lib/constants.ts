@@ -54,3 +54,6 @@ export const HERO_BACKGROUND_IMAGE_URL = process.env.NEXT_PUBLIC_HERO_BACKGROUND
 export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 export const ACCEPTED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'];
 export const PROJECTS_PER_PAGE = 12;
+export const ADMIN_USERS_PER_PAGE = 20;
+export const NEWS_PER_PAGE = 6;
+export const MATERIALS_PER_PAGE = 6;

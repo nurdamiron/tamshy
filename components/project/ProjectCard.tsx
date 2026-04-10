@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import { regionLabels } from '@/lib/validators';
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 
 interface ProjectCardProps {
   project: {
@@ -38,7 +40,7 @@ const typeGradients: Record<string, string> = {
   OTHER: 'from-gray-400 to-gray-500',
 };
 
-const typeIcons: Record<string, JSX.Element> = {
+const typeIcons: Record<string, ReactNode> = {
   VIDEO: (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeOpacity="0.8">
       <polygon points="23 7 16 12 23 17 23 7" />
@@ -112,7 +114,13 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
         {/* Gradient thumbnail OR Image */}
         {project.thumbnailUrl ? (
           <div className="relative h-[150px] flex items-center justify-center overflow-hidden">
-            <img src={project.thumbnailUrl} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <Image
+              src={project.thumbnailUrl}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
             
             {/* Rank badge */}
             {rank && rank <= 3 && (

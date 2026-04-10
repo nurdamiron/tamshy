@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 const TOKEN_NAME = 'tamshy-token';
+
+// Проверяем наличие секрета при старте модуля (Edge Runtime не имеет config.ts)
+const rawSecret = process.env.JWT_SECRET;
+if (!rawSecret || rawSecret.trim().length < 32) {
+  // В production это фатальная ошибка; в dev выводим предупреждение
+  console.error(
+    '[middleware] FATAL: JWT_SECRET не задан или короче 32 символов. ' +
+    'Все аутентифицированные запросы будут отклонены.'
+  );
+}
+const JWT_SECRET = new TextEncoder().encode(rawSecret?.trim() ?? '');
 
 const PROTECTED_ROUTES: Record<string, string[] | null> = {
   '/jury': ['JURY', 'ADMIN'],

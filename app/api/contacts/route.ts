@@ -2,29 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
 import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
+import { contactSchema } from '@/lib/validators';
 
 export async function POST(req: NextRequest) {
   try {
     const blocked = await checkRateLimit(req, formLimiter);
     if (blocked) return blocked;
-    const body = await req.json();
-    const { name, email, topic, message, fileUrl } = body;
 
-    if (!name || !email || !topic || !message) {
+    const body = await req.json();
+
+    // Полная Zod-валидация вместо ручных проверок
+    const result = contactSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Заполните все обязательные поля' },
+        { error: result.error.issues[0].message },
         { status: 400 }
       );
     }
 
+    const { name, email, topic, message, fileUrl } = result.data;
+
     const contactMessage = await prisma.contactMessage.create({
-      data: {
-        name,
-        email,
-        topic,
-        message,
-        fileUrl,
-      },
+      data: { name, email, topic, message, fileUrl },
     });
 
     return NextResponse.json({ message: contactMessage }, { status: 201 });

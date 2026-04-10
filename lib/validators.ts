@@ -15,21 +15,31 @@ export const projectSchema = z.object({
   type: z.enum(['VIDEO', 'RESEARCH', 'ART', 'INVENTION', 'APP', 'OTHER']),
   fileUrl: z.string().url().optional().nullable(),
   videoUrl: z.string().url().optional().nullable(),
-  schoolName: z.string().min(2, 'Укажите школу'),
+  schoolName: z.string().min(2, 'Укажите школу').max(300),
   region: z.enum([
     'ASTANA', 'ALMATY', 'SHYMKENT', 'AKTOBE', 'KARAGANDA',
     'MANGYSTAU', 'TURKESTAN', 'ZHAMBYL', 'ALMATY_REGION',
     'ATYRAU', 'AKTAU', 'PAVLODAR', 'SEMEY', 'TALDYKORGAN',
     'KYZYLORDA', 'TARAZ', 'PETROPAVLOVSK', 'ORAL', 'KOSTANAY',
   ]),
-  teacherName: z.string().min(2, 'Укажите ФИО учителя'),
+  teacherName: z.string().min(2, 'Укажите ФИО учителя').max(200),
   grade: z.number().int().min(1).max(11),
+  // studentName входит в схему и валидируется — не берётся из body напрямую
+  studentName: z.string().min(2).max(200).optional(),
 });
 
 export const juryScoreSchema = z.object({
   score: z.number().int().min(1).max(10),
   comment: z.string().min(10, 'Минимум 10 символов'),
   status: z.enum(['APPROVED', 'REJECTED', 'WINNER']),
+});
+
+export const contactSchema = z.object({
+  name: z.string().min(2, 'Укажите имя').max(100, 'Имя слишком длинное'),
+  email: z.string().email('Некорректный email').max(200),
+  topic: z.string().min(2, 'Укажите тему').max(200, 'Тема слишком длинная'),
+  message: z.string().min(10, 'Минимум 10 символов').max(2000, 'Максимум 2000 символов'),
+  fileUrl: z.string().url().optional().nullable(),
 });
 
 export const regionLabels: Record<string, string> = {
