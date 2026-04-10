@@ -18,7 +18,7 @@ export async function GET(
     const project = await prisma.project.findUnique({
       where: { id: params.id },
       include: {
-        author: { select: { id: true, name: true, phone: true } },
+        author: { select: { id: true, name: true } }, // phone не возвращаем публично
         _count: { select: { votes: true } },
       },
     });
@@ -45,6 +45,20 @@ export async function PATCH(
     }
 
     const body = await req.json();
+
+    // JURY может только APPROVED/REJECTED; WINNER — только ADMIN
+    const allowedStatuses =
+      payload.role === 'ADMIN'
+        ? (['APPROVED', 'REJECTED', 'WINNER'] as const)
+        : (['APPROVED', 'REJECTED'] as const);
+
+    if (body.status && !allowedStatuses.includes(body.status)) {
+      return NextResponse.json(
+        { error: 'Недостаточно прав для установки этого статуса' },
+        { status: 403 }
+      );
+    }
+
     const result = juryScoreSchema.safeParse(body);
 
     if (!result.success) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getTokenPayload } from '@/lib/auth';
 import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
 
 export async function POST(
@@ -9,6 +10,13 @@ export async function POST(
   try {
     const blocked = await checkRateLimit(req, formLimiter);
     if (blocked) return blocked;
+
+    // Подача заявки требует аутентификации
+    const payload = await getTokenPayload();
+    if (!payload) {
+      return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { fullName, birthDate, email, phone, institution, region, fileUrl } = body;
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { projectSchema } from '@/lib/validators';
-import { getTokenPayload } from '@/lib/auth';
+import { getTokenPayload, getAuthUser } from '@/lib/auth';
 import { PROJECTS_PER_PAGE } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
@@ -19,7 +19,16 @@ export async function GET(req: NextRequest) {
 
     if (type && type !== 'all') where.type = type;
     if (region && region !== 'all') where.region = region;
-    if (status) {
+
+    // PENDING и REJECTED видят только JURY и ADMIN
+    const PRIVILEGED_STATUSES = ['PENDING', 'REJECTED'];
+    if (status && PRIVILEGED_STATUSES.includes(status)) {
+      const payload = await getTokenPayload();
+      if (!payload || !['JURY', 'ADMIN'].includes(payload.role)) {
+        return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
+      }
+      where.status = status;
+    } else if (status) {
       where.status = status;
     } else {
       where.status = { in: ['APPROVED', 'WINNER'] };
@@ -66,8 +75,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await getTokenPayload();
-    if (!payload) {
+    // getAuthUser делает DB-запрос — гарантируем что пользователь ещё существует в БД
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });
     }
 
@@ -84,7 +94,7 @@ export async function POST(req: NextRequest) {
     const project = await prisma.project.create({
       data: {
         ...result.data,
-        authorId: payload.userId,
+        authorId: user.id,
       },
     });
 

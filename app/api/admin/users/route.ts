@@ -70,6 +70,25 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Некорректная роль' }, { status: 400 });
     }
 
+    // Нельзя менять роль самому себе
+    if (userId === payload.userId) {
+      return NextResponse.json({ error: 'Нельзя изменить свою собственную роль' }, { status: 400 });
+    }
+
+    // Нельзя понижать последнего ADMIN
+    if (role !== 'ADMIN') {
+      const targetUser = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+      if (targetUser?.role === 'ADMIN') {
+        const adminCount = await prisma.user.count({ where: { role: 'ADMIN' } });
+        if (adminCount <= 1) {
+          return NextResponse.json(
+            { error: 'Нельзя понизить последнего администратора системы' },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     const user = await prisma.user.update({
       where: { id: userId },
       data: { role },

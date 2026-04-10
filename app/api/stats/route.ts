@@ -3,37 +3,26 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const [totalProjects, totalVotes, totalUsers, regionStats, typeStats] = await Promise.all([
-      prisma.project.count({ where: { status: { in: ['APPROVED', 'WINNER'] } } }),
-      prisma.vote.count(),
-      prisma.user.count(),
-      prisma.project.groupBy({
-        by: ['region'],
-        _count: { id: true },
-        where: { status: { in: ['APPROVED', 'WINNER'] } },
-      }),
-      prisma.project.groupBy({
-        by: ['type'],
-        _count: { id: true },
-        where: { status: { in: ['APPROVED', 'WINNER'] } },
-      }),
-    ]);
+    const approvedFilter = { status: { in: ['APPROVED', 'WINNER'] as ('APPROVED' | 'WINNER')[] } };
+
+    const [totalProjects, totalVotes, totalUsers, schoolGroups, regionStats, typeStats] =
+      await Promise.all([
+        prisma.project.count({ where: approvedFilter }),
+        prisma.vote.count(),
+        prisma.user.count(),
+        // Уникальные школы — groupBy schoolName
+        prisma.project.groupBy({ by: ['schoolName'], where: approvedFilter }),
+        prisma.project.groupBy({ by: ['region'], _count: { id: true }, where: approvedFilter }),
+        prisma.project.groupBy({ by: ['type'], _count: { id: true }, where: approvedFilter }),
+      ]);
 
     return NextResponse.json({
       totalProjects,
       totalVotes,
       totalUsers,
-      totalSchools: totalProjects, // approximate
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      regionStats: regionStats.map((r: any) => ({
-        region: r.region,
-        count: r._count.id,
-      })),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      typeStats: typeStats.map((t: any) => ({
-        type: t.type,
-        count: t._count.id,
-      })),
+      totalSchools: schoolGroups.length, // реальное число уникальных школ
+      regionStats: regionStats.map((r) => ({ region: r.region, count: r._count.id })),
+      typeStats:   typeStats.map((t)   => ({ type: t.type,     count: t._count.id })),
     });
   } catch (error) {
     console.error('Stats error:', error);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getAuthUser } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 
 export async function POST(
@@ -8,12 +8,12 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
-    if (!payload) {
+    // DB-запрос — гарантируем что пользователь ещё существует в БД
+    const user = await getAuthUser();
+    if (!user) {
       return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });
     }
 
-    // Check project exists and is approved
     const project = await prisma.project.findUnique({
       where: { id: params.id },
     });
@@ -26,23 +26,17 @@ export async function POST(
       return NextResponse.json({ error: 'Голосование недоступно' }, { status: 400 });
     }
 
-    // Can't vote for own project
-    if (project.authorId === payload.userId) {
+    if (project.authorId === user.id) {
       return NextResponse.json({ error: 'Нельзя голосовать за свой проект' }, { status: 400 });
     }
 
-    // Check if already voted
     const existing = await prisma.vote.findUnique({
       where: {
-        projectId_userId: {
-          projectId: params.id,
-          userId: payload.userId,
-        },
+        projectId_userId: { projectId: params.id, userId: user.id },
       },
     });
 
     if (existing) {
-      // Toggle off: удаляем голос и считаем новый count в одной транзакции
       const [, count] = await prisma.$transaction([
         prisma.vote.delete({ where: { id: existing.id } }),
         prisma.vote.count({ where: { projectId: params.id } }),
@@ -50,11 +44,8 @@ export async function POST(
       return NextResponse.json({ voted: false, count });
     }
 
-    // Toggle on: создаём голос и считаем в одной транзакции
     const [, count] = await prisma.$transaction([
-      prisma.vote.create({
-        data: { projectId: params.id, userId: payload.userId },
-      }),
+      prisma.vote.create({ data: { projectId: params.id, userId: user.id } }),
       prisma.vote.count({ where: { projectId: params.id } }),
     ]);
     return NextResponse.json({ voted: true, count });
