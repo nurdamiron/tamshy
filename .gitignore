@@ -44,3 +44,6 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# Claude Code internal state (per-repo agent state, не для репо)
+.claude/
