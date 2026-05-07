@@ -112,13 +112,41 @@ async function extractPlaywright(url: string): Promise<Extracted> {
     await page.waitForTimeout(4000);
     // gov.kz рендерит карточку новости в .news-detail или подобном; берём весь body text.
     const title: string = await page.title();
-    // og:image ставится сервером — после рендера может появиться
-    const imageUrl: string | null = await page.locator('meta[property="og:image"]').first()
+
+    // Image: пробуем og:image, иначе первый <img> в основном контенте
+    let imageUrl: string | null = await page.locator('meta[property="og:image"]').first()
       .getAttribute('content').catch(() => null);
-    // основной текст: первый <article> или main блок
-    const bodyText: string = await page.locator('article, main, .news-detail, [class*=newsDetail]')
+    if (!imageUrl) {
+      imageUrl = await page.evaluate(() => {
+        const containers = ['article', 'main', '.news-detail', '[class*=newsDetail]', '[class*=NewsDetail]'];
+        for (const sel of containers) {
+          const root = document.querySelector(sel);
+          if (!root) continue;
+          const img = root.querySelector('img[src]') as HTMLImageElement | null;
+          if (img && img.src && !img.src.includes('logo') && !img.src.startsWith('data:')) {
+            return img.src;
+          }
+        }
+        // фоллбек: любая большая <img> на странице, не SVG/иконка
+        const all = Array.from(document.querySelectorAll('img[src]')) as HTMLImageElement[];
+        const candidate = all.find((i) =>
+          i.src && !i.src.includes('logo') && !i.src.includes('icon')
+          && !i.src.startsWith('data:') && !i.src.endsWith('.svg')
+          && (i.naturalWidth > 200 || i.width > 200),
+        );
+        return candidate?.src ?? null;
+      }).catch(() => null);
+    }
+
+    // Текст: первый article/main блок, фильтруем UI-шум gov.kz (счётчики, карусель)
+    let bodyText: string = await page.locator('article, main, .news-detail, [class*=newsDetail]')
       .first().innerText({ timeout: 5000 })
       .catch(async () => await page.locator('body').innerText());
+    bodyText = bodyText
+      .replace(/^\s*\d+\s*\/\s*\d+\s*$/gm, '')              // "1 / 3" карусель
+      .replace(/^Количество просмотров:\s*\d+\s*$/gm, '')   // счётчик просмотров
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
     // Дата на gov.kz обычно в формате "DD.MM.YYYY"
     const dateMatch = bodyText.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
     const publishedAt = dateMatch
