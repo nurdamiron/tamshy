@@ -9,10 +9,17 @@
 
 ## 0. Предусловия
 
-- [ ] У тебя есть пароль пользователя **prometric** для prod RDS (см. memory `rds_master_creds.md`, актуально с 2026-04-13).
+- [ ] У тебя есть пароль одного из:
+  - **prometric** (master, см. memory `rds_master_creds.md`) — для admin операций (CREATE/ROTATE ROLE, GRANT)
+  - **tamshy_migrator** (DDL, см. memory `rds_migrator_creds.md`) — **рекомендуемый** для миграций; член роли prometric, наследует ownership всех таблиц
 - [ ] `DIRECT_URL` известен (из Vercel env или `.env.local`). Это прямое подключение к RDS, минуя pooler.
 - [ ] Локально установлен `psql`: `brew install libpq && brew link --force libpq`.
 - [ ] Из репозитория Tamshy на ветке `main` (или твоей feature branch с этими изменениями).
+
+> **Иерархия user'ов в RDS:**
+> - `prometric` (master) — для admin/role операций
+> - `tamshy_migrator` (member of prometric) — для миграций; пароль не светится в master-памяти, можно ротировать независимо
+> - `tamshy` (app user, без DDL) — runtime приложения
 
 > **Важно:** все DDL — идемпотентны (`CREATE TYPE ... EXCEPTION WHEN duplicate_object`, `ADD COLUMN IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`). Повторный запуск безопасен.
 

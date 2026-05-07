@@ -56,24 +56,16 @@ jobs:
           APP_ENV:               production
           NEXT_PUBLIC_APP_URL:   https://tamshy.vercel.app
 
-  # ── DB schema sync ────────────────────────────────────────────────────────
-  db-sync:
-    name: DB schema sync
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - name: Prisma generate + db push
-        run: npx prisma generate && npx prisma db push
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL:   ${{ secrets.DATABASE_URL }}
-
-  # Деплой на Vercel происходит автоматически через Vercel Git Integration
-  # при каждом push в main — настройка в vercel.com/dashboard
+  # ── Деплой ────────────────────────────────────────────────────────────────
+  # Vercel Git Integration автоматически деплоит каждый push в main
+  # (настройка в vercel.com/dashboard).
+  #
+  # ── Schema migrations ─────────────────────────────────────────────────────
+  # `prisma db push` НЕ выполняется в CI — он опасен в prod (может дропнуть
+  # колонки/индексы) и требует master-прав, которые есть только у prometric
+  # (app user tamshy не owns таблицы).
+  #
+  # Миграции применяем вручную через psql от prometric:
+  #   psql "$DIRECT_URL" -f prisma/migrations/<timestamp>_<name>/migration.sql
+  #
+  # См. docs/qazsu-rds-runbook.md для пошагового процесса.
