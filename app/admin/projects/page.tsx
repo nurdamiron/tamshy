@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { basinLabels, waterBasinValues, problemLabels } from '@/lib/validators';
 
 interface Project {
   id: string;
@@ -16,8 +17,13 @@ interface Project {
   grade: number;
   juryScore?: number | null;
   createdAt: string;
-  author: { name: string | null; phone: string };
+  author: { name: string | null; email: string | null };
   _count: { votes: number };
+  // Qazsu integration
+  sourceSystem?: 'DIRECT' | 'QAZSU' | 'PARTNER' | null;
+  basin?: keyof typeof basinLabels | null;
+  problemType?: keyof typeof problemLabels | null;
+  publishToQazsu?: boolean;
 }
 
 const statusMap: Record<string, { label: string; color: string }> = {
@@ -45,6 +51,7 @@ export default function AdminProjects() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('PENDING');
   const [search, setSearch] = useState('');
+  const [basin, setBasin] = useState('');
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -55,6 +62,7 @@ export default function AdminProjects() {
       const params = new URLSearchParams({ page: String(page) });
       if (status) params.set('status', status);
       if (search) params.set('search', search);
+      if (basin) params.set('basin', basin);
       const res = await fetch(`/api/projects?${params}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
@@ -63,7 +71,7 @@ export default function AdminProjects() {
       setTotalPages(data.pages || 1);
     } catch { /* */ }
     setLoading(false);
-  }, [page, status, search]);
+  }, [page, status, search, basin]);
 
   useEffect(() => { fetchProjects(); }, [fetchProjects]);
 
@@ -72,6 +80,15 @@ export default function AdminProjects() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ score: 0, comment: 'Изменено администратором', status: newStatus }),
+    });
+    if (res.ok) fetchProjects();
+  };
+
+  const togglePublishToQazsu = async (id: string, publish: boolean) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ _qazsuPublish: publish }),
     });
     if (res.ok) fetchProjects();
   };
@@ -98,6 +115,17 @@ export default function AdminProjects() {
           >
             {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
           </select>
+          <select
+            value={basin}
+            onChange={(e) => { setBasin(e.target.value); setPage(1); }}
+            className="h-9 px-3 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 bg-white"
+            title="Фильтр по бассейну"
+          >
+            <option value="">Все бассейны</option>
+            {waterBasinValues.map((b) => (
+              <option key={b} value={b}>{basinLabels[b]}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -117,10 +145,13 @@ export default function AdminProjects() {
                   <th className="px-4 py-3 font-semibold text-slate-500">Учитель</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Школа</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Тип</th>
+                  <th className="px-4 py-3 font-semibold text-slate-500">Источник</th>
+                  <th className="px-4 py-3 font-semibold text-slate-500">Бассейн</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Голоса</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Оценка</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Статус</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Смена статуса</th>
+                  <th className="px-4 py-3 font-semibold text-slate-500">Витрина Qazsu</th>
                 </tr>
               </thead>
               <tbody>
@@ -150,6 +181,20 @@ export default function AdminProjects() {
                         {typeLabels[p.type] || p.type}
                       </span>
                     </td>
+                    <td className="px-4 py-3">
+                      {p.sourceSystem === 'QAZSU' ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#F0F9FF] text-[#0284C7]">
+                          Qazsu
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-slate-400">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 max-w-[140px]">
+                      <span className="text-[11px] text-slate-500 truncate block">
+                        {p.basin ? basinLabels[p.basin] : '—'}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-slate-600 font-medium">{p._count.votes}</td>
                     <td className="px-4 py-3 text-[#F59E0B] font-bold">
                       {p.juryScore != null ? `${p.juryScore}/10` : '—'}
@@ -169,6 +214,23 @@ export default function AdminProjects() {
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
                         ))}
                       </select>
+                    </td>
+                    <td className="px-4 py-3">
+                      {['APPROVED', 'WINNER'].includes(p.status) ? (
+                        <button
+                          onClick={() => togglePublishToQazsu(p.id, !p.publishToQazsu)}
+                          className={`text-[11px] px-2.5 py-1 rounded-full font-medium transition-colors ${
+                            p.publishToQazsu
+                              ? 'bg-[#0284C7] text-white hover:bg-[#0369A1]'
+                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}
+                          title={p.publishToQazsu ? 'Скрыть из витрины Qazsu' : 'Опубликовать в витрине Qazsu'}
+                        >
+                          {p.publishToQazsu ? 'В витрине' : 'Опубликовать'}
+                        </button>
+                      ) : (
+                        <span className="text-[11px] text-slate-400">—</span>
+                      )}
                     </td>
                   </motion.tr>
                 ))}

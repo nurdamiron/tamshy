@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Материалы',
-  description: 'Библиотека знаний по водосбережению. Методические пособия, презентации, видеоуроки',
+  title: 'Материалдар',
+  description: 'Суды үнемдеу бойынша білім кітапханасы. Әдістемелік құралдар, презентациялар, бейнесабақтар',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

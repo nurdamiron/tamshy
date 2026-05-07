@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }

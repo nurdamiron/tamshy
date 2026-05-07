@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Лидеры',
-  description: 'Рейтинг лучших водных проектов школьников по голосам',
+  title: 'Көшбасшылар',
+  description: 'Дауыстар бойынша оқушылардың үздік су жобаларының рейтингі',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

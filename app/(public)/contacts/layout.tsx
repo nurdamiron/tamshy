@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Контакты',
-  description: 'Свяжитесь с командой проекта Tamshy. Адрес, телефон, форма обратной связи',
+  title: 'Байланыс',
+  description: 'Tamshy жоба командасымен байланысыңыз. Мекенжай, телефон, кері байланыс нысаны',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
+import { materialUpdateSchema } from '@/lib/validators';
 
 export async function GET(
   _req: NextRequest,
@@ -27,29 +28,20 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { title, description, format, fileUrl, fileSize, type, audience, year, featured, imageUrl } = body;
-
-    const data: Record<string, unknown> = {};
-    if (title !== undefined) data.title = title;
-    if (description !== undefined) data.description = description;
-    if (format !== undefined) data.format = format;
-    if (fileUrl !== undefined) data.fileUrl = fileUrl;
-    if (fileSize !== undefined) data.fileSize = fileSize;
-    if (type !== undefined) data.type = type;
-    if (audience !== undefined) data.audience = audience;
-    if (year !== undefined) data.year = parseInt(year);
-    if (featured !== undefined) data.featured = featured;
-    if (imageUrl !== undefined) data.imageUrl = imageUrl || null;
+    const result = materialUpdateSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+    }
 
     const material = await prisma.material.update({
       where: { id: params.id },
-      data,
+      data: result.data,
     });
 
     return NextResponse.json({ material });
@@ -64,14 +56,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
-    await prisma.material.delete({
-      where: { id: params.id },
-    });
+    await prisma.material.delete({ where: { id: params.id } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

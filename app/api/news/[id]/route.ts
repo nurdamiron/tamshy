@@ -1,21 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
+import { newsUpdateSchema } from '@/lib/validators';
+import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const exists = await prisma.news.findUnique({ where: { id: params.id } });
-    if (!exists) {
+    const newsItem = await prisma.news.findUnique({ where: { id: params.id } });
+    if (!newsItem) {
       return NextResponse.json({ error: 'Новость не найдена' }, { status: 404 });
     }
 
-    const newsItem = await prisma.news.update({
-      where: { id: params.id },
-      data: { viewCount: { increment: 1 } },
-    });
+    // Rate limit на инкремент просмотров — защита от накрутки ботами
+    const blocked = await checkRateLimit(req, formLimiter);
+    if (!blocked) {
+      await prisma.news.update({
+        where: { id: params.id },
+        data: { viewCount: { increment: 1 } },
+      });
+    }
 
     return NextResponse.json({ news: newsItem });
   } catch (error) {
@@ -29,25 +35,20 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { title, content, category, imageUrl, fileUrl, photoCount } = body;
-
-    const data: Record<string, unknown> = {};
-    if (title !== undefined) data.title = title;
-    if (content !== undefined) data.content = content;
-    if (category !== undefined) data.category = category;
-    if (imageUrl !== undefined) data.imageUrl = imageUrl;
-    if (fileUrl !== undefined) data.fileUrl = fileUrl;
-    if (photoCount !== undefined) data.photoCount = photoCount;
+    const result = newsUpdateSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+    }
 
     const newsItem = await prisma.news.update({
       where: { id: params.id },
-      data,
+      data: result.data,
     });
 
     return NextResponse.json({ news: newsItem });
@@ -62,14 +63,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
-    await prisma.news.delete({
-      where: { id: params.id },
-    });
+    await prisma.news.delete({ where: { id: params.id } });
 
     return NextResponse.json({ success: true });
   } catch (error) {

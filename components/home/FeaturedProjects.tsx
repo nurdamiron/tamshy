@@ -6,49 +6,53 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import Button from '@/components/ui/Button';
 import ProjectCard from '@/components/project/ProjectCard';
+import { mediaUrl } from '@/lib/media';
 
 const fallbackProjects = [
   {
     id: '1',
-    title: 'Система сбора дождевой воды для школы',
-    description: 'Проект по установке системы сбора и фильтрации дождевой воды на территории школы. Позволяет экономить до 30% воды.',
+    title: 'Мектепке арналған жаңбыр суын жинаудың ақылды жүйесі',
+    description: 'Жаңбыр суын жинау және сүзудің автоматтандырылған жүйесі. 3 сатылы сүзгі + 1200 л резервуар. 3 айда мектеп бағын суаруға 3000 л астам су жиналды.',
     type: 'INVENTION',
-    status: 'APPROVED',
+    status: 'WINNER',
     region: 'ASTANA',
-    schoolName: 'Школа No45',
+    schoolName: 'Мектеп-гимназия №91, Астана',
     grade: 9,
-    teacherName: '',
-    authorName: 'Алмас К.',
-    voteCount: 142,
-    createdAt: '2026-03-15',
+    teacherName: 'Нурлан Сейткали',
+    authorName: 'Алмас С.',
+    voteCount: 187,
+    createdAt: '2026-02-10',
+    thumbnailUrl: mediaUrl('1507525428034-b723cf961d3e'),
   },
   {
     id: '2',
-    title: 'Документальный фильм о реке Или',
-    description: 'Короткометражный фильм о состоянии реки Или и её значении для экосистемы. Интервью с экологами.',
+    title: '«Іленің дауысы» деректі фильмі',
+    description: 'Іле өзенінің жайы туралы 18 минуттық фильм. 3 нүктеде дрон түсірілімі, гидрологтармен және балықшылармен сұхбат. 2 400 қарау, 3 қалалық іс-шарада көрсетілді.',
     type: 'VIDEO',
-    status: 'APPROVED',
+    status: 'WINNER',
     region: 'ALMATY',
-    schoolName: 'Гимназия No125',
+    schoolName: 'НЗМ ФМБ, Алматы',
     grade: 10,
-    teacherName: '',
+    teacherName: 'Айгул Бекова',
     authorName: 'Дана М.',
-    voteCount: 98,
-    createdAt: '2026-03-20',
+    voteCount: 214,
+    createdAt: '2026-02-14',
+    thumbnailUrl: mediaUrl('1437482078695-73f5ca6c96e2'),
   },
   {
     id: '3',
-    title: 'Исследование качества воды в Каспийском море',
-    description: 'Комплексное исследование pH, солёности и загрязнённости воды в прибрежной зоне Актау.',
+    title: 'Сырдария өзені суының сапасын зерттеу',
+    description: '2 ай бойы 5 нүктеде сынама алынды. Марганец бойынша ШРК асқандығы анықталды. Нәтижелер Су ресурстары комитетіне берілді.',
     type: 'RESEARCH',
     status: 'WINNER',
-    region: 'MANGYSTAU',
-    schoolName: 'НИШ Актау',
+    region: 'KYZYLORDA',
+    schoolName: 'Мектеп №211, Қызылорда',
     grade: 11,
-    teacherName: '',
+    teacherName: 'Гулнара Оразбекова',
     authorName: 'Арман Т.',
-    voteCount: 215,
-    createdAt: '2026-03-10',
+    voteCount: 156,
+    createdAt: '2026-02-18',
+    thumbnailUrl: mediaUrl('1498084393753-b411b2d26b34'),
   },
 ];
 
@@ -63,6 +67,7 @@ interface ApiProject {
   grade: number;
   teacherName: string;
   createdAt: string;
+  thumbnailUrl: string | null;
   author: { name: string | null };
   _count: { votes: number };
 }
@@ -89,6 +94,7 @@ export default function FeaturedProjects() {
               grade: p.grade,
               teacherName: p.teacherName,
               createdAt: p.createdAt,
+              thumbnailUrl: p.thumbnailUrl,
               authorName: p.author?.name || tCommon('defaultAuthor'),
               voteCount: p._count?.votes || 0,
             }))

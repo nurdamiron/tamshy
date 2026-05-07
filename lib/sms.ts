@@ -20,7 +20,11 @@ function hashOTP(code: string): string {
 }
 
 export async function sendOTP(phone: string): Promise<void> {
-  const isDev = process.env.NODE_ENV === 'development' || !process.env.MOBIZON_API_KEY;
+  const isMobizonMissing = !process.env.MOBIZON_API_KEY;
+  if (isMobizonMissing && process.env.NODE_ENV === 'production') {
+    throw new Error('[FATAL] MOBIZON_API_KEY не задан в production — dev OTP (000000) заблокирован');
+  }
+  const isDev = process.env.NODE_ENV === 'development' || isMobizonMissing;
   const code = isDev ? DEV_OTP : generateOTP();
   const expiry = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
 

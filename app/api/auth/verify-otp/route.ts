@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { phoneSchema, otpSchema } from '@/lib/validators';
-import { verifyOTP } from '@/lib/sms';
+import { emailAuthSchema, otpSchema } from '@/lib/validators';
+import { verifyOTP } from '@/lib/email';
 import { createToken, setAuthCookie } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { checkRateLimit, otpLimiter } from '@/lib/ratelimit';
@@ -13,45 +13,50 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    const phoneResult = phoneSchema.safeParse(body.phone);
+    const emailResult = emailAuthSchema.safeParse(body.email);
     const otpResult = otpSchema.safeParse(body.code);
     const consentPd = body.consentPd === true;
-    const consentSms = body.consentSms === true;
+    const consentEmail = body.consentEmail === true;
+    // Флаг: регистрация через форму подачи проекта → новый пользователь получает роль TEACHER.
+    // Принимаем только значение true; JURY/ADMIN через этот endpoint недостижимы.
+    const isTeacher = body.isTeacher === true;
 
-    if (!phoneResult.success) {
-      return NextResponse.json({ error: phoneResult.error.issues[0].message }, { status: 400 });
+    if (!emailResult.success) {
+      return NextResponse.json({ error: emailResult.error.issues[0].message }, { status: 400 });
     }
     if (!otpResult.success) {
       return NextResponse.json({ error: otpResult.error.issues[0].message }, { status: 400 });
     }
 
-    const valid = await verifyOTP(phoneResult.data, otpResult.data);
+    const valid = await verifyOTP(emailResult.data, otpResult.data);
     if (!valid) {
       return NextResponse.json({ error: 'Неверный или просроченный код' }, { status: 401 });
     }
 
     const now = new Date();
 
-    // Upsert user: create if not exists, update consent timestamps on every verify
     const user = await prisma.user.upsert({
-      where: { phone: phoneResult.data },
+      where: { email: emailResult.data },
       update: {
         ...(consentPd && { consentPd: true, consentPdAt: now }),
-        ...(consentSms && { consentSms: true, consentSmsAt: now }),
+        ...(consentEmail && { consentEmail: true, consentEmailAt: now }),
       },
       create: {
-        phone: phoneResult.data,
+        email: emailResult.data,
+        // Все новые аккаунты — учителя. JURY и ADMIN назначает администратор.
+        role: 'TEACHER',
         consentPd,
         consentPdAt: consentPd ? now : null,
-        consentSms,
-        consentSmsAt: consentSms ? now : null,
+        consentEmail,
+        consentEmailAt: consentEmail ? now : null,
       },
     });
 
     const token = await createToken({
       userId: user.id,
-      phone: user.phone,
+      email: user.email!,
       role: user.role,
+      tv: user.tokenVersion,
     });
 
     await setAuthCookie(token);
@@ -60,7 +65,7 @@ export async function POST(req: NextRequest) {
       success: true,
       user: {
         id: user.id,
-        phone: user.phone,
+        email: user.email,
         name: user.name,
         role: user.role,
       },

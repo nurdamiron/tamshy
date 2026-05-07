@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Регионы',
-  description: 'Водные проекты школьников по регионам Казахстана',
+  title: 'Аймақтар',
+  description: 'Қазақстан аймақтары бойынша оқушылардың су жобалары',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { mediaUrl } from '@/lib/media';
 
 function AnimatedCounter({ target, suffix = '', duration = 2500, locale = 'ru' }: { target: number; suffix?: string; duration?: number; locale?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -104,6 +105,14 @@ export default function ImpactCounter() {
 
   return (
     <section className="relative py-24 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)' }}>
+      {/* Water photo — deep ocean/water feel behind dark overlay */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={mediaUrl('1559825481-12a05cc00344')}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none mix-blend-luminosity"
+        style={{ opacity: 0.08 }}
+      />
       {/* Star particles */}
       <StarParticle delay={0} x="10%" y="20%" />
       <StarParticle delay={0.5} x="25%" y="60%" />

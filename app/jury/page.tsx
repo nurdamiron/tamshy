@@ -65,6 +65,9 @@ export default function JuryPage() {
 
   const [projects, setProjects] = useState<JuryProject[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [type, setType] = useState('all');
   const [region, setRegion] = useState('all');
   const [status, setStatus] = useState('PENDING');
@@ -80,26 +83,31 @@ export default function JuryPage() {
   // Stats
   const [stats, setStats] = useState({ pending: 0, approved: 0, rejected: 0, winner: 0 });
 
-  const fetchProjects = useCallback(async () => {
-    setLoading(true);
+  const fetchProjects = useCallback(async (p = 1, append = false) => {
+    if (append) setLoadingMore(true); else setLoading(true);
     try {
       const params = new URLSearchParams({
-        page: '1',
+        page: String(p),
         status,
         ...(type !== 'all' && { type }),
         ...(region !== 'all' && { region }),
       });
       const res = await fetch(`/api/projects?${params}`);
       const data = await res.json();
-      setProjects(data.projects || []);
+      setProjects((prev) => append ? [...prev, ...(data.projects || [])] : (data.projects || []));
+      setTotalPages(data.pages ?? 1);
+      setPage(p);
     } catch {
       // handle error
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-    setLoading(false);
   }, [type, region, status]);
 
   useEffect(() => {
-    fetchProjects();
+    setPage(1);
+    fetchProjects(1, false);
   }, [fetchProjects]);
 
   // Fetch stats
@@ -208,6 +216,7 @@ export default function JuryPage() {
           <p className="text-[16px] text-[#64748B]">{t('noProjects')}</p>
         </div>
       ) : (
+        <>
         <div className="space-y-3">
           {projects.map((project, i) => (
             <motion.div
@@ -249,6 +258,14 @@ export default function JuryPage() {
             </motion.div>
           ))}
         </div>
+        {page < totalPages && (
+          <div className="text-center mt-6">
+            <Button variant="secondary" onClick={() => fetchProjects(page + 1, true)} loading={loadingMore}>
+              Загрузить ещё
+            </Button>
+          </div>
+        )}
+        </>
       )}
 
       {/* Score Modal */}

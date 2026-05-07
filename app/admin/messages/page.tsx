@@ -15,16 +15,23 @@ interface ContactMessage {
 
 export default function AdminMessages() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const fetchMessages = useCallback(async () => {
+  const fetchMessages = useCallback(async (p: number) => {
+    setLoading(true);
     try {
-      const res = await fetch('/api/contacts');
+      const res = await fetch(`/api/contacts?page=${p}`);
       if (!res.ok) throw new Error('Ошибка загрузки');
       const data = await res.json();
       setMessages(data.messages || []);
+      setTotal(data.total ?? 0);
+      setTotalPages(data.pages ?? 1);
+      setPage(p);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Произошла ошибка');
     } finally {
@@ -33,7 +40,7 @@ export default function AdminMessages() {
   }, []);
 
   useEffect(() => {
-    fetchMessages();
+    fetchMessages(1);
   }, [fetchMessages]);
 
   if (loading) {
@@ -68,7 +75,7 @@ export default function AdminMessages() {
       <div>
         <h1 className="text-xl font-bold text-[#0F172A]">Сообщения</h1>
         <p className="text-[13px] text-slate-500 mt-0.5">
-          Всего: {messages.length} сообщений из формы обратной связи
+          Всего: {total} сообщений из формы обратной связи
         </p>
       </div>
 
@@ -129,6 +136,27 @@ export default function AdminMessages() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => fetchMessages(page - 1)}
+            disabled={page <= 1}
+            className="px-3 py-1.5 text-[13px] rounded-lg border border-[#E2E8F0] disabled:opacity-40 hover:bg-slate-50"
+          >
+            ← Назад
+          </button>
+          <span className="text-[13px] text-slate-500">{page} / {totalPages}</span>
+          <button
+            onClick={() => fetchMessages(page + 1)}
+            disabled={page >= totalPages}
+            className="px-3 py-1.5 text-[13px] rounded-lg border border-[#E2E8F0] disabled:opacity-40 hover:bg-slate-50"
+          >
+            Вперёд →
+          </button>
+        </div>
+      )}
 
       {/* expanded message overlay */}
       <AnimatePresence>

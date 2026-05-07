@@ -207,13 +207,13 @@ export default function Footer() {
 
           <div className="flex items-center gap-5">
             <Link href="/privacy" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
-              Политика конфиденциальности
+              Құпиялылық саясаты
             </Link>
             <Link href="/terms" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
-              Пользовательское соглашение
+              Пайдаланушы келісімі
             </Link>
             <Link href="/data-rights" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
-              Права субъектов ПД
+              ЖД субъектілерінің құқықтары
             </Link>
             <Link href="/login" className="text-[13px] text-white/25 hover:text-white/50 transition-colors duration-300">
               {t('adminLogin')}

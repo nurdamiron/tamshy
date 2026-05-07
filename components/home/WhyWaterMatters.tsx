@@ -3,6 +3,7 @@
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { WHY_WATER_PHOTOS } from '@/lib/constants';
 
 function AnimatedNumber({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -65,13 +66,12 @@ export default function WhyWaterMatters() {
     offset: ['start end', 'end start'],
   });
   const visualY = useTransform(scrollYProgress, [0, 1], [40, -40]);
-  const waterLevel = useTransform(scrollYProgress, [0.1, 0.6], ['85%', '20%']);
 
   return (
     <section ref={sectionRef} className="py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left: Visual with parallax */}
+          {/* Left: Photo mosaic with parallax */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -79,96 +79,88 @@ export default function WhyWaterMatters() {
             style={{ y: visualY }}
             className="relative"
           >
-            <div className="relative aspect-square max-w-[420px] mx-auto">
-              {/* Concentric water rings */}
-              {[1, 2, 3, 4].map((ring) => (
+            <div className="relative max-w-[420px] mx-auto">
+              {/* 2-column photo grid */}
+              <div className="grid grid-cols-2 gap-3 h-[420px]">
+                {/* Left column — tall portrait photo */}
                 <motion.div
-                  key={ring}
-                  className="absolute rounded-full border-2"
-                  style={{
-                    inset: `${ring * 12}%`,
-                    borderColor: `rgba(2, 132, 199, ${0.04 + ring * 0.03})`,
-                  }}
-                  animate={{ scale: [1, 1.06, 1] }}
-                  transition={{
-                    duration: 3,
-                    delay: ring * 0.4,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-              ))}
+                  className="rounded-2xl overflow-hidden row-span-2"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={WHY_WATER_PHOTOS[0]}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
 
-              {/* Center water drop with animated fill level */}
+                {/* Top right */}
+                <motion.div
+                  className="rounded-2xl overflow-hidden"
+                  initial={{ opacity: 0, y: -12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={WHY_WATER_PHOTOS[1]}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+
+                {/* Bottom right */}
+                <motion.div
+                  className="rounded-2xl overflow-hidden"
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={WHY_WATER_PHOTOS[2]}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              </div>
+
+              {/* Floating stat badge — bottom right */}
               <motion.div
-                className="absolute inset-[28%] flex items-center justify-center"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl px-5 py-4 border border-[#E2E8F0]"
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, type: 'spring', stiffness: 300, damping: 22 }}
               >
-                <div className="w-full h-full rounded-full flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-[#E0F2FE] to-[#BAE6FD]">
-                  {/* Animated water level */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#0284C7] to-[#38BDF8] rounded-b-full"
-                    style={{ top: waterLevel }}
-                  >
-                    {/* Wave on top of water */}
-                    <svg className="absolute -top-[6px] left-0 w-full" viewBox="0 0 100 8" preserveAspectRatio="none">
-                      <motion.path
-                        d="M0,4 Q25,0 50,4 Q75,8 100,4 L100,8 L0,8 Z"
-                        fill="#38BDF8"
-                        animate={{
-                          d: [
-                            'M0,4 Q25,0 50,4 Q75,8 100,4 L100,8 L0,8 Z',
-                            'M0,4 Q25,8 50,4 Q75,0 100,4 L100,8 L0,8 Z',
-                            'M0,4 Q25,0 50,4 Q75,8 100,4 L100,8 L0,8 Z',
-                          ],
-                        }}
-                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                      />
-                    </svg>
-                  </motion.div>
-                  <svg width="48" height="68" viewBox="0 0 20 28" fill="none" className="relative z-10">
-                    <path
-                      d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z"
-                      fill="url(#dropGrad)"
-                    />
-                    <defs>
-                      <linearGradient id="dropGrad" x1="10" y1="0" x2="10" y2="28">
-                        <stop offset="0%" stopColor="#38BDF8" />
-                        <stop offset="100%" stopColor="#0369A1" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                <div className="text-[28px] font-bold text-[#0284C7] leading-none">
+                  <AnimatedNumber target={facts[0].value} suffix={facts[0].suffix} />
+                </div>
+                <div className="text-[11px] text-[#64748B] mt-1 max-w-[120px] leading-snug">
+                  {facts[0].label}
                 </div>
               </motion.div>
 
-              {/* Orbiting dots with trails */}
-              {facts.map((fact, i) => {
-                const angle = (i * 90 - 45) * (Math.PI / 180);
-                const radius = 42;
-                const x = 50 + radius * Math.cos(angle);
-                const y = 50 + radius * Math.sin(angle);
-                return (
-                  <motion.div
-                    key={i}
-                    className="absolute w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{
-                      left: `${x}%`,
-                      top: `${y}%`,
-                      transform: 'translate(-50%, -50%)',
-                      backgroundColor: fact.dotColor + '12',
-                      boxShadow: `0 0 20px ${fact.dotColor}15`,
-                    }}
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
-                  >
-                    <div
-                      className="w-3.5 h-3.5 rounded-full"
-                      style={{ backgroundColor: fact.dotColor }}
-                    />
-                  </motion.div>
-                );
-              })}
+              {/* Water drop badge — top left */}
+              <motion.div
+                className="absolute -top-3 -left-3 w-12 h-12 bg-[#0284C7] rounded-xl flex items-center justify-center shadow-lg shadow-blue-200"
+                animate={{ rotate: [0, 6] }}
+                transition={{ duration: 3.5, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
+              >
+                <svg width="22" height="31" viewBox="0 0 20 28" fill="none">
+                  <path
+                    d="M10 0C10 0 0 12 0 18a10 10 0 0020 0C20 12 10 0 10 0z"
+                    fill="white"
+                    fillOpacity="0.9"
+                  />
+                </svg>
+              </motion.div>
             </div>
           </motion.div>
 

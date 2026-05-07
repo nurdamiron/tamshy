@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import Button from '@/components/ui/Button';
 
 interface NewsItem {
@@ -19,15 +20,16 @@ interface NewsItem {
 }
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; gradient: string }> = {
-  NEWS:   { label: 'Новость',  color: 'text-blue-700',   bg: 'bg-blue-50',   gradient: 'from-blue-500 to-blue-600' },
-  REPORT: { label: 'Отчёт',    color: 'text-amber-700',  bg: 'bg-amber-50',  gradient: 'from-amber-500 to-orange-500' },
-  PHOTO:  { label: 'Фото',     color: 'text-green-700',  bg: 'bg-green-50',  gradient: 'from-green-500 to-emerald-500' },
-  VIDEO:  { label: 'Видео',    color: 'text-purple-700', bg: 'bg-purple-50', gradient: 'from-purple-500 to-violet-600' },
+  NEWS:   { label: 'Жаңалық',    color: 'text-blue-700',   bg: 'bg-blue-50',   gradient: 'from-blue-500 to-blue-600' },
+  REPORT: { label: 'Есеп',       color: 'text-amber-700',  bg: 'bg-amber-50',  gradient: 'from-amber-500 to-orange-500' },
+  PHOTO:  { label: 'Фото',       color: 'text-green-700',  bg: 'bg-green-50',  gradient: 'from-green-500 to-emerald-500' },
+  VIDEO:  { label: 'Бейне',      color: 'text-purple-700', bg: 'bg-purple-50', gradient: 'from-purple-500 to-violet-600' },
 };
 
 export default function NewsDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const locale = useLocale();
 
   const [news, setNews] = useState<NewsItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ export default function NewsDetailPage() {
     if (!id) return;
     fetch(`/api/news/${id}`)
       .then((r) => {
-        if (!r.ok) throw new Error('Новость не найдена');
+        if (!r.ok) throw new Error('Жаңалық табылмады');
         return r.json();
       })
       .then((data) => setNews(data.news))
@@ -63,9 +65,9 @@ export default function NewsDetailPage() {
   if (error || !news) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 text-center">
-        <p className="text-[16px] text-[#64748B] mb-4">{error || 'Новость не найдена'}</p>
+        <p className="text-[16px] text-[#64748B] mb-4">{error || 'Жаңалық табылмады'}</p>
         <Link href="/news">
-          <Button variant="secondary" size="md">← Назад к новостям</Button>
+          <Button variant="secondary" size="md">← Жаңалықтарға оралу</Button>
         </Link>
       </div>
     );
@@ -89,7 +91,7 @@ export default function NewsDetailPage() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Назад к новостям
+          Жаңалықтарға оралу
         </Link>
       </motion.div>
 
@@ -131,7 +133,7 @@ export default function NewsDetailPage() {
             </span>
           )}
           <span className="text-[13px] text-[#94A3B8]">
-            {new Date(news.createdAt).toLocaleDateString('ru-RU', {
+            {new Date(news.createdAt).toLocaleDateString(locale, {
               day: 'numeric', month: 'long', year: 'numeric',
             })}
           </span>
@@ -140,7 +142,7 @@ export default function NewsDetailPage() {
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
               <circle cx="12" cy="12" r="3" />
             </svg>
-            {news.viewCount} просмотров
+            {news.viewCount} қарау
           </span>
           {news.photoCount && news.category === 'PHOTO' && (
             <span className="flex items-center gap-1.5 text-[13px] text-[#94A3B8]">
@@ -184,7 +186,7 @@ export default function NewsDetailPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-[13px] font-medium text-[#0F172A]">Прикреплённый файл</p>
+                <p className="text-[13px] font-medium text-[#0F172A]">Тіркелген файл</p>
                 <p className="text-[11px] text-[#94A3B8] truncate max-w-[240px]">{news.fileUrl.split('/').pop()}</p>
               </div>
             </div>
@@ -200,7 +202,7 @@ export default function NewsDetailPage() {
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
-                Скачать
+                Жүктеу
               </Button>
             </a>
           </motion.div>
@@ -213,7 +215,7 @@ export default function NewsDetailPage() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
-              Назад к новостям
+              Жаңалықтарға оралу
             </Button>
           </Link>
         </div>

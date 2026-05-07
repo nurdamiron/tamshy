@@ -1,63 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { getTokenPayload } from '@/lib/auth';
 import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
+import { contestSubmitSchema } from '@/lib/validators';
+import { submitToContest } from '@/lib/services/contest';
+import { ServiceError, HTTP_STATUS } from '@/lib/services/errors';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const blocked = await checkRateLimit(req, formLimiter);
     if (blocked) return blocked;
 
-    // Подача заявки требует аутентификации
     const payload = await getTokenPayload();
     if (!payload) {
       return NextResponse.json({ error: 'Необходима авторизация' }, { status: 401 });
     }
 
     const body = await req.json();
-    const { fullName, birthDate, email, phone, institution, region, fileUrl } = body;
-
-    if (!fullName || !birthDate || !email || !phone || !institution || !region) {
-      return NextResponse.json(
-        { error: 'Заполните все обязательные поля' },
-        { status: 400 }
-      );
+    const result = contestSubmitSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
     }
 
-    const contest = await prisma.contest.findUnique({
-      where: { id: params.id },
-    });
-
-    if (!contest) {
-      return NextResponse.json({ error: 'Конкурс не найден' }, { status: 404 });
-    }
-
-    if (contest.status !== 'ACTIVE') {
-      return NextResponse.json({ error: 'Конкурс завершён' }, { status: 400 });
-    }
-
-    if (new Date() > contest.deadline) {
-      return NextResponse.json({ error: 'Срок подачи истёк' }, { status: 400 });
-    }
-
-    const submission = await prisma.contestSubmission.create({
-      data: {
-        contestId: params.id,
-        fullName,
-        birthDate,
-        email,
-        phone,
-        institution,
-        region,
-        fileUrl,
-      },
-    });
-
+    const submission = await submitToContest(params.id, payload.userId, result.data);
     return NextResponse.json({ submission }, { status: 201 });
   } catch (error) {
+    if (error instanceof ServiceError) {
+      return NextResponse.json({ error: error.message }, { status: HTTP_STATUS[error.code] });
+    }
     console.error('Submit contest error:', error);
     return NextResponse.json({ error: 'Ошибка подачи заявки' }, { status: 500 });
   }

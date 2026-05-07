@@ -56,16 +56,25 @@ const regionLabels: Record<string, string> = {
 
 export default function AdminSubmissions() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('');
 
-  const fetchSubmissions = useCallback(async () => {
+  const fetchSubmissions = useCallback(async (p: number, status: string) => {
+    setLoading(true);
     try {
-      const res = await fetch('/api/admin/submissions');
+      const params = new URLSearchParams({ page: String(p) });
+      if (status) params.set('status', status);
+      const res = await fetch(`/api/admin/submissions?${params}`);
       if (!res.ok) throw new Error('Ошибка загрузки');
       const data = await res.json();
       setSubmissions(data.submissions || []);
+      setTotal(data.total ?? 0);
+      setTotalPages(data.pages ?? 1);
+      setPage(p);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Произошла ошибка');
     } finally {
@@ -74,8 +83,8 @@ export default function AdminSubmissions() {
   }, []);
 
   useEffect(() => {
-    fetchSubmissions();
-  }, [fetchSubmissions]);
+    fetchSubmissions(1, statusFilter);
+  }, [fetchSubmissions, statusFilter]);
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
@@ -118,9 +127,8 @@ export default function AdminSubmissions() {
     URL.revokeObjectURL(url);
   };
 
-  const filteredSubmissions = statusFilter
-    ? submissions.filter((s) => s.status === statusFilter)
-    : submissions;
+  // Фильтрация на сервере — submissions уже отфильтрованы по statusFilter
+  const filteredSubmissions = submissions;
 
   if (loading) {
     return (
@@ -155,7 +163,7 @@ export default function AdminSubmissions() {
         <div>
           <h1 className="text-xl font-bold text-[#0F172A]">Заявки</h1>
           <p className="text-[13px] text-slate-500 mt-0.5">
-            Всего: {submissions.length} | Показано: {filteredSubmissions.length}
+            Всего: {total} | Страница: {page} из {totalPages}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -272,6 +280,27 @@ export default function AdminSubmissions() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => fetchSubmissions(page - 1, statusFilter)}
+            disabled={page <= 1}
+            className="px-3 py-1.5 text-[13px] rounded-lg border border-[#E2E8F0] disabled:opacity-40 hover:bg-slate-50"
+          >
+            ← Назад
+          </button>
+          <span className="text-[13px] text-slate-500">{page} / {totalPages}</span>
+          <button
+            onClick={() => fetchSubmissions(page + 1, statusFilter)}
+            disabled={page >= totalPages}
+            className="px-3 py-1.5 text-[13px] rounded-lg border border-[#E2E8F0] disabled:opacity-40 hover:bg-slate-50"
+          >
+            Вперёд →
+          </button>
+        </div>
+      )}
     </div>
   );
 }

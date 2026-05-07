@@ -6,7 +6,11 @@ import ProjectCard from '@/components/project/ProjectCard';
 import Select from '@/components/ui/Select';
 import Input from '@/components/ui/Input';
 import PageHeader from '@/components/layout/PageHeader';
-import { regionLabels } from '@/lib/validators';
+import {
+  regionLabels,
+  waterBasinValues,
+  waterProblemValues,
+} from '@/lib/validators';
 import { PROJECT_TYPES } from '@/lib/constants';
 import { useTranslations } from 'next-intl';
 
@@ -49,6 +53,9 @@ export default function ProjectsPage() {
   const tRegions = useTranslations('regions');
   const tTypes = useTranslations('types');
   const tCommon = useTranslations('common');
+  const tQazsu = useTranslations('qazsu');
+  const tBasins = useTranslations('basins');
+  const tProblems = useTranslations('problems');
 
   const regionOptions = [
     { value: 'all', label: t('allRegions') },
@@ -66,6 +73,16 @@ export default function ProjectsPage() {
     { value: 'winner', label: t('sortWinner') },
   ];
 
+  const basinOptions = [
+    { value: 'all', label: tQazsu('allBasins') },
+    ...waterBasinValues.map((b) => ({ value: b, label: tBasins(b) })),
+  ];
+
+  const problemOptions = [
+    { value: 'all', label: tQazsu('allProblems') },
+    ...waterProblemValues.map((p) => ({ value: p, label: tProblems(p) })),
+  ];
+
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -74,6 +91,8 @@ export default function ProjectsPage() {
   const [region, setRegion] = useState('all');
   const [sort, setSort] = useState('new');
   const [search, setSearch] = useState('');
+  const [basin, setBasin] = useState('all');
+  const [problem, setProblem] = useState('all');
   const observerRef = useRef<HTMLDivElement>(null);
   const searchTimeout = useRef<NodeJS.Timeout>();
 
@@ -85,6 +104,8 @@ export default function ProjectsPage() {
         sort,
         ...(type !== 'all' && { type }),
         ...(region !== 'all' && { region }),
+        ...(basin !== 'all' && { basin }),
+        ...(problem !== 'all' && { problem }),
         ...(search && { search }),
       });
       const res = await fetch(`/api/projects?${params}`);
@@ -112,7 +133,7 @@ export default function ProjectsPage() {
       // handle error silently
     }
     setLoading(false);
-  }, [type, region, sort, search]);
+  }, [type, region, sort, search, basin, problem]);
 
   useEffect(() => {
     setPage(1);
@@ -174,6 +195,20 @@ export default function ProjectsPage() {
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               options={regionOptions}
+            />
+          </div>
+          <div className="w-[calc(50%-6px)] sm:w-44">
+            <Select
+              value={basin}
+              onChange={(e) => setBasin(e.target.value)}
+              options={basinOptions}
+            />
+          </div>
+          <div className="w-[calc(50%-6px)] sm:w-44">
+            <Select
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
+              options={problemOptions}
             />
           </div>
           <div className="w-full sm:w-36">

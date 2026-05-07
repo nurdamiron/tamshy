@@ -14,15 +14,15 @@ export default getRequestConfig(async () => {
   const headerStore = await headers();
   const acceptLang = headerStore.get('accept-language') || '';
 
-  let locale: Locale = defaultLocale;
+  let locale: Locale = defaultLocale; // 'kk' — казахский по умолчанию
 
   if (cookieLocale && locales.includes(cookieLocale)) {
     locale = cookieLocale;
   } else if (acceptLang.includes('kk')) {
     locale = 'kk';
-  } else if (acceptLang.includes('en')) {
-    locale = 'en';
   }
+  // Не переключаемся на ru/en по заголовку Accept-Language —
+  // пользователь явно выбирает язык через LanguageSwitcher (cookie).
 
   return {
     locale,

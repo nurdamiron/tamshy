@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
+import { contestSchema } from '@/lib/validators';
 
 export async function GET(req: NextRequest) {
   try {
@@ -8,12 +9,14 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const search = searchParams.get('search');
 
-    const where: Record<string, unknown> = {};
-
-    if (status) where.status = status;
-    if (search) {
-      where.title = { contains: search, mode: 'insensitive' };
+    const VALID_STATUSES = ['ACTIVE', 'COMPLETED'];
+    if (status && !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: 'Некорректный статус' }, { status: 400 });
     }
+
+    const where: Record<string, unknown> = {};
+    if (status) where.status = status;
+    if (search) where.title = { contains: search, mode: 'insensitive' };
 
     const contests = await prisma.contest.findMany({
       where,
@@ -38,20 +41,18 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { title, type, description, rules, deadline, documents } = body;
-
-    if (!title || !type || !description || !deadline) {
-      return NextResponse.json(
-        { error: 'Заполните все обязательные поля' },
-        { status: 400 }
-      );
+    const result = contestSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
     }
+
+    const { title, type, description, rules, deadline, imageUrl, documents } = result.data;
 
     const contest = await prisma.contest.create({
       data: {
@@ -60,8 +61,9 @@ export async function POST(req: NextRequest) {
         description,
         rules,
         deadline: new Date(deadline),
+        imageUrl,
         documents: {
-          create: documents || [],
+          create: documents ?? [],
         },
       },
       include: {

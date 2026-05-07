@@ -1,0 +1,15 @@
+# Список URL'ов новостей с gov.kz/memleket/entities/water
+# По одному URL на строку. Строки, начинающиеся с #, игнорируются.
+# Полный листинг открывается на:
+#   https://www.gov.kz/memleket/entities/water/press/news/1?lang=ru
+#
+# Чтобы добавить новости:
+#   1) Открой ссылку выше в браузере, скопируй URL'ы карточек (правая кнопка → копировать ссылку).
+#   2) Вставь сюда по одной на строку.
+#   3) Запусти: npx tsx scripts/ingest-govkz-news.ts --mode=playwright --file=scripts/govkz-urls.txt
+#
+# Примеры известных новостей (можно сразу загрузить в playwright-режиме):
+https://www.gov.kz/memleket/entities/water/press/news/details/640984?lang=ru
+https://www.gov.kz/memleket/entities/water/press/news/details/839004?lang=ru
+https://www.gov.kz/memleket/entities/water/press/news/details/866929?lang=ru
+https://www.gov.kz/memleket/entities/water/press/news/details/963003?lang=ru

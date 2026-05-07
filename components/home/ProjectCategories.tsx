@@ -89,8 +89,8 @@ function TiltCard({ category }: { category: CategoryItem }) {
             )}
             <motion.div
               className="relative z-10 w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3"
-              whileHover={{ rotate: [0, -8, 8, 0], scale: 1.1 }}
-              transition={{ duration: 0.4 }}
+              whileHover={{ rotate: 8, scale: 1.1 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               <HugeiconsIcon icon={category.icon} size={24} className="text-white" />
             </motion.div>

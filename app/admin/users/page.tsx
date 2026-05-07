@@ -5,19 +5,19 @@ import { motion } from 'framer-motion';
 
 interface User {
   id: string;
-  phone: string;
+  email: string;
   name: string | null;
   role: string;
   createdAt: string;
   _count: { projects: number };
 }
 
-const ROLES = ['STUDENT', 'TEACHER', 'JURY', 'ADMIN'];
+const ROLES = ['TEACHER', 'JURY', 'ADMIN'];
 const ROLE_LABELS: Record<string, string> = {
-  STUDENT: 'Ученик',
-  TEACHER: 'Учитель',
-  JURY: 'Жюри',
-  ADMIN: 'Админ',
+  STUDENT: 'Оқушы',   // legacy — не назначается вручную
+  TEACHER: 'Мұғалім',
+  JURY: 'Қазы',
+  ADMIN: 'Әкімші',
 };
 const ROLE_COLORS: Record<string, string> = {
   STUDENT: 'bg-blue-50 text-blue-700',
@@ -119,8 +119,8 @@ export default function AdminUsersPage() {
                       {user.name || '—'}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-[13px] text-[#64748B] font-mono">
-                    {user.phone}
+                  <td className="px-5 py-3.5 text-[13px] text-[#64748B]">
+                    {user.email ?? '—'}
                   </td>
                   <td className="px-5 py-3.5">
                     <select

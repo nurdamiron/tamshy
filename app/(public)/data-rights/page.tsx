@@ -9,65 +9,65 @@ import Select from '@/components/ui/Select';
 import Button from '@/components/ui/Button';
 
 const REQUEST_TYPES = [
-  { value: 'access', label: 'Доступ к данным' },
-  { value: 'correction', label: 'Исправление данных' },
-  { value: 'deletion', label: 'Удаление данных' },
-  { value: 'revoke', label: 'Отзыв согласия' },
-  { value: 'restriction', label: 'Ограничение обработки' },
+  { value: 'access', label: 'Деректерге қолжетімділік' },
+  { value: 'correction', label: 'Деректерді түзету' },
+  { value: 'deletion', label: 'Деректерді жою' },
+  { value: 'revoke', label: 'Келісімді кері қайтару' },
+  { value: 'restriction', label: 'Өңдеуді шектеу' },
 ];
 
 const RIGHTS = [
   {
     icon: '👁️',
-    title: 'Право на доступ',
+    title: 'Қолжетімділік құқығы',
     description:
-      'Вы вправе получить подтверждение факта обработки ваших персональных данных, а также перечень обрабатываемых данных, цели их обработки и сведения о третьих лицах, которым они были переданы.',
-    deadline: '5 рабочих дней',
+      'Сіз өзіңіздің жеке деректеріңіздің өңделетінін растауды, өңделетін деректер тізімін, өңдеу мақсаттарын және оларды берілген үшінші тұлғалар туралы мәліметтерді алуға құқылысыз.',
+    deadline: '5 жұмыс күні',
     deadlineColor: 'green',
     type: 'access',
   },
   {
     icon: '✏️',
-    title: 'Право на исправление',
+    title: 'Түзету құқығы',
     description:
-      'Если ваши персональные данные являются неточными, неполными или устаревшими, вы вправе потребовать их исправления или дополнения.',
-    deadline: '5 рабочих дней',
+      'Егер жеке деректеріңіз дұрыс емес, толық емес немесе ескірген болса, сіз оларды түзетуді немесе толықтыруды талап етуге құқылысыз.',
+    deadline: '5 жұмыс күні',
     deadlineColor: 'green',
     type: 'correction',
   },
   {
     icon: '🗑️',
-    title: 'Право на удаление',
+    title: 'Жою құқығы',
     description:
-      'Вы вправе потребовать удаления ваших персональных данных в случаях, предусмотренных законодательством: если цель обработки достигнута, согласие отозвано или данные обрабатываются незаконно.',
-    deadline: '15 рабочих дней',
+      'Заңнамада белгіленген жағдайларда: өңдеу мақсаты орындалған, келісім кері қайтарылған немесе деректер заңсыз өңделіп жатқан жағдайда жеке деректеріңізді жоюды талап ете аласыз.',
+    deadline: '15 жұмыс күні',
     deadlineColor: 'amber',
     type: 'deletion',
   },
   {
     icon: '🚫',
-    title: 'Право на ограничение обработки',
+    title: 'Өңдеуді шектеу құқығы',
     description:
-      'Вы вправе потребовать приостановления обработки ваших данных на период рассмотрения ваших возражений или жалобы. Данные не будут удалены, но их использование будет ограничено.',
-    deadline: '5 рабочих дней',
+      'Сіз қарсылықтарыңыз немесе шағымыңыз қаралатын кезеңге деректер өңдеуін тоқтатуды талап ете аласыз. Деректер жойылмайды, бірақ олардың пайдаланылуы шектеледі.',
+    deadline: '5 жұмыс күні',
     deadlineColor: 'green',
     type: 'restriction',
   },
   {
     icon: '↩️',
-    title: 'Право на отзыв согласия',
+    title: 'Келісімді кері қайтару құқығы',
     description:
-      'Вы вправе в любой момент отозвать ранее данное согласие на обработку персональных данных. Отзыв согласия не влияет на законность обработки, осуществлявшейся на основании согласия до его отзыва.',
-    deadline: '5 рабочих дней',
+      'Сіз кез келген уақытта жеке деректерді өңдеуге бұрын берген келісімді кері қайтара аласыз. Кері қайтару оны кері қайтарғанға дейін жасалған өңдеудің заңдылығына әсер етпейді.',
+    deadline: '5 жұмыс күні',
     deadlineColor: 'green',
     type: 'revoke',
   },
   {
     icon: '⚖️',
-    title: 'Право на обжалование',
+    title: 'Шағым беру құқығы',
     description:
-      'Если вы считаете, что ваши права в области защиты персональных данных нарушены, вы вправе обратиться с жалобой в Министерство цифрового развития, инноваций и аэрокосмической промышленности Республики Казахстан.',
-    deadline: 'По законодательству РК',
+      'Егер жеке деректерді қорғау саласындағы құқықтарыңыз бұзылған деп санасаңыз, Қазақстан Республикасының Цифрлық даму, инновациялар және аэроғарыш өнеркәсібі министрлігіне шағым бере аласыз.',
+    deadline: 'ҚР заңнамасына сәйкес',
     deadlineColor: 'gray',
     type: null,
   },
@@ -117,12 +117,12 @@ export default function DataRightsPage() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || 'Ошибка отправки');
+        throw new Error(data.error || 'Жіберу қатесі');
       }
 
       setSubmitted(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка при отправке запроса');
+      setError(e instanceof Error ? e.message : 'Сұрауды жіберу кезінде қате');
     }
 
     setLoading(false);
@@ -142,14 +142,14 @@ export default function DataRightsPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
-            <span className="text-[13px] text-blue-300 font-medium">Права субъектов ПД</span>
+            <span className="text-[13px] text-blue-300 font-medium">ЖД субъектілерінің құқықтары</span>
           </div>
           <h1 className="text-[36px] sm:text-[44px] font-bold mb-4 leading-tight">
-            Ваши права на защиту персональных данных
+            Жеке деректерді қорғауға сіздің құқықтарыңыз
           </h1>
           <p className="text-[16px] text-white/60 max-w-2xl">
-            В соответствии с Законом РК «О персональных данных и их защите» № 94-V вы имеете
-            ряд прав в отношении ваших данных, обрабатываемых на платформе Tamshy.kz.
+            ҚР «Жеке деректер және оларды қорғау туралы» № 94-V Заңына сәйкес Tamshy.kz
+            платформасында өңделетін деректеріңізге қатысты бірқатар құқықтарыңыз бар.
           </p>
         </motion.div>
       </div>
@@ -163,7 +163,7 @@ export default function DataRightsPage() {
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <h2 className="text-[22px] font-bold text-[#0F172A] mb-6">
-            Ваши права по Закону о ПД РК
+            ҚР ЖД Заңы бойынша сіздің құқықтарыңыз
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             {RIGHTS.map((right, i) => (
@@ -192,7 +192,7 @@ export default function DataRightsPage() {
                     }}
                     className="mt-3 text-[12px] text-[#2563EB] hover:underline font-medium"
                   >
-                    Подать запрос &rarr;
+                    Сұрау жіберу &rarr;
                   </button>
                 )}
               </motion.div>
@@ -215,22 +215,22 @@ export default function DataRightsPage() {
               </svg>
             </div>
             <div>
-              <h3 className="text-[16px] font-bold text-[#0F172A] mb-3">Сроки ответа на запросы</h3>
+              <h3 className="text-[16px] font-bold text-[#0F172A] mb-3">Сұрауларға жауап беру мерзімдері</h3>
               <div className="grid sm:grid-cols-3 gap-3">
                 <div className="bg-white rounded-xl p-4 border border-blue-100">
                   <p className="text-[24px] font-bold text-green-600">5</p>
-                  <p className="text-[12px] text-[#64748B] mt-0.5">рабочих дней</p>
-                  <p className="text-[11px] text-[#94A3B8] mt-1">Доступ к данным, исправление, ограничение, отзыв согласия</p>
+                  <p className="text-[12px] text-[#64748B] mt-0.5">жұмыс күні</p>
+                  <p className="text-[11px] text-[#94A3B8] mt-1">Деректерге қолжетімділік, түзету, шектеу, келісімді кері қайтару</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-blue-100">
                   <p className="text-[24px] font-bold text-amber-600">15</p>
-                  <p className="text-[12px] text-[#64748B] mt-0.5">рабочих дней</p>
-                  <p className="text-[11px] text-[#94A3B8] mt-1">Удаление персональных данных</p>
+                  <p className="text-[12px] text-[#64748B] mt-0.5">жұмыс күні</p>
+                  <p className="text-[11px] text-[#94A3B8] mt-1">Жеке деректерді жою</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-blue-100">
                   <p className="text-[24px] font-bold text-blue-600">30</p>
-                  <p className="text-[12px] text-[#64748B] mt-0.5">календарных дней</p>
-                  <p className="text-[11px] text-[#94A3B8] mt-1">Максимальный срок для сложных запросов с уведомлением о продлении</p>
+                  <p className="text-[12px] text-[#64748B] mt-0.5">күнтізбелік күн</p>
+                  <p className="text-[11px] text-[#94A3B8] mt-1">Ұзартуды хабарлай отырып күрделі сұраулар үшін ең ұзақ мерзім</p>
                 </div>
               </div>
             </div>
@@ -246,12 +246,12 @@ export default function DataRightsPage() {
           className="bg-white border border-[#E2E8F0] rounded-2xl p-8 shadow-sm"
         >
           <h2 className="text-[22px] font-bold text-[#0F172A] mb-2">
-            Форма подачи запроса
+            Сұрау беру нысаны
           </h2>
           <p className="text-[14px] text-[#64748B] mb-8">
-            Заполните форму ниже, чтобы подать запрос на реализацию ваших прав. Наш
-            специалист по защите данных рассмотрит его в установленные сроки и свяжется
-            с вами по указанным контактным данным.
+            Құқықтарыңызды жүзеге асыру үшін төмендегі нысанды толтырыңыз. Деректерді
+            қорғау маманы белгіленген мерзімде қарастырып, көрсетілген байланыс
+            деректері арқылы сізбен хабарласады.
           </p>
 
           {submitted ? (
@@ -261,20 +261,20 @@ export default function DataRightsPage() {
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
-              <h3 className="text-[20px] font-bold text-[#0F172A] mb-2">Запрос отправлен</h3>
+              <h3 className="text-[20px] font-bold text-[#0F172A] mb-2">Сұрау жіберілді</h3>
               <p className="text-[14px] text-[#64748B] max-w-md mx-auto">
-                Ваш запрос принят и будет рассмотрен специалистом по защите персональных данных
-                в установленные законодательством сроки. Ответ будет направлен на указанный email.
+                Сұрауыңыз қабылданды және заңнамада белгіленген мерзімде жеке деректерді
+                қорғау маманы қарастырады. Жауап көрсетілген email-ге жіберіледі.
               </p>
               <p className="mt-4 text-[13px] text-[#94A3B8]">
-                По вопросам: <a href="mailto:privacy@tamshy.kz" className="text-[#2563EB] hover:underline">privacy@tamshy.kz</a>
+                Сұрақтар бойынша: <a href="mailto:privacy@tamshy.kz" className="text-[#2563EB] hover:underline">privacy@tamshy.kz</a>
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid sm:grid-cols-2 gap-5">
                 <Input
-                  label="Ваше ФИО *"
+                  label="Аты-жөніңіз *"
                   placeholder="Иванов Иван Иванович"
                   value={formData.name}
                   onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
@@ -290,40 +290,39 @@ export default function DataRightsPage() {
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <Input
-                  label="Номер телефона"
+                  label="Телефон нөмірі"
                   type="tel"
                   placeholder="+7 (___) ___-__-__"
                   value={formData.phone}
                   onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                  hint="Необязательно — для оперативной связи"
+                  hint="Міндетті емес — жедел байланыс үшін"
                 />
                 <Select
-                  label="Тип запроса *"
+                  label="Сұрау түрі *"
                   value={formData.requestType}
                   onChange={(e) => setFormData((prev) => ({ ...prev, requestType: e.target.value }))}
                   options={REQUEST_TYPES}
-                  placeholder="Выберите тип запроса"
+                  placeholder="Сұрау түрін таңдаңыз"
                 />
               </div>
 
               <Textarea
-                label="Описание запроса *"
-                placeholder="Опишите ваш запрос подробно: какие именно данные затронуты, какое действие вы хотите, чтобы мы предприняли..."
+                label="Сұрау сипаттамасы *"
+                placeholder="Сұрауыңызды егжей-тегжейлі сипаттаңыз: қандай деректер қатысты, қандай іс-әрекет жасауымызды қалайсыз..."
                 value={formData.message}
                 onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                 showCount
                 maxLength={2000}
-                hint="Минимум 20 символов"
+                hint="Кемінде 20 таңба"
               />
 
               <div className="p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl">
                 <p className="text-[12px] text-[#64748B]">
-                  Отправляя данную форму, вы подтверждаете, что являетесь субъектом
-                  персональных данных или его законным представителем. Ваш запрос будет
-                  обработан в соответствии с Законом РК № 94-V «О персональных данных и
-                  их защите».{' '}
+                  Осы нысанды жібере отырып, сіз жеке деректер субъектісі немесе оның
+                  заңды өкілі екеніңізді растайсыз. Сұрауыңыз ҚР № 94-V
+                  «Жеке деректер және оларды қорғау туралы» Заңына сәйкес өңделеді.{' '}
                   <Link href="/privacy" className="text-[#2563EB] hover:underline">
-                    Политика конфиденциальности
+                    Құпиялылық саясаты
                   </Link>
                 </p>
               </div>
@@ -338,7 +337,7 @@ export default function DataRightsPage() {
                 disabled={!canSubmit}
                 className="w-full"
               >
-                Отправить запрос
+                Сұрау жіберу
               </Button>
             </form>
           )}
@@ -358,10 +357,10 @@ export default function DataRightsPage() {
           </div>
           <div className="flex-1">
             <h3 className="text-[16px] font-bold text-[#0F172A]">
-              Ответственный за защиту персональных данных (DPO)
+              Жеке деректерді қорғауға жауапты тұлға (DPO)
             </h3>
             <p className="text-[13px] text-[#64748B] mt-1">
-              НАО «Информационно-аналитический центр водных ресурсов», г. Астана, ул. Достык 13/3
+              «Су ресурстарының ақпараттық-аналитикалық орталығы» ЖАҚ, Астана қ., Достык к-сі 13/3
             </p>
           </div>
           <div className="flex flex-col sm:items-end gap-2 shrink-0">

@@ -5,8 +5,8 @@ import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const languages = [
-  { code: 'ru', label: 'Рус', flag: '🇷🇺' },
   { code: 'kk', label: 'Қаз', flag: '🇰🇿' },
+  { code: 'ru', label: 'Рус', flag: '🇷🇺' },
   { code: 'en', label: 'Eng', flag: '🇬🇧' },
 ] as const;
 

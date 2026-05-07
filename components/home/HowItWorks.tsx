@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { SmartPhone01Icon, Upload01Icon, HeartCheckIcon, Medal01Icon } from '@hugeicons/core-free-icons';
+import { HOW_IT_WORKS_BG_URL } from '@/lib/constants';
 
 const iconMap = [SmartPhone01Icon, Upload01Icon, HeartCheckIcon, Medal01Icon];
 const colors = ['#0284C7', '#3B82F6', '#EC4899', '#F59E0B'];
@@ -24,6 +25,19 @@ export default function HowItWorks() {
 
   return (
     <section ref={sectionRef} className="py-24 bg-white relative overflow-hidden">
+      {/* Photo background — very subtle, content readability preserved */}
+      {HOW_IT_WORKS_BG_URL && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={HOW_IT_WORKS_BG_URL}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+            style={{ opacity: 0.04 }}
+          />
+          <div className="absolute inset-0 bg-white/80 pointer-events-none" />
+        </>
+      )}
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02]" style={{
         backgroundImage: 'radial-gradient(#0284C7 1px, transparent 1px)',
@@ -111,7 +125,7 @@ export default function HowItWorks() {
                       <motion.div
                         className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
                         style={{ backgroundColor: color + '10' }}
-                        animate={isHovered ? { scale: 1.1, rotate: [0, -3, 3, 0] } : { scale: 1, rotate: 0 }}
+                        animate={isHovered ? { scale: 1.1, rotate: 6 } : { scale: 1, rotate: 0 }}
                         transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                       >
                         <motion.div

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Ход реализации',
-  description: 'Новости, отчёты и медиаматериалы проекта по водосбережению',
+  title: 'Іске асыру барысы',
+  description: 'Жобаның жаңалықтары, есептері және медиаматериалдары',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

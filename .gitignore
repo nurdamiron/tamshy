@@ -20,8 +20,9 @@
 .DS_Store
 *.pem
 
-# локальные загрузки пользователей (не S3)
+# локальные загрузки пользователей (не S3) — хранятся вне public через auth-прокси
 public/uploads/
+.uploads/
 
 # debug
 npm-debug.log*

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
+import { contestUpdateSchema } from '@/lib/validators';
 
 export async function GET(
   _req: NextRequest,
@@ -31,21 +32,21 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
 
     const body = await req.json();
-    const { title, type, description, rules, status, deadline } = body;
+    const result = contestUpdateSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
+    }
 
-    const data: Record<string, unknown> = {};
-    if (title !== undefined) data.title = title;
-    if (type !== undefined) data.type = type;
-    if (description !== undefined) data.description = description;
-    if (rules !== undefined) data.rules = rules;
-    if (status !== undefined) data.status = status;
-    if (deadline !== undefined) data.deadline = new Date(deadline);
+    const data: Record<string, unknown> = { ...result.data };
+    if (result.data.deadline !== undefined) {
+      data.deadline = new Date(result.data.deadline);
+    }
 
     const contest = await prisma.contest.update({
       where: { id: params.id },
@@ -68,7 +69,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }

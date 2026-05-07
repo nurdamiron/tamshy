@@ -129,6 +129,16 @@ const sections: NavSection[] = [
           </svg>
         ),
       },
+      {
+        label: 'Qazsu KPI',
+        href: '/admin/qazsu-stats',
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        ),
+      },
     ],
   },
   {
@@ -171,6 +181,7 @@ const breadcrumbNames: Record<string, string> = {
   materials: 'Медиатека',
   news: 'Новости',
   messages: 'Сообщения',
+  'qazsu-stats': 'Qazsu KPI',
 };
 
 /* ── layout component ────────────────────────────────── */

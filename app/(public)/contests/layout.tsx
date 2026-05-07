@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Конкурсы',
-  description: 'Активные конкурсы водных проектов. Подайте заявку на участие',
+  title: 'Конкурстар',
+  description: 'Суды үнемдеу бойынша белсенді конкурстар. Өтінім беріңіз',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

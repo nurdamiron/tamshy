@@ -4,10 +4,10 @@ import useSWR from 'swr';
 
 export type AuthUser = {
   id: string;
-  phone: string;
+  email: string;
   name: string | null;
   role: 'STUDENT' | 'TEACHER' | 'JURY' | 'ADMIN';
-  consentSms: boolean;
+  consentEmail: boolean;
   createdAt: string;
 };
 

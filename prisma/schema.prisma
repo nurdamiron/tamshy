@@ -9,19 +9,25 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  phone        String    @unique
-  name         String?
-  role         Role      @default(STUDENT)
-  createdAt    DateTime  @default(now())
-  projects     Project[]
-  votes        Vote[]
-  otpCode      String?
-  otpExpiry    DateTime?
-  consentPd    Boolean   @default(false)
-  consentPdAt  DateTime?
-  consentSms   Boolean   @default(false)
-  consentSmsAt DateTime?
+  id              String              @id @default(cuid())
+  email           String?             @unique
+  phone           String?             @unique
+  name            String?
+  role            Role                @default(STUDENT)
+  tokenVersion    Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  projects        Project[]
+  votes           Vote[]
+  submissions     ContestSubmission[]
+  otpCode         String?
+  otpExpiry       DateTime?
+  consentPd       Boolean             @default(false)
+  consentPdAt     DateTime?
+  consentEmail    Boolean             @default(false)
+  consentEmailAt  DateTime?
+  // Legacy — оставлено для совместимости
+  consentSms      Boolean             @default(false)
+  consentSmsAt    DateTime?
 }
 
 model Project {
@@ -40,12 +46,42 @@ model Project {
   teacherName  String
   studentName  String?
   grade        Int
+  teamMembers  Json?         // [{name: string, grade: number}] — доп. участники
+  summary      String?       @db.Text // Краткая аннотация
   juryScore    Int?
   juryComment  String?       @db.Text
   createdAt    DateTime      @default(now())
   votes        Vote[]
 
+  // ── Qazsu integration ────────────────────────────────
+  sourceSystem        SourceSystem      @default(DIRECT)
+  sourceCampaign      String?           // напр. "tamshy-2026"
+  basin               WaterBasin?
+  waterObjectId       String?           // внешний идентификатор объекта Qazsu
+  waterObject         WaterObject?      @relation(fields: [waterObjectId], references: [id], onDelete: SetNull)
+  problemType         WaterProblemType?
+  qazsuRefUrl         String?           // deeplink на объект в Qazsu
+  qazsuSnapshot       Json?             // снэпшот контекста на момент подачи
+  publishToQazsu      Boolean           @default(false)
+  publishedToQazsuAt  DateTime?
+
   // Индексы создаются через scripts/create-indexes.sql (права DBA нужны в prod RDS)
+}
+
+// Справочник водных объектов (бассейн, река, озеро, водохранилище, канал).
+// Является master-source для интеграции Qazsu↔Tamshy. Может пополняться seed/admin.
+model WaterObject {
+  id          String      @id // напр. "ili-river", внешний id из Qazsu
+  name        String
+  nameKz      String?
+  nameEn      String?
+  basin       WaterBasin
+  type        WaterObjectType
+  region      Region?
+  description String?     @db.Text
+  qazsuUrl    String?
+  createdAt   DateTime    @default(now())
+  projects    Project[]
 }
 
 model Vote {
@@ -113,6 +149,8 @@ model ContestSubmission {
   id          String           @id @default(cuid())
   contestId   String
   contest     Contest          @relation(fields: [contestId], references: [id])
+  userId      String?
+  user        User?            @relation(fields: [userId], references: [id])
   fullName    String
   birthDate   String
   email       String
@@ -237,4 +275,48 @@ enum Region {
   PETROPAVLOVSK
   ORAL
   KOSTANAY
+}
+
+// ── Qazsu integration enums ─────────────────────────
+
+enum SourceSystem {
+  DIRECT       // подача напрямую через Tamshy
+  QAZSU        // переход из qazsu.gov.kz
+  PARTNER      // другие партнерские источники
+}
+
+// 8 водохозяйственных бассейнов Казахстана (источник: BVI / qazsu.gov.kz)
+enum WaterBasin {
+  URAL_CASPIAN      // Жайык-Каспийский
+  ARAL_SYRDARYA     // Арало-Сырдарьинский
+  BALKHASH_ALAKOL   // Балхаш-Алакольский
+  IRTYSH            // Ертіс
+  ESIL              // Есіль / Ишимский
+  NURA_SARYSU       // Нура-Сарысуский
+  TOBOL_TURGAY      // Тобол-Тургайский
+  SHU_TALAS         // Шу-Таласский
+}
+
+enum WaterObjectType {
+  RIVER             // река
+  LAKE              // озеро
+  RESERVOIR         // водохранилище
+  CANAL             // канал
+  GROUNDWATER       // подземный водоносный горизонт
+  GLACIER           // ледник
+  OTHER
+}
+
+enum WaterProblemType {
+  WATER_QUALITY     // качество воды, загрязнение
+  WATER_SCARCITY    // дефицит, маловодье
+  IRRIGATION        // эффективность ирригации
+  LOSSES            // потери в распределительной сети
+  MONITORING        // мониторинг, citizen science
+  EDUCATION         // экопросвещение, культура водосбережения
+  TRANSBOUNDARY     // трансграничные водные ресурсы
+  FLOOD             // паводки, ранее предупреждение
+  GROUNDWATER       // подземные воды
+  INNOVATION        // приложения, IoT, ML, дашборды
+  OTHER
 }

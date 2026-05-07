@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'О проекте',
-  description: 'Цели, задачи и описание инициативы по водосбережению в Казахстане',
+  title: 'Жоба туралы',
+  description: 'Қазақстандағы суды үнемдеу бастамасының мақсаттары, міндеттері және сипаттамасы',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

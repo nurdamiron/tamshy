@@ -156,8 +156,8 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
             {/* Type icon */}
             <motion.div
               className="relative z-10 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center"
-              whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
-              transition={{ duration: 0.4 }}
+              whileHover={{ scale: 1.15, rotate: 5 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               {typeIcons[project.type] || typeIcons.OTHER}
             </motion.div>

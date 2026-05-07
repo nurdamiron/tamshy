@@ -89,13 +89,19 @@ const SHARED_FIELD_KEYS = [
 /* ------------------------------------------------------------------ */
 
 const typeBadgeColor: Record<string, string> = {
-  ВИДЕОКОНКУРС: 'bg-blue-50 text-blue-700',
-  ЭССЕ: 'bg-indigo-50 text-indigo-700',
-  ФОТОКОНКУРС: 'bg-emerald-50 text-emerald-700',
+  ВИДЕОКОНКУРС:  'bg-blue-50 text-blue-700',
+  БЕЙНЕКОНКУРС:  'bg-blue-50 text-blue-700',
+  ЭССЕ:          'bg-indigo-50 text-indigo-700',
+  ШЫҒАРМА:       'bg-indigo-50 text-indigo-700',
+  ФОТОКОНКУРС:   'bg-emerald-50 text-emerald-700',
+  ФОТОБАЙҚАУ:    'bg-emerald-50 text-emerald-700',
   'АРТ-КОНКУРС': 'bg-pink-50 text-pink-700',
-  ИССЛЕДОВАНИЕ: 'bg-amber-50 text-amber-700',
-  ХАКАТОН: 'bg-violet-50 text-violet-700',
-  ЛИТЕРАТУРА: 'bg-rose-50 text-rose-700',
+  'ӨНЕ-БАЙҚАУЫ': 'bg-pink-50 text-pink-700',
+  ИССЛЕДОВАНИЕ:  'bg-amber-50 text-amber-700',
+  ЗЕРТТЕУ:       'bg-amber-50 text-amber-700',
+  ХАКАТОН:       'bg-violet-50 text-violet-700',
+  ЛИТЕРАТУРА:    'bg-rose-50 text-rose-700',
+  ӘДЕБИЕТ:       'bg-rose-50 text-rose-700',
 };
 
 function formatDeadline(deadline: string, status: string, deadlineLabel: string): string {

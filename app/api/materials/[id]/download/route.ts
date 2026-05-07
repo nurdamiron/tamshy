@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit, formLimiter } from '@/lib/ratelimit';
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const blocked = await checkRateLimit(req, formLimiter);
+    if (blocked) return blocked;
+
     const exists = await prisma.material.findUnique({ where: { id: params.id } });
     if (!exists) {
       return NextResponse.json({ error: 'Материал не найден' }, { status: 404 });

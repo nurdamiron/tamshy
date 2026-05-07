@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
+
+const VALID_STATUSES = ['NEW', 'REVIEWING', 'ACCEPTED', 'REJECTED'];
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
@@ -15,11 +17,8 @@ export async function PATCH(
     const body = await req.json();
     const { status } = body;
 
-    if (!status || !['NEW', 'REVIEWING', 'ACCEPTED', 'REJECTED'].includes(status)) {
-      return NextResponse.json(
-        { error: 'Некорректный статус' },
-        { status: 400 }
-      );
+    if (!status || !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: 'Некорректный статус' }, { status: 400 });
     }
 
     const submission = await prisma.contestSubmission.update({

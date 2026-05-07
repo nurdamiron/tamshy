@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import PageHeader from '@/components/layout/PageHeader';
 import Input from '@/components/ui/Input';
 
@@ -17,10 +18,10 @@ interface NewsItem {
 }
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; gradient: string }> = {
-  NEWS:   { label: 'Новости',  color: 'text-blue-700',   bg: 'bg-blue-50',   gradient: 'from-blue-500 to-blue-600' },
-  REPORT: { label: 'Отчёты',   color: 'text-amber-700',  bg: 'bg-amber-50',  gradient: 'from-amber-500 to-orange-500' },
-  PHOTO:  { label: 'Фото',     color: 'text-green-700',  bg: 'bg-green-50',  gradient: 'from-green-500 to-emerald-500' },
-  VIDEO:  { label: 'Видео',    color: 'text-purple-700', bg: 'bg-purple-50', gradient: 'from-purple-500 to-violet-600' },
+  NEWS:   { label: 'Жаңалықтар', color: 'text-blue-700',   bg: 'bg-blue-50',   gradient: 'from-blue-500 to-blue-600' },
+  REPORT: { label: 'Есептер',    color: 'text-amber-700',  bg: 'bg-amber-50',  gradient: 'from-amber-500 to-orange-500' },
+  PHOTO:  { label: 'Фото',       color: 'text-green-700',  bg: 'bg-green-50',  gradient: 'from-green-500 to-emerald-500' },
+  VIDEO:  { label: 'Бейне',      color: 'text-purple-700', bg: 'bg-purple-50', gradient: 'from-purple-500 to-violet-600' },
 };
 
 const CATEGORIES = ['ALL', 'NEWS', 'REPORT', 'PHOTO', 'VIDEO'];
@@ -53,6 +54,7 @@ function NewsCardSkeleton() {
 }
 
 export default function NewsPage() {
+  const locale = useLocale();
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -113,14 +115,14 @@ export default function NewsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-      <PageHeader title="Новости" subtitle="Актуальные новости, фоторепортажи и видеоматериалы олимпиады" />
+      <PageHeader title="Жаңалықтар" subtitle="Жобаның өзекті жаңалықтары, фоторепортаждары және бейнематериалдары" />
 
       {/* Search + category tabs */}
       <div className="sticky top-16 z-30 bg-[#F8FAFC]/80 backdrop-blur-md py-4 -mx-4 px-4 sm:-mx-6 sm:px-6 mb-8">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="w-full sm:max-w-xs">
             <Input
-              placeholder="Поиск по новостям..."
+              placeholder="Жаңалықтар іздеу..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
             />
@@ -141,7 +143,7 @@ export default function NewsPage() {
                       : 'bg-white text-[#64748B] border-[#E2E8F0] hover:border-[#0284C7]/40 hover:text-[#0284C7]'
                   }`}
                 >
-                  {cat === 'ALL' ? 'Все' : cfg?.label}
+                  {cat === 'ALL' ? 'Барлығы' : cfg?.label}
                 </button>
               );
             })}
@@ -162,8 +164,8 @@ export default function NewsPage() {
               <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
               <polyline points="14 2 14 8 20 8" />
             </svg>
-            <p className="text-[16px] text-[#64748B]">Новостей не найдено</p>
-            <p className="text-[13px] text-[#64748B]/60 mt-1">Попробуйте изменить фильтры или поисковый запрос</p>
+            <p className="text-[16px] text-[#64748B]">Жаңалықтар табылмады</p>
+            <p className="text-[13px] text-[#64748B]/60 mt-1">Сүзгілерді немесе іздеу сұрауын өзгертіп көріңіз</p>
           </motion.div>
         ) : (
           <motion.div
@@ -228,7 +230,7 @@ export default function NewsPage() {
 
                         <div className="flex items-center justify-between text-[12px] text-[#94A3B8] pt-3 border-t border-[#E2E8F0]/60">
                           <span>
-                            {new Date(item.createdAt).toLocaleDateString('ru-RU', {
+                            {new Date(item.createdAt).toLocaleDateString(locale, {
                               day: 'numeric', month: 'long', year: 'numeric',
                             })}
                           </span>

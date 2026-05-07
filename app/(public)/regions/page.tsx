@@ -78,7 +78,7 @@ export default function RegionsPage() {
                         ) : (
                           <p className="text-[12px] text-[#64748B]">
                             {count > 0
-                              ? `${count} одобр. ${count === 1 ? 'проект' : count < 5 ? 'проекта' : 'проектов'}`
+                              ? `${count} мақұлданған жоба`
                               : tPage('viewProjects')}
                           </p>
                         )}

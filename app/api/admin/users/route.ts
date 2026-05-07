@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getTokenPayload } from '@/lib/auth';
+import { getVerifiedPayload } from '@/lib/auth';
 import { ADMIN_USERS_PER_PAGE } from '@/lib/constants';
 
 export async function GET(req: NextRequest) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
-        { phone: { contains: search } },
+        { email: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
         take: perPage,
         select: {
           id: true,
-          phone: true,
+          email: true,
           name: true,
           role: true,
           createdAt: true,
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const payload = await getTokenPayload();
+    const payload = await getVerifiedPayload();
     if (!payload || payload.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
     }
@@ -89,10 +89,11 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
+    // Инкрементируем tokenVersion — invalidates все активные сессии пользователя
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { role },
-      select: { id: true, phone: true, name: true, role: true },
+      data: { role, tokenVersion: { increment: 1 } },
+      select: { id: true, email: true, name: true, role: true },
     });
 
     return NextResponse.json({ user });

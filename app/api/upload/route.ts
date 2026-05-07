@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     const url = s3UploadEnabled()
       ? await uploadToS3(buffer, s3Key, detectedMime)
-      : await saveUploadLocal(buffer, ext, payload.userId);
+      : await saveUploadLocal(buffer, s3Key);
 
     return NextResponse.json({ url });
   } catch (error) {

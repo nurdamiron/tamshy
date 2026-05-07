@@ -16,14 +16,21 @@ export async function GET() {
         prisma.project.groupBy({ by: ['type'], _count: { id: true }, where: approvedFilter }),
       ]);
 
-    return NextResponse.json({
-      totalProjects,
-      totalVotes,
-      totalUsers,
-      totalSchools: schoolGroups.length, // реальное число уникальных школ
-      regionStats: regionStats.map((r) => ({ region: r.region, count: r._count.id })),
-      typeStats:   typeStats.map((t)   => ({ type: t.type,     count: t._count.id })),
-    });
+    return NextResponse.json(
+      {
+        totalProjects,
+        totalVotes,
+        totalUsers,
+        totalSchools: schoolGroups.length,
+        regionStats: regionStats.map((r) => ({ region: r.region, count: r._count.id })),
+        typeStats:   typeStats.map((t)   => ({ type: t.type,     count: t._count.id })),
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (error) {
     console.error('Stats error:', error);
     return NextResponse.json({ error: 'Ошибка' }, { status: 500 });
