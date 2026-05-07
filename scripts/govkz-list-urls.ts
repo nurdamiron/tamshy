@@ -51,7 +51,7 @@ async function main() {
       for (const l of links) all.add(l);
     }
 
-    for (const u of [...all].sort()) console.log(u);
+    for (const u of Array.from(all).sort()) console.log(u);
     console.error(`\n=== итого ${all.size} URL'ов ===`);
   } finally {
     await browser.close();
