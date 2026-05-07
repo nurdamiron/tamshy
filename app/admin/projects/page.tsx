@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { basinLabels, waterBasinValues, problemLabels } from '@/lib/validators';
+import { basinLabels, waterBasinValues, problemLabels, waterProblemValues } from '@/lib/validators';
 
 interface Project {
   id: string;
@@ -93,6 +93,19 @@ export default function AdminProjects() {
     if (res.ok) fetchProjects();
   };
 
+  const updateQazsuMeta = async (
+    id: string,
+    field: 'basin' | 'problemType',
+    value: string,
+  ) => {
+    await fetch(`/api/projects/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ _qazsuMeta: { [field]: value || null } }),
+    });
+    fetchProjects();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -147,6 +160,7 @@ export default function AdminProjects() {
                   <th className="px-4 py-3 font-semibold text-slate-500">Тип</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Источник</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Бассейн</th>
+                  <th className="px-4 py-3 font-semibold text-slate-500">Тема</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Голоса</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Оценка</th>
                   <th className="px-4 py-3 font-semibold text-slate-500">Статус</th>
@@ -190,10 +204,31 @@ export default function AdminProjects() {
                         <span className="text-[11px] text-slate-400">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 max-w-[140px]">
-                      <span className="text-[11px] text-slate-500 truncate block">
-                        {p.basin ? basinLabels[p.basin] : '—'}
-                      </span>
+                    <td className="px-4 py-3 max-w-[160px]">
+                      <select
+                        value={p.basin ?? ''}
+                        onChange={(e) => updateQazsuMeta(p.id, 'basin', e.target.value)}
+                        className="text-[11px] bg-white border border-[#E2E8F0] rounded px-1.5 py-1 max-w-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        title="Изменить бассейн"
+                      >
+                        <option value="">—</option>
+                        {waterBasinValues.map((b) => (
+                          <option key={b} value={b}>{basinLabels[b]}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-4 py-3 max-w-[160px]">
+                      <select
+                        value={p.problemType ?? ''}
+                        onChange={(e) => updateQazsuMeta(p.id, 'problemType', e.target.value)}
+                        className="text-[11px] bg-white border border-[#E2E8F0] rounded px-1.5 py-1 max-w-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                        title="Изменить тему"
+                      >
+                        <option value="">—</option>
+                        {waterProblemValues.map((p) => (
+                          <option key={p} value={p}>{problemLabels[p]}</option>
+                        ))}
+                      </select>
                     </td>
                     <td className="px-4 py-3 text-slate-600 font-medium">{p._count.votes}</td>
                     <td className="px-4 py-3 text-[#F59E0B] font-bold">

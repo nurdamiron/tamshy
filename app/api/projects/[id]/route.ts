@@ -84,6 +84,37 @@ export async function PATCH(
       return NextResponse.json({ project: updated });
     }
 
+    // ── Admin: ручное изменение Qazsu-метаданных проекта ──
+    if (body._qazsuMeta !== undefined) {
+      if (payload.role !== 'ADMIN') {
+        return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
+      }
+      const { basin, problemType, waterObjectId } = body._qazsuMeta as {
+        basin?: string | null;
+        problemType?: string | null;
+        waterObjectId?: string | null;
+      };
+      const data: Record<string, unknown> = {};
+      if (basin !== undefined) data.basin = basin || null;
+      if (problemType !== undefined) data.problemType = problemType || null;
+      if (waterObjectId !== undefined) {
+        // Если задан id водного объекта — проверим его существование
+        if (waterObjectId) {
+          const wo = await prisma.waterObject.findUnique({ where: { id: waterObjectId } });
+          if (!wo) {
+            return NextResponse.json({ error: 'Водный объект не найден' }, { status: 400 });
+          }
+          data.waterObjectId = waterObjectId;
+          // если basin не явно перезаписан — синхронизируем из объекта
+          if (basin === undefined) data.basin = wo.basin;
+        } else {
+          data.waterObjectId = null;
+        }
+      }
+      const project = await prisma.project.update({ where: { id: params.id }, data });
+      return NextResponse.json({ project });
+    }
+
     // ── Admin: переключение публикации в витрине Qazsu ──
     if (body._qazsuPublish !== undefined) {
       if (payload.role !== 'ADMIN') {

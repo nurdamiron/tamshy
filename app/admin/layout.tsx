@@ -68,6 +68,17 @@ const sections: NavSection[] = [
         ),
       },
       {
+        label: 'Импорт новости',
+        href: '/admin/news-import',
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        ),
+      },
+      {
         label: 'Медиатека',
         href: '/admin/materials',
         icon: (
@@ -139,6 +150,16 @@ const sections: NavSection[] = [
           </svg>
         ),
       },
+      {
+        label: 'Водные объекты',
+        href: '/admin/water-objects',
+        icon: (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 12h2a4 4 0 014-4 4 4 0 014 4 4 4 0 014-4 4 4 0 014 4h2" />
+            <path d="M2 18h2a4 4 0 014-4 4 4 0 014 4 4 4 0 014-4 4 4 0 014 4h2" />
+          </svg>
+        ),
+      },
     ],
   },
   {
@@ -182,6 +203,8 @@ const breadcrumbNames: Record<string, string> = {
   news: 'Новости',
   messages: 'Сообщения',
   'qazsu-stats': 'Qazsu KPI',
+  'news-import': 'Импорт новости',
+  'water-objects': 'Водные объекты',
 };
 
 /* ── layout component ────────────────────────────────── */

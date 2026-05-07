@@ -77,7 +77,6 @@ async function extractPlaywright(url: string): Promise<Extracted> {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   let chromium: any;
   try {
-    // @ts-expect-error optional peer dep
     chromium = (await import('playwright')).chromium;
   } catch {
     throw new Error(
@@ -87,11 +86,30 @@ async function extractPlaywright(url: string): Promise<Extracted> {
       'Либо используй --mode=auto.',
     );
   }
-  const browser: any = await chromium.launch({ headless: true });
+  const browser: any = await chromium.launch({
+    headless: true,
+    args: ['--disable-blink-features=AutomationControlled'],
+  });
   try {
-    const ctx: any = await browser.newContext({ locale: 'ru-RU' });
+    const ctx: any = await browser.newContext({
+      locale: 'ru-RU',
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
+                 '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      viewport: { width: 1440, height: 900 },
+      extraHTTPHeaders: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+      },
+    });
     const page: any = await ctx.newPage();
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30_000 });
+    // Замаскироваться от detection: убрать navigator.webdriver
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+    });
+    // domcontentloaded быстрее чем networkidle и реже триггерит таймауты на SPA
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    // Дать SPA время отрисовать контент (gov.kz ~3s)
+    await page.waitForTimeout(4000);
     // gov.kz рендерит карточку новости в .news-detail или подобном; берём весь body text.
     const title: string = await page.title();
     // og:image ставится сервером — после рендера может появиться
