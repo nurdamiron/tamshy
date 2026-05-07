@@ -21,7 +21,7 @@ export default function EditProjectPage() {
   const params = useParams();
   const router = useRouter();
 
-  const [project, setProject] = useState<ProjectEdit | null>(null);
+  const [, setProject] = useState<ProjectEdit | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');

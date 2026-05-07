@@ -7,7 +7,6 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
-import Textarea from '@/components/ui/Textarea';
 import Card from '@/components/ui/Card';
 import {
   regionLabels,
@@ -15,7 +14,7 @@ import {
   waterProblemValues,
   sourceSystemValues,
 } from '@/lib/validators';
-import { PROJECT_TYPES, GRADES } from '@/lib/constants';
+import { PROJECT_TYPES } from '@/lib/constants';
 import { useTranslations } from 'next-intl';
 
 const TYPE_META = {
@@ -46,18 +45,12 @@ export default function SubmitPage() {
 function SubmitInner() {
   const t = useTranslations('submit');
   const tTypes = useTranslations('types');
-  const tCommon = useTranslations('common');
   const tQazsu = useTranslations('qazsu');
   const tBasins = useTranslations('basins');
   const tProblems = useTranslations('problems');
 
   const tRegions = useTranslations('regions');
   const searchParams = useSearchParams();
-
-  const translatedGrades = GRADES.map((g) => ({
-    value: g.value,
-    label: `${g.value} ${tCommon('class')}`,
-  }));
 
   const regionOptions = Object.entries(regionLabels).map(([value, label]) => ({
     value,

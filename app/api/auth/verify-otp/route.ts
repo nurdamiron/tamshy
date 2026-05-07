@@ -17,9 +17,9 @@ export async function POST(req: NextRequest) {
     const otpResult = otpSchema.safeParse(body.code);
     const consentPd = body.consentPd === true;
     const consentEmail = body.consentEmail === true;
-    // Флаг: регистрация через форму подачи проекта → новый пользователь получает роль TEACHER.
-    // Принимаем только значение true; JURY/ADMIN через этот endpoint недостижимы.
-    const isTeacher = body.isTeacher === true;
+    // body.isTeacher (опциональный флаг от submit-формы) сейчас не используется —
+    // проверка role/teacher делается ниже по другим полям. Оставлено в API на будущее.
+
 
     if (!emailResult.success) {
       return NextResponse.json({ error: emailResult.error.issues[0].message }, { status: 400 });

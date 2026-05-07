@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
 type ProjectStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'WINNER';

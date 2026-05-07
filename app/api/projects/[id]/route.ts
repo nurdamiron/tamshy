@@ -68,7 +68,8 @@ export async function PATCH(
       if (project.authorId !== payload.userId) return NextResponse.json({ error: 'Доступ запрещён' }, { status: 403 });
       if (project.status !== 'PENDING') return NextResponse.json({ error: 'Нельзя редактировать после проверки' }, { status: 400 });
 
-      const { _teacherEdit: _, ...fields } = body;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { _teacherEdit, ...fields } = body;
       const updated = await prisma.project.update({
         where: { id: params.id },
         data: {
